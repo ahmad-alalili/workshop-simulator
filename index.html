@@ -1,309 +1,348 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IC Circuit Simulator | محاكي الدوائر المتكاملة</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div id="app">
-    <!-- Header -->
-    <header id="header">
-        <div class="header-left">
-            <div class="logo">
-                <span class="logo-icon">⚡</span>
-                <h1>IC Simulator</h1>
+    <div id="app">
+        <!-- Header -->
+        <header id="header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <h1>IC Simulator</h1>
+                </div>
+                <span class="subtitle">IC Circuit Simulator</span>
             </div>
-            <span class="subtitle">IC Circuit Simulator</span>
+
+            <div class="header-center">
+                <div class="tool-group">
+                    <button class="tool-btn active" data-tool="select">
+                        <span>🖱️</span>
+                        <small>Select</small>
+                    </button>
+                    <button class="tool-btn" data-tool="wire">
+                        <span>🔌</span>
+                        <small>Wire</small>
+                    </button>
+                    <button class="tool-btn" data-tool="cut-wire">
+                        <span>✂️</span>
+                        <small>Cut</small>
+                    </button>
+                    <button class="tool-btn" data-tool="delete">
+                        <span>🗑️</span>
+                        <small>Delete</small>
+                    </button>
+                </div>
+                <div class="tool-group" style="margin-left: 8px;">
+                    <button class="tool-btn" id="btn-undo" title="Undo (Ctrl+Z)">
+                        <span>↩️</span>
+                        <small>Undo</small>
+                    </button>
+                    <button class="tool-btn" id="btn-redo" title="Redo (Ctrl+Y)">
+                        <span>↪️</span>
+                        <small>Redo</small>
+                    </button>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <button class="action-btn" id="btn-help">❓ Help</button>
+                <button class="action-btn" id="btn-example1">📋 AND Gate</button>
+                <button class="action-btn" id="btn-example2">📋 Comparator</button>
+                <button class="action-btn" id="btn-example3">📋 7447 Display</button>
+                <button class="action-btn" id="btn-example4">📋 555 Timer</button>
+                <button class="action-btn danger" id="btn-clear">🗑️ Clear All</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div id="main">
+            <!-- Sidebar -->
+            <aside id="sidebar">
+                <div class="sidebar-search">
+                    <input type="text" id="comp-search" placeholder="🔍 Search components...">
+                </div>
+
+                <div class="sidebar-category">
+                    <div class="sidebar-category-header">
+                        <span class="category-icon">🔌</span>
+                        <span class="category-title">Integrated Circuits</span>
+                        <span class="category-chevron">▾</span>
+                    </div>
+                    <div class="sidebar-category-items">
+                        <button class="comp-btn" data-type="IC7408">
+                            <div class="comp-icon ic-icon">7408</div>
+                            <div class="comp-info">
+                                <span class="comp-name">IC 7408</span>
+                                <span class="comp-desc">Quad AND Gate</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="IC7485">
+                            <div class="comp-icon ic-icon">7485</div>
+                            <div class="comp-info">
+                                <span class="comp-name">IC 7485</span>
+                                <span class="comp-desc">4-Bit Comparator</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="IC7447">
+                            <div class="comp-icon ic-icon">7447</div>
+                            <div class="comp-info">
+                                <span class="comp-name">IC 7447</span>
+                                <span class="comp-desc">BCD → 7-Segment</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="IC74193">
+                            <div class="comp-icon ic-icon">74193</div>
+                            <div class="comp-info">
+                                <span class="comp-name">IC 74193</span>
+                                <span class="comp-desc">4-Bit Counter ↑↓</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="IC555">
+                            <div class="comp-icon ic-icon" data-type="IC555">555</div>
+                            <div class="comp-info">
+                                <span class="comp-name">IC 555</span>
+                                <span class="comp-desc">Timer / Oscillator</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-category">
+                    <div class="sidebar-category-header">
+                        <span class="category-icon">📊</span>
+                        <span class="category-title">Inputs / Outputs</span>
+                        <span class="category-chevron">▾</span>
+                    </div>
+                    <div class="sidebar-category-items">
+                        <button class="comp-btn" data-type="SWITCH">
+                            <div class="comp-icon switch-icon">⏻</div>
+                            <div class="comp-info">
+                                <span class="comp-name">Toggle Switch</span>
+                                <span class="comp-desc">HIGH / LOW</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="DIP_SWITCH">
+                            <div class="comp-icon switch-icon">⏻⏻</div>
+                            <div class="comp-info">
+                                <span class="comp-name">DIP Switch</span>
+                                <span class="comp-desc">4-Bit DIP Switch</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="PUSH_BUTTON">
+                            <div class="comp-icon switch-icon">⦿</div>
+                            <div class="comp-info">
+                                <span class="comp-name">Push Button</span>
+                                <span class="comp-desc">Momentary Switch</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="LED">
+                            <div class="comp-icon led-icon-btn">●</div>
+                            <div class="comp-info">
+                                <span class="comp-name">LED</span>
+                                <span class="comp-desc">Light Indicator</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="SEVEN_SEG_CC">
+                            <div class="comp-icon seg-icon">CC</div>
+                            <div class="comp-info">
+                                <span class="comp-name">7-Seg CC</span>
+                                <span class="comp-desc">Common Cathode</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="SEVEN_SEG_CA">
+                            <div class="comp-icon seg-icon">CA</div>
+                            <div class="comp-info">
+                                <span class="comp-name">7-Seg CA</span>
+                                <span class="comp-desc">Common Anode</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-category">
+                    <div class="sidebar-category-header">
+                        <span class="category-icon">⚡</span>
+                        <span class="category-title">Power Sources</span>
+                        <span class="category-chevron">▾</span>
+                    </div>
+                    <div class="sidebar-category-items">
+                        <button class="comp-btn" data-type="VCC">
+                            <div class="comp-icon vcc-icon">+5V</div>
+                            <div class="comp-info">
+                                <span class="comp-name">VCC</span>
+                                <span class="comp-desc">Positive Supply</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="GND">
+                            <div class="comp-icon gnd-icon">⏚</div>
+                            <div class="comp-info">
+                                <span class="comp-name">GND</span>
+                                <span class="comp-desc">Ground</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-category">
+                    <div class="sidebar-category-header">
+                        <span class="category-icon">🔧</span>
+                        <span class="category-title">Electronic Components</span>
+                        <span class="category-chevron">▾</span>
+                    </div>
+                    <div class="sidebar-category-items">
+                        <button class="comp-btn" data-type="RESISTOR">
+                            <div class="comp-icon res-icon">Ω</div>
+                            <div class="comp-info">
+                                <span class="comp-name">Resistor</span>
+                                <span class="comp-desc">Right-click to edit</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="CAPACITOR">
+                            <div class="comp-icon cap-icon">⊥</div>
+                            <div class="comp-info">
+                                <span class="comp-name">Capacitor</span>
+                                <span class="comp-desc">Right-click to edit</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <p>Click to add component</p>
+                </div>
+            </aside>
+
+            <!-- Workspace -->
+            <div id="workspace-container">
+                <div id="workspace">
+                    <svg id="wire-layer"></svg>
+                    <div id="components-layer"></div>
+                </div>
+
+                <div id="zoom-controls">
+                    <button id="btn-zoom-in">+</button>
+                    <span id="zoom-level">100%</span>
+                    <button id="btn-zoom-out">−</button>
+                    <button id="btn-zoom-fit">⊡</button>
+                </div>
+            </div>
+
+            <!-- Info Panel -->
+            <aside id="info-panel">
+                <div id="info-content">
+                    <div id="info-placeholder" class="info-placeholder">
+                        <div class="info-placeholder-icon">📖</div>
+                        <p>Select a component to see details</p>
+                        <p class="info-hint">اختر مكوناً لعرض معلوماته</p>
+                    </div>
+                    <div id="info-details" style="display: none;"></div>
+                </div>
+            </aside>
         </div>
 
-        <div class="header-center">
-            <div class="tool-group">
-                <button class="tool-btn active" data-tool="select">
-                    <span>🖱️</span>
-                    <small>Select</small>
-                </button>
-                <button class="tool-btn" data-tool="wire">
-                    <span>🔌</span>
-                    <small>Wire</small>
-                </button>
-                <button class="tool-btn" data-tool="cut-wire">
-                    <span>✂️</span>
-                    <small>Cut</small>
-                </button>
-                <button class="tool-btn" data-tool="delete">
-                    <span>🗑️</span>
-                    <small>Delete</small>
-                </button>
-            </div>
-        </div>
-
-        <div class="header-right">
-            <button class="action-btn" id="btn-help">❓ Help</button>
-            <button class="action-btn" id="btn-example1">📋 AND Gate</button>
-            <button class="action-btn" id="btn-example2">📋 Comparator</button>
-            <button class="action-btn" id="btn-example3">📋 7447 Display</button>
-            <button class="action-btn" id="btn-example4">📋 555 Timer</button>
-            <button class="action-btn danger" id="btn-clear">🗑️ Clear All</button>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <div id="main">
-        <!-- Sidebar -->
-        <aside id="sidebar">
-            <div class="sidebar-search">
-                <input type="text" id="comp-search" placeholder="🔍 Search components...">
-            </div>
-
-            <div class="sidebar-category">
-                <div class="sidebar-category-header">
-                    <span class="category-icon">🔌</span>
-                    <span class="category-title">Integrated Circuits</span>
-                    <span class="category-chevron">▾</span>
-                </div>
-                <div class="sidebar-category-items">
-                    <button class="comp-btn" data-type="IC7408">
-                        <div class="comp-icon ic-icon">7408</div>
-                        <div class="comp-info">
-                            <span class="comp-name">IC 7408</span>
-                            <span class="comp-desc">Quad AND Gate</span>
-                        </div>
-                    </button>
-                    <button class="comp-btn" data-type="IC7485">
-                        <div class="comp-icon ic-icon">7485</div>
-                        <div class="comp-info">
-                            <span class="comp-name">IC 7485</span>
-                            <span class="comp-desc">4-Bit Comparator</span>
-                        </div>
-                    </button>
-                    <button class="comp-btn" data-type="IC7447">
-                        <div class="comp-icon ic-icon">7447</div>
-                        <div class="comp-info">
-                            <span class="comp-name">IC 7447</span>
-                            <span class="comp-desc">BCD → 7-Segment</span>
-                        </div>
-                    </button>
-                    <button class="comp-btn" data-type="IC74193">
-                        <div class="comp-icon ic-icon">74193</div>
-                        <div class="comp-info">
-                            <span class="comp-name">IC 74193</span>
-                            <span class="comp-desc">4-Bit Counter ↑↓</span>
-                        </div>
-                    </button>
-                    <button class="comp-btn" data-type="IC555">
-                        <div class="comp-icon ic-icon" data-type="IC555">555</div>
-                        <div class="comp-info">
-                            <span class="comp-name">IC 555</span>
-                            <span class="comp-desc">Timer / Oscillator</span>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            <div class="sidebar-category">
-                <div class="sidebar-category-header">
-                    <span class="category-icon">📊</span>
-                    <span class="category-title">Inputs / Outputs</span>
-                    <span class="category-chevron">▾</span>
-                </div>
-                <div class="sidebar-category-items">
-                    <button class="comp-btn" data-type="SWITCH">
-                        <div class="comp-icon switch-icon">⏻</div>
-                        <div class="comp-info">
-                            <span class="comp-name">Toggle Switch</span>
-                            <span class="comp-desc">HIGH / LOW</span>
-                        </div>
-                    </button>
-                    <button class="comp-btn" data-type="DIP_SWITCH">
-                        <div class="comp-icon switch-icon">⏻⏻</div>
-                        <div class="comp-info">
-                            <span class="comp-name">DIP Switch</span>
-                            <span class="comp-desc">4-Bit DIP Switch</span>
-                        </div>
-                    </button>
-                    <button class="comp-btn" data-type="PUSH_BUTTON">
-                        <div class="comp-icon switch-icon">⦿</div>
-                        <div class="comp-info">
-                            <span class="comp-name">Push Button</span>
-                            <span class="comp-desc">Momentary Switch</span>
-                        </div>
-                    </button>
-                    <button class="comp-btn" data-type="LED">
-                        <div class="comp-icon led-icon-btn">●</div>
-                        <div class="comp-info">
-                            <span class="comp-name">LED</span>
-                            <span class="comp-desc">Light Indicator</span>
-                        </div>
-                    </button>
-                    <button class="comp-btn" data-type="SEVEN_SEG_CC">
-                        <div class="comp-icon seg-icon">CC</div>
-                        <div class="comp-info">
-                            <span class="comp-name">7-Seg CC</span>
-                            <span class="comp-desc">Common Cathode</span>
-                        </div>
-                    </button>
-                    <button class="comp-btn" data-type="SEVEN_SEG_CA">
-                        <div class="comp-icon seg-icon">CA</div>
-                        <div class="comp-info">
-                            <span class="comp-name">7-Seg CA</span>
-                            <span class="comp-desc">Common Anode</span>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            <div class="sidebar-category">
-                <div class="sidebar-category-header">
-                    <span class="category-icon">⚡</span>
-                    <span class="category-title">Power Sources</span>
-                    <span class="category-chevron">▾</span>
-                </div>
-                <div class="sidebar-category-items">
-                    <button class="comp-btn" data-type="VCC">
-                        <div class="comp-icon vcc-icon">+5V</div>
-                        <div class="comp-info">
-                            <span class="comp-name">VCC</span>
-                            <span class="comp-desc">Positive Supply</span>
-                        </div>
-                    </button>
-                    <button class="comp-btn" data-type="GND">
-                        <div class="comp-icon gnd-icon">⏚</div>
-                        <div class="comp-info">
-                            <span class="comp-name">GND</span>
-                            <span class="comp-desc">Ground</span>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            <div class="sidebar-category">
-                <div class="sidebar-category-header">
-                    <span class="category-icon">🔧</span>
-                    <span class="category-title">Electronic Components</span>
-                    <span class="category-chevron">▾</span>
-                </div>
-                <div class="sidebar-category-items">
-                    <button class="comp-btn" data-type="RESISTOR">
-                        <div class="comp-icon res-icon">Ω</div>
-                        <div class="comp-info">
-                            <span class="comp-name">Resistor</span>
-                            <span class="comp-desc">Right-click to edit</span>
-                        </div>
-                    </button>
-                    <button class="comp-btn" data-type="CAPACITOR">
-                        <div class="comp-icon cap-icon">⊥</div>
-                        <div class="comp-info">
-                            <span class="comp-name">Capacitor</span>
-                            <span class="comp-desc">Right-click to edit</span>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            <div class="sidebar-footer">
-                <p>Click to add component</p>
-            </div>
-        </aside>
-
-        <!-- Workspace -->
-        <div id="workspace-container">
-            <div id="workspace">
-                <svg id="wire-layer"></svg>
-                <div id="components-layer"></div>
-            </div>
-
-            <div id="zoom-controls">
-                <button id="btn-zoom-in">+</button>
-                <span id="zoom-level">100%</span>
-                <button id="btn-zoom-out">−</button>
-                <button id="btn-zoom-fit">⊡</button>
-            </div>
-        </div>
-
-        <!-- Info Panel -->
-        <aside id="info-panel">
-            <div id="info-content">
-                <div id="info-placeholder" class="info-placeholder">
-                    <div class="info-placeholder-icon">📖</div>
-                    <p>Select a component to see details</p>
-                    <p class="info-hint">اختر مكوناً لعرض معلوماته</p>
-                </div>
-                <div id="info-details" style="display: none;"></div>
-            </div>
-        </aside>
+        <!-- Status Bar -->
+        <footer id="status-bar">
+            <span id="status-tool">🔧 Tool: Select</span>
+            <span id="status-hint">Click a component from the sidebar then click on workspace to place it</span>
+            <span id="status-coords">X: 0 Y: 0</span>
+            <span class="designer-credit">Design: Eng. Ahmed Saeed Al-Alili Al-Maliki</span>
+        </footer>
     </div>
 
-    <!-- Status Bar -->
-    <footer id="status-bar">
-        <span id="status-tool">🔧 Tool: Select</span>
-        <span id="status-hint">Click a component from the sidebar then click on workspace to place it</span>
-        <span id="status-coords">X: 0 Y: 0</span>
-        <span class="designer-credit">Design: Eng. Ahmed Saeed Al-Alili Al-Maliki</span>
-    </footer>
-</div>
+    <!-- Help Modal -->
+    <div id="controls-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تعليمات التحكم | Controls</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body" dir="rtl">
+                <div class="shortcuts-section">
+                    <h4>🛠️ الأدوات الأساسية</h4>
+                    <ul class="shortcuts-list">
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc">أداة التحديد (Select)</span>
+                            <span class="shortcut-key">S</span>
+                        </li>
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc">أداة الأسلاك (Wire)</span>
+                            <span class="shortcut-key">W</span>
+                        </li>
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc">قطع الأسلاك (Cut)</span>
+                            <span class="shortcut-key">X</span>
+                        </li>
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc">حذف عنصر (Delete)</span>
+                            <span class="shortcut-key">D</span>
+                        </li>
+                    </ul>
+                </div>
 
-<!-- Help Modal -->
-<div id="controls-modal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Controls | تعليمات التحكم</h3>
-            <span class="close-modal">&times;</span>
-        </div>
-        <div class="modal-body">
-            <ul class="shortcuts-list">
-                <li class="shortcut-item">
-                    <span class="shortcut-key">S</span>
-                    <span class="shortcut-desc">Select Tool</span>
-                </li>
-                <li class="shortcut-item">
-                    <span class="shortcut-key">W</span>
-                    <span class="shortcut-desc">Wire Tool</span>
-                </li>
-                <li class="shortcut-item">
-                    <span class="shortcut-key">X</span>
-                    <span class="shortcut-desc">Cut Wire</span>
-                </li>
-                <li class="shortcut-item">
-                    <span class="shortcut-key">D</span>
-                    <span class="shortcut-desc">Delete</span>
-                </li>
-                <li class="shortcut-item">
-                    <span class="shortcut-key">R</span>
-                    <span class="shortcut-desc">Rotate</span>
-                </li>
-                <li class="shortcut-item">
-                    <span class="shortcut-key">Esc</span>
-                    <span class="shortcut-desc">Cancel</span>
-                </li>
-                <li class="shortcut-item">
-                    <span class="shortcut-key">Ctrl+Click</span>
-                    <span class="shortcut-desc">Multi-select</span>
-                </li>
-                <li class="shortcut-item">
-                    <span class="shortcut-key">Del</span>
-                    <span class="shortcut-desc">Delete Selected</span>
-                </li>
-                <li class="shortcut-item">
-                    <span class="shortcut-key">Wheel</span>
-                    <span class="shortcut-desc">Zoom</span>
-                </li>
-                <li class="shortcut-item">
-                    <span class="shortcut-key">Middle Click</span>
-                    <span class="shortcut-desc">Pan</span>
-                </li>
-            </ul>
-        </div>
-        <div class="modal-footer">
-            <button class="modal-btn" id="btn-close-help">Close</button>
+                <div class="shortcuts-section">
+                    <h4>⚡ التحكم والتحرير</h4>
+                    <ul class="shortcuts-list">
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc">تدوير العنصر</span>
+                            <span class="shortcut-key">R</span>
+                        </li>
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc">إلغاء الأمر الحالي</span>
+                            <span class="shortcut-key">Esc</span>
+                        </li>
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc">تحديد متعدد</span>
+                            <span class="shortcut-key">Ctrl + Click</span>
+                        </li>
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc">حذف المحدد (جماعي)</span>
+                            <span class="shortcut-key">Delete</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="shortcuts-section">
+                    <h4>🔍 العرض والتنقل</h4>
+                    <ul class="shortcuts-list">
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc">تقريب / تبعيد</span>
+                            <span class="shortcut-key">Mouse Wheel</span>
+                        </li>
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc">تحريك اللوحة (Pan)</span>
+                            <span class="shortcut-key">Middle Click</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="shortcuts-section">
+                    <h4>💡 تلميحات</h4>
+                    <p style="font-size:12px; color:var(--text-secondary); margin-top:5px;">
+                        • يمكنك تحديد عدة عناصر بحب مفتاح <b>Ctrl</b> والنقر عليها، ثم حذفها جميعاً بزر
+                        <b>Delete</b>.<br>
+                        • انقر بزر الماوس الأيمن على أي عنصر لخيارات إضافية (تغيير القيم، الألوان، التدوير).
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer" dir="rtl">
+                <button class="modal-btn" id="btn-close-help">إغلاق</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
+
 </html>

@@ -743,8 +743,18 @@ COMPONENT STYLES ON WORKSPACE
     cursor: grabbing;
 }
 
-.component.selected {
+.component.selected,
+.component.multi-selected {
     filter: drop-shadow(0 0 8px var(--accent-glow));
+    z-index: 100 !important;
+}
+
+.selection-rect {
+    position: absolute;
+    border: 1px solid var(--accent);
+    background: rgba(52, 152, 219, 0.1);
+    pointer-events: none;
+    z-index: 9999;
 }
 
 .ic-component {
@@ -1098,11 +1108,27 @@ COMPONENT STYLES ON WORKSPACE
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-3px) rotate(-5deg); }
-    40% { transform: translateX(3px) rotate(5deg); }
-    60% { transform: translateX(-2px) rotate(-3deg); }
-    80% { transform: translateX(2px) rotate(3deg); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-3px) rotate(-5deg);
+    }
+
+    40% {
+        transform: translateX(3px) rotate(5deg);
+    }
+
+    60% {
+        transform: translateX(-2px) rotate(-3deg);
+    }
+
+    80% {
+        transform: translateX(2px) rotate(3deg);
+    }
 }
 
 .led-label {
@@ -1115,13 +1141,47 @@ COMPONENT STYLES ON WORKSPACE
     cursor: crosshair;
 }
 
-.led-body.red { --led-on: #ff4457; --led-on-glow: rgba(255, 68, 87, 0.7); --led-off: #3a1520; }
-.led-body.green { --led-on: #2ecc71; --led-on-glow: rgba(46, 204, 113, 0.7); --led-off: #152e1a; }
-.led-body.blue { --led-on: #3498db; --led-on-glow: rgba(52, 152, 219, 0.7); --led-off: #15203a; }
-.led-body.yellow { --led-on: #f1c40f; --led-on-glow: rgba(241, 196, 15, 0.7); --led-off: #3a3215; }
-.led-body.orange { --led-on: #e67e22; --led-on-glow: rgba(230, 126, 34, 0.7); --led-off: #3a2515; }
-.led-body.purple { --led-on: #9b59b6; --led-on-glow: rgba(155, 89, 182, 0.7); --led-off: #2a1535; }
-.led-body.cyan { --led-on: #1abc9c; --led-on-glow: rgba(26, 188, 156, 0.7); --led-off: #152e2a; }
+.led-body.red {
+    --led-on: #ff4457;
+    --led-on-glow: rgba(255, 68, 87, 0.7);
+    --led-off: #3a1520;
+}
+
+.led-body.green {
+    --led-on: #2ecc71;
+    --led-on-glow: rgba(46, 204, 113, 0.7);
+    --led-off: #152e1a;
+}
+
+.led-body.blue {
+    --led-on: #3498db;
+    --led-on-glow: rgba(52, 152, 219, 0.7);
+    --led-off: #15203a;
+}
+
+.led-body.yellow {
+    --led-on: #f1c40f;
+    --led-on-glow: rgba(241, 196, 15, 0.7);
+    --led-off: #3a3215;
+}
+
+.led-body.orange {
+    --led-on: #e67e22;
+    --led-on-glow: rgba(230, 126, 34, 0.7);
+    --led-off: #3a2515;
+}
+
+.led-body.purple {
+    --led-on: #9b59b6;
+    --led-on-glow: rgba(155, 89, 182, 0.7);
+    --led-off: #2a1535;
+}
+
+.led-body.cyan {
+    --led-on: #1abc9c;
+    --led-on-glow: rgba(26, 188, 156, 0.7);
+    --led-off: #152e2a;
+}
 
 /* === RESISTOR === */
 .resistor-component {
@@ -1155,13 +1215,33 @@ COMPONENT STYLES ON WORKSPACE
     border-radius: 1px;
 }
 
-.band-orange { background: #FF8C00; }
-.band-black { background: #222; }
-.band-brown { background: #8B4513; }
-.band-gold { background: #FFD700; }
-.band-red { background: #e74c3c; }
-.band-green { background: #2ecc71; }
-.band-blue { background: #3498db; }
+.band-orange {
+    background: #FF8C00;
+}
+
+.band-black {
+    background: #222;
+}
+
+.band-brown {
+    background: #8B4513;
+}
+
+.band-gold {
+    background: #FFD700;
+}
+
+.band-red {
+    background: #e74c3c;
+}
+
+.band-green {
+    background: #2ecc71;
+}
+
+.band-blue {
+    background: #3498db;
+}
 
 .resistor-label {
     font-family: var(--font-mono);
@@ -1342,13 +1422,40 @@ COMPONENT STYLES ON WORKSPACE
     filter: drop-shadow(0 0 4px rgba(255, 32, 32, 0.7)) drop-shadow(0 0 8px rgba(255, 32, 32, 0.4));
 }
 
-.seven-seg-display.red .seg.on { fill: #ff2020; stroke: #ff4040; }
-.seven-seg-display.green .seg.on { fill: #20ff40; stroke: #40ff60; }
-.seven-seg-display.blue .seg.on { fill: #3498db; stroke: #5ab8ff; }
-.seven-seg-display.yellow .seg.on { fill: #f1c40f; stroke: #ffe040; }
-.seven-seg-display.orange .seg.on { fill: #e67e22; stroke: #ffa040; }
-.seven-seg-display.purple .seg.on { fill: #9b59b6; stroke: #c080e0; }
-.seven-seg-display.cyan .seg.on { fill: #1abc9c; stroke: #40e0c0; }
+.seven-seg-display.red .seg.on {
+    fill: #ff2020;
+    stroke: #ff4040;
+}
+
+.seven-seg-display.green .seg.on {
+    fill: #20ff40;
+    stroke: #40ff60;
+}
+
+.seven-seg-display.blue .seg.on {
+    fill: #3498db;
+    stroke: #5ab8ff;
+}
+
+.seven-seg-display.yellow .seg.on {
+    fill: #f1c40f;
+    stroke: #ffe040;
+}
+
+.seven-seg-display.orange .seg.on {
+    fill: #e67e22;
+    stroke: #ffa040;
+}
+
+.seven-seg-display.purple .seg.on {
+    fill: #9b59b6;
+    stroke: #c080e0;
+}
+
+.seven-seg-display.cyan .seg.on {
+    fill: #1abc9c;
+    stroke: #40e0c0;
+}
 
 /* === WIRE STYLES === */
 .wire {
@@ -1379,8 +1486,15 @@ COMPONENT STYLES ON WORKSPACE
 
 /* === ANIMATIONS === */
 @keyframes led-pulse {
-    0%, 100% { box-shadow: 0 0 15px var(--led-on-glow), 0 0 40px var(--led-on-glow); }
-    50% { box-shadow: 0 0 25px var(--led-on-glow), 0 0 60px var(--led-on-glow); }
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px var(--led-on-glow), 0 0 40px var(--led-on-glow);
+    }
+
+    50% {
+        box-shadow: 0 0 25px var(--led-on-glow), 0 0 60px var(--led-on-glow);
+    }
 }
 
 .led-body.on {
@@ -1388,8 +1502,15 @@ COMPONENT STYLES ON WORKSPACE
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .component {
@@ -1586,13 +1707,73 @@ COMPONENT STYLES ON WORKSPACE
 .modal-body {
     padding: 16px;
     overflow-y: auto;
+    font-family: var(--font-ui);
+}
+
+.shortcuts-section {
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+}
+
+.shortcuts-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.shortcuts-section h4 {
+    font-size: 13px;
+    color: var(--accent-light);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.shortcuts-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.shortcut-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.shortcut-key {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--high-bright);
+    min-width: 24px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shortcut-desc {
+    color: var(--text-secondary);
 }
 
 .modal-footer {
     padding: 12px 16px;
     border-top: 1px solid var(--border);
-    text-align: right;
     background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    justify-content: flex-end;
+    /* Align button to left in RTL */
+}
+
+/* RTL Specific Override for footer button alignment */
+[dir="rtl"] .modal-footer {
+    justify-content: flex-end;
+    /* In RTL flex-end is left */
 }
 
 .modal-btn {
@@ -1604,22 +1785,51 @@ COMPONENT STYLES ON WORKSPACE
     cursor: pointer;
     font-family: var(--font-ui);
     font-size: 13px;
+    transition: var(--transition);
 }
 
 .modal-btn:hover {
     background: var(--accent-light);
 }
 
+
+.tool-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: transparent;
+}
+
 /* === RESPONSIVE === */
 @media (max-width: 900px) {
-    #sidebar { width: 60px; }
-    .comp-info { display: none; }
-    .comp-icon { width: 36px; height: 36px; font-size: 11px; }
-    #info-panel { width: 200px; }
+    #sidebar {
+        width: 60px;
+    }
+
+    .comp-info {
+        display: none;
+    }
+
+    .comp-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 11px;
+    }
+
+    #info-panel {
+        width: 200px;
+    }
 }
 
 @media (max-width: 700px) {
-    #info-panel { display: none; }
-    .header-right { display: none; }
-    .subtitle { display: none; }
+    #info-panel {
+        display: none;
+    }
+
+    .header-right {
+        display: none;
+    }
+
+    .subtitle {
+        display: none;
+    }
 }

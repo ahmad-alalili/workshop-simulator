@@ -369,6 +369,151 @@ function isICType(type) { return type in IC_DEFINITIONS; }
 function isSevenSegType(type) { return type === 'SEVEN_SEG_CC' || type === 'SEVEN_SEG_CA'; }
 
 // ==========================================
+// HISTORY MANAGER
+// ==========================================
+class HistoryManager {
+    constructor() {
+        this.undoStack = [];
+        this.redoStack = [];
+        this.maxSize = 50;
+        this.isRestoring = false;
+    }
+
+    push(action) {
+        if (this.isRestoring) return;
+        this.undoStack.push(action);
+        if (this.undoStack.length > this.maxSize) this.undoStack.shift();
+        this.redoStack = []; // Clear redo stack on new action
+        this.updateUI();
+    }
+
+    undo() {
+        if (this.undoStack.length === 0) return;
+        const action = this.undoStack.pop();
+        this.redoStack.push(action);
+        this.isRestoring = true;
+        this.apply(action, true);
+        this.isRestoring = false;
+        this.updateUI();
+    }
+
+    redo() {
+        if (this.redoStack.length === 0) return;
+        const action = this.redoStack.pop();
+        this.undoStack.push(action);
+        this.isRestoring = true;
+        this.apply(action, false);
+        this.isRestoring = false;
+        this.updateUI();
+    }
+
+    apply(action, isUndo) {
+        switch (action.type) {
+            case 'ADD_COMP':
+                if (isUndo) {
+                    deleteComponent(action.data.comp.id, true);
+                } else {
+                    restoreComponent(action.data.comp);
+                }
+                break;
+            case 'DEL_COMP':
+                if (isUndo) {
+                    restoreComponent(action.data.comp);
+                    action.data.wires.forEach(w => restoreWire(w));
+                } else {
+                    deleteComponent(action.data.comp.id, true);
+                    // Wires are auto-deleted by deleteComponent logic or we might need to be careful
+                    // If deleteComponent deletes wires, we are fine.
+                }
+                break;
+            case 'ADD_WIRE':
+                if (isUndo) {
+                    deleteWire(action.data.wire.id, true);
+                } else {
+                    restoreWire(action.data.wire);
+                }
+                break;
+            case 'DEL_WIRE':
+                if (isUndo) {
+                    restoreWire(action.data.wire);
+                } else {
+                    deleteWire(action.data.wire.id, true);
+                }
+                break;
+            case 'MOVE_COMP':
+                const comp = components.get(action.data.id);
+                if (comp) {
+                    comp.x = isUndo ? action.data.oldX : action.data.newX;
+                    comp.y = isUndo ? action.data.oldY : action.data.newY;
+                    const el = document.getElementById(comp.id);
+                    if (el) {
+                        el.style.left = comp.x + 'px';
+                        el.style.top = comp.y + 'px';
+                    }
+                    updateAllWires();
+                }
+                break;
+            case 'ROTATE_COMP':
+                const cRot = components.get(action.data.id);
+                if (cRot) {
+                    cRot.rotation = isUndo ? action.data.oldRot : action.data.newRot;
+                    renderComponent(cRot);
+                    updateComponentVisuals(cRot);
+                    updateAllWires();
+                    if (selectedCompId === cRot.id) showComponentInfo(cRot);
+                }
+                break;
+            case 'PROP_CHANGE':
+                const cProp = components.get(action.data.id);
+                if (cProp) {
+                    cProp[action.data.key] = isUndo ? action.data.oldVal : action.data.newVal;
+                    renderComponent(cProp);
+                    updateComponentVisuals(cProp);
+                    simulate();
+                    if (selectedCompId === cProp.id) showComponentInfo(cProp);
+                }
+                break;
+        }
+        simulate();
+    }
+
+    updateUI() {
+        const btnUndo = document.getElementById('btn-undo');
+        const btnRedo = document.getElementById('btn-redo');
+        if (btnUndo) btnUndo.disabled = this.undoStack.length === 0;
+        if (btnRedo) btnRedo.disabled = this.redoStack.length === 0;
+        if (btnUndo) btnUndo.style.opacity = this.undoStack.length === 0 ? 0.5 : 1;
+        if (btnRedo) btnRedo.style.opacity = this.redoStack.length === 0 ? 0.5 : 1;
+    }
+}
+
+const history = new HistoryManager();
+
+// ==========================================
+// RESTORE HELPERS
+// ==========================================
+function restoreComponent(compData) {
+    // Clone data to avoid reference issues
+    const comp = JSON.parse(JSON.stringify(compData));
+    components.set(comp.id, comp);
+    renderComponent(comp);
+
+    // Restore states that might affect visuals
+    if (comp.type === 'LED' && comp.state) {
+        // visual update will handle it
+    }
+    updateComponentVisuals(comp);
+    return comp;
+}
+
+function restoreWire(wireData) {
+    const wire = JSON.parse(JSON.stringify(wireData));
+    wires.set(wire.id, wire);
+    renderWire(wire);
+    return wire;
+}
+
+// ==========================================
 // GLOBALS
 // ==========================================
 let compIdCounter = 0;
@@ -613,6 +758,12 @@ function createComponent(type, x, y) {
     components.set(id, comp);
     renderComponent(comp);
     simulate();
+
+    history.push({
+        type: 'ADD_COMP',
+        data: { comp: JSON.parse(JSON.stringify(comp)) }
+    });
+
     return comp;
 }
 
@@ -989,6 +1140,12 @@ function createWire(fromCompId, fromPin, toCompId, toPin, waypoints = []) {
     wires.set(id, wire);
     renderWire(wire);
     simulate();
+
+    history.push({
+        type: 'ADD_WIRE',
+        data: { wire: JSON.parse(JSON.stringify(wire)) }
+    });
+
     return wire;
 }
 
@@ -1175,15 +1332,26 @@ function renderWire(wire) {
     }
 }
 
+
 function updateAllWires() {
     for (const [, wire] of wires) {
         renderWire(wire);
     }
 }
 
-function deleteWire(wireId) {
-    const pathEl = wireLayer.querySelector(`#${wireId}`);
-    if (pathEl) pathEl.remove();
+function deleteWire(wireId, isUndoOrRedo = false) {
+    const wire = wires.get(wireId);
+    if (!wire) return;
+
+    if (!isUndoOrRedo) {
+        history.push({
+            type: 'DEL_WIRE',
+            data: { wire: JSON.parse(JSON.stringify(wire)) }
+        });
+    }
+
+    const el = wireLayer.querySelector(`#${wireId}`);
+    if (el) el.remove();
     wires.delete(wireId);
     simulate();
 }
@@ -1191,14 +1359,32 @@ function deleteWire(wireId) {
 // ==========================================
 // COMPONENT DELETION
 // ==========================================
-function deleteComponent(compId) {
-    const toDelete = [];
+function deleteComponent(compId, isUndoOrRedo = false) {
+    const toDeleteWires = [];
+    const dataToSave = [];
+
     for (const [wid, w] of wires) {
         if (w.from.comp === compId || w.to.comp === compId) {
-            toDelete.push(wid);
+            toDeleteWires.push(wid);
+            dataToSave.push(JSON.parse(JSON.stringify(w)));
         }
     }
-    toDelete.forEach(wid => deleteWire(wid));
+
+    // We only push to history if this is a user action, not an undo/redo op
+    if (!isUndoOrRedo) {
+        const comp = components.get(compId);
+        if (comp) {
+            history.push({
+                type: 'DEL_COMP',
+                data: {
+                    comp: JSON.parse(JSON.stringify(comp)),
+                    wires: dataToSave
+                }
+            });
+        }
+    }
+
+    toDeleteWires.forEach(wid => deleteWire(wid, true)); // true to skip history push for wire deletions
 
     const comp = components.get(compId);
     const el = document.getElementById(compId);
@@ -1208,6 +1394,9 @@ function deleteComponent(compId) {
     if (selectedCompId === compId) {
         selectedCompId = null;
         showInfoPlaceholder();
+    }
+    if (selectedCompIds.has(compId)) {
+        selectedCompIds.delete(compId);
     }
     simulate();
 }
@@ -1723,8 +1912,8 @@ dp │5   6│ b
                 <div class="info-section-title">الاستخدام</div>
                 <p style="font-size:11px; color:var(--text-secondary); line-height:1.6;">
                     ${isCC
-            ? 'وصّل COM بـ GND. كل شريحة تضيء عندما يكون الطرف HIGH.'
-            : 'وصّل COM بـ VCC. كل شريحة تضيء عندما يكون الطرف LOW. مناسب مع IC 7447.'}
+                ? 'وصّل COM بـ GND. كل شريحة تضيء عندما يكون الطرف HIGH.'
+                : 'وصّل COM بـ VCC. كل شريحة تضيء عندما يكون الطرف LOW. مناسب مع IC 7447.'}
                 </p>
             </div>
         `;
@@ -2111,6 +2300,10 @@ wsContainer.addEventListener('mousedown', (e) => {
                 const coords = getWorkspaceCoords(e.clientX, e.clientY);
                 dragOffsetX = coords.x - comp.x;
                 dragOffsetY = coords.y - comp.y;
+                // Store initial position for undo
+                comp._dragStartX = comp.x;
+                comp._dragStartY = comp.y;
+
                 compEl.style.cursor = 'grabbing';
                 compEl.style.zIndex = '100';
             }
@@ -2118,27 +2311,29 @@ wsContainer.addEventListener('mousedown', (e) => {
         }
 
         if (!compEl && e.button === 0) {
-            if (e.ctrlKey) {
-                isSelecting = true;
-                const coords = getWorkspaceCoords(e.clientX, e.clientY);
-                selectionStartX = coords.x;
-                selectionStartY = coords.y;
-                selectionRect = document.createElement('div');
-                selectionRect.className = 'selection-rect';
-                workspace.appendChild(selectionRect);
-            } else {
+            // Default to Box Select if on empty space, unless we explicitly want to Pan (maybe Shift+Drag or Space+Drag, but let's stick to standard behavior)
+            // The user manual says Middle Click is Pan. So Left Drag should be Select.
+
+            // If Ctrl is held, we ADD to selection (logic handled in mouseup)
+            // If Ctrl is NOT held, we should clear existing selection first? 
+            // Standard behavior: Click empty space clears selection. Drag starts new selection.
+
+            if (!e.ctrlKey) {
                 clearMultiSelect();
                 deselectAll();
-                isPanning = true;
-                panStartX = e.clientX;
-                panStartY = e.clientY;
-                panStartPanX = wsPanX;
-                panStartPanY = wsPanY;
-                wsContainer.style.cursor = 'grabbing';
             }
+
+            isSelecting = true;
+            const coords = getWorkspaceCoords(e.clientX, e.clientY);
+            selectionStartX = coords.x;
+            selectionStartY = coords.y;
+            selectionRect = document.createElement('div');
+            selectionRect.className = 'selection-rect';
+            workspace.appendChild(selectionRect);
         }
     }
 
+    // Pan with middle mouse button
     if (e.button === 1) {
         e.preventDefault();
         isPanning = true;
@@ -2220,6 +2415,29 @@ document.addEventListener('mouseup', (e) => {
         }
         isDragging = false;
         dragComp = null;
+        if (el) {
+            el.style.cursor = 'grab';
+            el.style.zIndex = '15';
+        }
+
+        // Push to history if moved
+        if (dragComp.x !== dragComp._dragStartX || dragComp.y !== dragComp._dragStartY) {
+            history.push({
+                type: 'MOVE_COMP',
+                data: {
+                    id: dragComp.id,
+                    oldX: dragComp._dragStartX,
+                    oldY: dragComp._dragStartY,
+                    newX: dragComp.x,
+                    newY: dragComp.y
+                }
+            });
+        }
+        delete dragComp._dragStartX;
+        delete dragComp._dragStartY;
+
+        isDragging = false;
+        dragComp = null;
         updateAllWires();
     }
 
@@ -2247,10 +2465,13 @@ document.addEventListener('mouseup', (e) => {
     }
 });
 
+// --- Zoom with Mouse Wheel ---
 wsContainer.addEventListener('wheel', (e) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.08 : 0.08;
     const newZoom = Math.max(0.3, Math.min(3, wsZoom + delta));
+
+    // Zoom toward mouse position
     const rect = wsContainer.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
@@ -2263,11 +2484,31 @@ wsContainer.addEventListener('wheel', (e) => {
     updateAllWires();
 }, { passive: false });
 
+// --- Zoom Buttons ---
 document.getElementById('btn-zoom-in').addEventListener('click', () => {
     wsZoom = Math.min(3, wsZoom + 0.15);
     applyTransform();
     updateAllWires();
 });
+
+document.getElementById('btn-zoom-out').addEventListener('click', () => {
+    wsZoom = Math.max(0.3, wsZoom - 0.15);
+    applyTransform();
+    updateAllWires();
+});
+
+document.getElementById('btn-zoom-fit').addEventListener('click', () => {
+    wsZoom = 1;
+    wsPanX = 0;
+    wsPanY = 0;
+    applyTransform();
+    updateAllWires();
+});
+
+function applyTransform() {
+    workspace.style.transform = `translate(${wsPanX}px, ${wsPanY}px) scale(${wsZoom})`;
+    zoomLevelText.textContent = Math.round(wsZoom * 100) + '%';
+}
 
 document.getElementById('btn-zoom-out').addEventListener('click', () => {
     wsZoom = Math.max(0.3, wsZoom - 0.15);
@@ -2344,16 +2585,33 @@ function clearMultiSelect() {
 function rotateComponent(compId) {
     const comp = components.get(compId);
     if (!comp) return;
+    const oldRot = comp.rotation || 0;
     comp.rotation = ((comp.rotation || 0) + 90) % 360;
+
+    // History push
+    if (history) { // Ensure history is available
+        history.push({
+            type: 'ROTATE_COMP',
+            data: {
+                id: compId,
+                oldRot: oldRot,
+                newRot: comp.rotation
+            }
+        });
+    }
+
     renderComponent(comp);
     updateComponentVisuals(comp);
     updateAllWires();
     if (selectedCompId === compId) showComponentInfo(comp);
 }
 
+// --- Keyboard shortcuts ---
 document.addEventListener('keydown', (e) => {
+    // Skip shortcuts when typing in search
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
+    // Esc - Cancel
     if (e.key === 'Escape') {
         cancelWireDrawing();
         placingType = null;
@@ -2363,11 +2621,28 @@ document.addEventListener('keydown', (e) => {
         deselectAll();
         updateHint();
     }
-    if (e.key === 's' || e.key === 'S') setTool('select');
-    if (e.key === 'w' || e.key === 'W') setTool('wire');
-    if (e.key === 'x' || e.key === 'X') setTool('cut-wire');
-    if (e.key === 'd' || e.key === 'D') setTool('delete');
 
+    // S - Select Tool
+    if (e.key === 's' || e.key === 'S') {
+        setTool('select');
+    }
+
+    // W - Wire Tool
+    if (e.key === 'w' || e.key === 'W') {
+        setTool('wire');
+    }
+
+    // X - Cut Wire
+    if (e.key === 'x' || e.key === 'X') {
+        setTool('cut-wire');
+    }
+
+    // D - Delete
+    if (e.key === 'd' || e.key === 'D') {
+        setTool('delete');
+    }
+
+    // R - Rotate
     if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey) {
         if (selectedCompIds.size > 0) {
             selectedCompIds.forEach(id => rotateComponent(id));
@@ -2376,6 +2651,7 @@ document.addEventListener('keydown', (e) => {
         }
     }
 
+    // Del - Delete Selected
     if (e.key === 'Delete') {
         if (selectedCompIds.size > 0) {
             selectedCompIds.forEach(id => deleteComponent(id));
@@ -2387,7 +2663,25 @@ document.addEventListener('keydown', (e) => {
             showInfoPlaceholder();
         }
     }
+
+
+    // Undo / Redo Shortcuts
+    // Ctrl+Z (Undo) - Check !e.shiftKey to ensure it's not Redo
+    if (e.ctrlKey && !e.shiftKey && (e.key === 'z' || e.key === 'Z')) {
+        e.preventDefault();
+        history.undo();
+    }
+    // Ctrl+Y or Ctrl+Shift+Z (Redo)
+    else if ((e.ctrlKey && (e.key === 'y' || e.key === 'Y')) ||
+        (e.ctrlKey && e.shiftKey && (e.key === 'z' || e.key === 'Z'))) {
+        e.preventDefault();
+        history.redo();
+    }
 });
+
+// Undo/Redo Buttons
+document.getElementById('btn-undo').addEventListener('click', () => history.undo());
+document.getElementById('btn-redo').addEventListener('click', () => history.redo());
 
 let contextMenu = null;
 
@@ -2498,6 +2792,29 @@ wsContainer.addEventListener('contextmenu', (e) => {
                 return;
             }
 
+            // Select component (with Ctrl+click multi-select)
+            if (currentTool === 'select' && !placingType) {
+                const compEl = e.target.closest('.component');
+                if (compEl && e.button === 0) {
+                    if (e.ctrlKey) {
+                        // Toggle multi-select
+                        if (selectedCompIds.has(compEl.id)) {
+                            selectedCompIds.delete(compEl.id);
+                            compEl.classList.remove('selected', 'multi-selected');
+                        } else {
+                            selectedCompIds.add(compEl.id);
+                            compEl.classList.add('multi-selected');
+                        }
+                        selectedCompId = compEl.id;
+                    } else {
+                        // Single select
+                        clearMultiSelect();
+                        selectComponent(compEl.id);
+                    }
+                    // ... rest of code
+                }
+            }
+
             if (action === 'flip-v') {
                 const r = comp.rotation || 0;
                 comp.rotation = (r + 180) % 360;
@@ -2510,16 +2827,31 @@ wsContainer.addEventListener('contextmenu', (e) => {
 
             if (swatch) {
                 const newColor = swatch.dataset.color;
-                comp.color = newColor;
-                renderComponent(comp);
-                updateComponentVisuals(comp);
+                const oldColor = comp.color;
+                if (newColor !== oldColor) {
+                    comp.color = newColor;
+                    history.push({
+                        type: 'PROP_CHANGE',
+                        data: { id: comp.id, key: 'color', oldVal: oldColor, newVal: newColor }
+                    });
+                    renderComponent(comp);
+                    updateComponentVisuals(comp);
+                }
                 removeContextMenu();
             }
 
             if (action === 'voltage') {
                 const volts = ['5V', '3.3V', '12V'];
                 const currIdx = volts.indexOf(comp.voltage || '5V');
-                comp.voltage = volts[(currIdx + 1) % volts.length];
+                const oldVal = comp.voltage || '5V';
+                const newVal = volts[(currIdx + 1) % volts.length];
+
+                comp.voltage = newVal;
+                history.push({
+                    type: 'PROP_CHANGE',
+                    data: { id: comp.id, key: 'voltage', oldVal: oldVal, newVal: newVal }
+                });
+
                 renderComponent(comp);
                 removeContextMenu();
             }
@@ -2531,8 +2863,12 @@ wsContainer.addEventListener('contextmenu', (e) => {
                 const input = prompt(`أدخل قيمة المقاومة بالأوم (Ω)\nالقيمة الحالية: ${formatResistance(r)}\nالتيار: ${current_mA}mA (مع LED)`, r);
                 if (input !== null) {
                     const val = parseFloat(input);
-                    if (!isNaN(val) && val > 0) {
+                    if (!isNaN(val) && val > 0 && val !== r) {
                         comp.resistance = val;
+                        history.push({
+                            type: 'PROP_CHANGE',
+                            data: { id: comp.id, key: 'resistance', oldVal: r, newVal: val }
+                        });
                         renderComponent(comp);
                         simulate();
                         if (selectedCompId && components.get(selectedCompId)?.type === 'IC555') {
@@ -2544,10 +2880,17 @@ wsContainer.addEventListener('contextmenu', (e) => {
 
             if (action === 'capacitance') {
                 const newCap = ev.target.dataset.cap;
-                comp.capacitance = newCap;
-                renderComponent(comp);
-                if (selectedCompId && components.get(selectedCompId)?.type === 'IC555') {
-                    showComponentInfo(components.get(selectedCompId));
+                const oldCap = comp.capacitance || '100nF';
+                if (newCap !== oldCap) {
+                    comp.capacitance = newCap;
+                    history.push({
+                        type: 'PROP_CHANGE',
+                        data: { id: comp.id, key: 'capacitance', oldVal: oldCap, newVal: newCap }
+                    });
+                    renderComponent(comp);
+                    if (selectedCompId && components.get(selectedCompId)?.type === 'IC555') {
+                        showComponentInfo(components.get(selectedCompId));
+                    }
                 }
                 removeContextMenu();
             }

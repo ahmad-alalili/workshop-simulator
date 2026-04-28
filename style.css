@@ -11,45 +11,73 @@ IC Circuit Simulator — Premium Dark Theme
 }
 
 :root {
-    --bg-primary: #06061a;
-    --bg-secondary: #0c0c2a;
-    --bg-tertiary: #12123a;
-    --surface: rgba(18, 18, 58, 0.85);
-    --surface-hover: rgba(28, 28, 78, 0.95);
-    --border: rgba(99, 102, 241, 0.12);
-    --border-active: rgba(99, 102, 241, 0.4);
-    --text-primary: #e8e9f3;
-    --text-secondary: #9295b3;
-    --text-muted: #5a5d78;
-    --accent: #6366f1;
-    --accent-light: #818cf8;
-    --accent-glow: rgba(99, 102, 241, 0.25);
-    --high: #22d3a7;
-    --high-bright: #34ffc8;
-    --high-glow: rgba(34, 211, 167, 0.5);
-    --low: #3b3f54;
-    --led-on: #ff4457;
-    --led-on-glow: rgba(255, 68, 87, 0.7);
-    --led-off: #3a1520;
-    --danger: #ef4444;
-    --warning: #f59e0b;
-    --ic-body: #14142e;
-    --ic-body-border: #2a2a55;
-    --ic-notch: #0a0a1e;
-    --pin-default: #8888aa;
-    --pin-hover: #00e5ff;
-    --pin-hover-glow: rgba(0, 229, 255, 0.6);
-    --wire-active: #22d3a7;
-    --wire-inactive: #3b3f54;
-    --wire-drawing: #f59e0b;
+    /* === EYE-COMFORT PALETTE — Light Canvas / Dark Chrome ===
+       منطقة البناء بخلفية كريمية فاتحة (مثل ورق الرسم الهندسي)
+       والشريط الجانبي و header يبقيان داكنَين للفصل البصري.
+       هذا النمط مُعتمد في Excalidraw, Falstad, Logisim, KiCad, Tinkercad. */
+
+    /* — Chrome (الشريط الجانبي / Header) — يبقى داكناً للفصل البصري — */
+    --bg-primary: #1a1d2e;
+    --bg-secondary: #232842;
+    --bg-tertiary: #2c3252;
+    --surface: rgba(35, 40, 66, 0.92);
+    --surface-hover: rgba(48, 54, 88, 0.95);
+    --border: rgba(140, 148, 200, 0.16);
+    --border-active: rgba(140, 148, 200, 0.42);
+    --text-primary: #e4e6f1;
+    --text-secondary: #a0a4c2;
+    --text-muted: #6b6f8c;
+    --accent: #818cf8;
+    --accent-light: #a5b4fc;
+    --accent-glow: rgba(129, 140, 248, 0.22);
+
+    /* — Canvas (منطقة البناء) — كريمي دافئ مائل للبياض — */
+    --workspace-outside: #15182a;        /* خارج المنطقة — معتم */
+    --workspace-bg: #f5f1e6;             /* كريمي دافئ مثل ورق الرسم */
+    --workspace-grid: rgba(50, 60, 90, 0.07);     /* نقاط رمادية خفيفة */
+    --workspace-grid-major: rgba(50, 60, 90, 0.13);
+    --workspace-border: #94a3b8;
+    --workspace-border-glow: rgba(99, 102, 241, 0.18);
+    --canvas-text: #1f2937;               /* لون النص على الكريمي — رمادي غامق */
+    --canvas-text-secondary: #475569;     /* رمادي أقل غمقاً */
+
+    /* — إشارات منطقية — ألوان داكنة مشبعة تظهر بوضوح على الكريمي — */
+    --high: #16a34a;                      /* أخضر داكن (signal HIGH) */
+    --high-bright: #15803d;
+    --high-glow: rgba(22, 163, 74, 0.25);
+    --low: #94a3b8;                       /* رمادي محايد (signal LOW) */
+
+    /* — LED — ألوان عميقة كأنها LEDs حقيقية — */
+    --led-on: #dc2626;                    /* أحمر LED حقيقي عميق */
+    --led-on-glow: rgba(220, 38, 38, 0.55);
+    --led-off: #6b7280;                   /* رمادي LED مطفأ */
+
+    --danger: #dc2626;
+    --warning: #d97706;
+    --success: #16a34a;
+
+    /* — أجسام الـ ICs — تبقى داكنة لمحاكاة الـ chips الحقيقية على PCB — */
+    --ic-body: #1e293b;
+    --ic-body-border: #334155;
+    --ic-notch: #0f172a;
+
+    --pin-default: #475569;               /* لون النقاط على الفاتح */
+    --pin-hover: #0891b2;
+    --pin-hover-glow: rgba(8, 145, 178, 0.45);
+
+    /* — الأسلاك — افتراضي رمادي داكن (inactive) وأخضر داكن (active) — */
+    --wire-active: #16a34a;
+    --wire-inactive: #64748b;
+    --wire-drawing: #d97706;
+
     --header-h: 54px;
     --sidebar-w: 210px;
     --info-w: 270px;
     --status-h: 26px;
     --font-ui: 'Cairo', 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
-    --glass-bg: rgba(10, 10, 36, 0.88);
-    --glass-blur: blur(24px);
+    --glass-bg: rgba(26, 29, 46, 0.92);
+    --glass-blur: blur(20px);
     --radius: 12px;
     --radius-sm: 8px;
     --transition: 0.2s ease;
@@ -71,12 +99,44 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    /* خلفية ناعمة بدون تدرجات صارخة، أهدأ على العين */
     background:
-        radial-gradient(ellipse at 15% 50%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 85% 20%, rgba(34, 211, 167, 0.04) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(255, 68, 87, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 30%, rgba(129, 140, 248, 0.04) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 70%, rgba(16, 185, 129, 0.025) 0%, transparent 55%),
         var(--bg-primary);
 }
+
+/* === Toast Notifications — رسائل التنبيه === */
+#app-toast {
+    position: fixed;
+    top: calc(var(--header-h) + 16px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-12px);
+    background: var(--surface);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border-active);
+    color: var(--text-primary);
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-ui);
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.25s;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    max-width: 90%;
+    text-align: center;
+}
+#app-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+#app-toast.toast-warning { border-color: var(--warning); }
+#app-toast.toast-error { border-color: var(--danger); }
+#app-toast.toast-success { border-color: var(--success); }
 
 /* === HEADER === */
 #header {
@@ -175,6 +235,9 @@ body {
 .header-right {
     display: flex;
     gap: 6px;
+    flex-wrap: wrap;          /* السماح للأزرار بالنزول لسطر تالٍ في الشاشات الضيقة */
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .action-btn {
@@ -201,12 +264,370 @@ body {
     color: var(--danger);
 }
 
+/* === Dropdown (للأمثلة) === */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+.dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.dropdown-chevron {
+    display: inline-block;
+    margin-inline-start: 2px;
+    font-size: 10px;
+    transition: transform 0.15s ease;
+    opacity: 0.7;
+}
+.dropdown.open .dropdown-chevron {
+    transform: rotate(180deg);
+}
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    inset-inline-end: 0;
+    min-width: 180px;
+    background: var(--surface, #1f2937);
+    border: 1px solid var(--border, #374151);
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    padding: 4px;
+    display: none;
+    z-index: 1000;
+    flex-direction: column;
+    gap: 1px;
+}
+.dropdown.open .dropdown-menu {
+    display: flex;
+    animation: dropdownSlide 0.12s ease-out;
+}
+@keyframes dropdownSlide {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    text-align: start;
+    border-radius: 4px;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+.dropdown-item:hover {
+    background: var(--surface-hover, #374151);
+    color: var(--accent-light, #818cf8);
+}
+.dropdown-item-icon {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+.dropdown-item-label {
+    flex: 1;
+}
+
+/* === Language toggle button — يميّز عن باقي الأزرار بحدّ ملوّن === */
+.action-btn.lang-btn {
+    border-color: var(--accent-light);
+    color: var(--accent-light);
+    font-weight: 700;
+}
+.action-btn.lang-btn:hover {
+    background: var(--accent-glow);
+    border-color: var(--accent);
+    color: var(--accent-light);
+}
+.action-btn.lang-btn span:first-child {
+    margin-inline-end: 4px;
+}
+
+/* === Hard Refresh button — تجاوز الكاش === */
+.action-btn.refresh-btn {
+    padding: 6px 10px;
+    font-size: 14px;
+    border-color: #06b6d4;
+    color: #06b6d4;
+}
+.action-btn.refresh-btn:hover {
+    background: rgba(6, 182, 212, 0.18);
+    border-color: #22d3ee;
+    color: #22d3ee;
+    transform: rotate(180deg);
+    transition: transform 0.4s ease, background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+/* === RTL support — للأمر العربي === */
+/* عند dir=rtl، الـ flexbox يعكس اتجاه أبنائه تلقائياً.
+   الـ workspace يبقى LTR لأن إحداثياته رياضية (x يزيد لليمين). */
+html[dir="rtl"] body { font-family: var(--font-ui); }
+html[dir="rtl"] #workspace-container,
+html[dir="rtl"] #workspace,
+html[dir="rtl"] #components-layer,
+html[dir="rtl"] #wire-layer { direction: ltr; }
+html[dir="rtl"] .pinout-diagram,
+html[dir="rtl"] .truth-table,
+html[dir="rtl"] .pin-state-name { direction: ltr; text-align: left; }
+/* الـ status bar في الـ RTL: العناصر تُعرض من اليمين لليسار */
+html[dir="rtl"] #status-bar { direction: rtl; }
+html[dir="rtl"] .designer-credit { direction: ltr; unicode-bidi: embed; }
+html[dir="rtl"] .modal-body { direction: rtl; text-align: right; }
+
 /* === MAIN LAYOUT === */
 #main {
     display: flex;
     flex: 1;
     overflow: hidden;
 }
+
+/* ============================================================
+   EXAM MODE — يخفي أسماء الأطراف ويُظهر شريط حالة النتيجة
+   ============================================================ */
+body.exam-mode .pin-name {
+    visibility: hidden;             /* نُبقي المساحة لتجنّب إعادة التخطيط */
+}
+body.exam-mode .ic-chip-sublabel {
+    opacity: 0.3;                   /* نخفّت العنوان الفرعي للـ IC */
+}
+
+/* الأزرار التي يجب إخفاؤها في نمط الاختبار */
+body.exam-mode #dropdown-examples,
+body.exam-mode #btn-load-project,
+body.exam-mode #btn-save-project,
+body.exam-mode #btn-clear {
+    display: none !important;
+}
+
+/* مؤشر بصري في الـ workspace أن النمط مُفعّل */
+body.exam-mode #workspace-container::before {
+    content: '📝 EXAM MODE';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(220, 38, 38, 0.85);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 12px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* شارة النتيجة في الـ status bar */
+.exam-status-badge {
+    background: rgba(220, 38, 38, 0.15);
+    color: #fbbf24;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 12px;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+}
+.exam-status-badge.exam-complete {
+    background: rgba(34, 197, 94, 0.18);
+    color: #22c55e;
+    border-color: rgba(34, 197, 94, 0.5);
+}
+
+/* زر Exit Exam في الـ header */
+.action-btn.exam-exit-btn {
+    border-color: #fbbf24 !important;
+    color: #fbbf24 !important;
+    font-weight: 700;
+}
+.action-btn.exam-exit-btn:hover {
+    background: rgba(251, 191, 36, 0.18);
+}
+
+/* زر Enter Exam — مميّز بخلفية ملوّنة ليبرز عن باقي الأزرار */
+.action-btn.exam-enter-btn {
+    background: linear-gradient(135deg, #7c3aed, #a78bfa) !important;
+    border-color: #6d28d9 !important;
+    color: white !important;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35);
+}
+.action-btn.exam-enter-btn:hover {
+    background: linear-gradient(135deg, #6d28d9, #8b5cf6) !important;
+    box-shadow: 0 3px 10px rgba(124, 58, 237, 0.5);
+    transform: translateY(-1px);
+}
+/* عند تفعيل نمط الاختبار، نخفي زر الدخول */
+body.exam-mode .action-btn.exam-enter-btn { display: none; }
+
+/* ============================================================
+   DEVELOPER MODAL
+   ============================================================ */
+.dev-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(3px);
+}
+.dev-modal {
+    min-width: 340px;
+    max-width: 480px;
+    background: var(--bg-secondary, #1f2937);
+    border: 1px solid var(--border, #374151);
+    border-radius: 8px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    color: var(--text-primary, #f3f4f6);
+    overflow: hidden;
+}
+.dev-modal .modal-header {
+    background: var(--bg-primary, #111827);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border, #374151);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.dev-modal .modal-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+}
+.dev-modal .close-modal {
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+    color: var(--text-secondary);
+    padding: 0 4px;
+}
+.dev-modal .close-modal:hover { color: var(--danger, #ef4444); }
+
+.dev-modal-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.dev-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+.dev-field input {
+    background: var(--bg-primary, #111827);
+    border: 1px solid var(--border, #374151);
+    color: var(--text-primary, #f3f4f6);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-family: var(--font-mono, monospace);
+    transition: var(--transition);
+}
+.dev-field input:focus {
+    outline: none;
+    border-color: var(--accent, #6366f1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.dev-info-row {
+    display: flex;
+    justify-content: space-between;
+    background: var(--bg-primary);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+.dev-status-active {
+    background: rgba(220, 38, 38, 0.18);
+    color: #fbbf24;
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+}
+.dev-warn {
+    color: var(--text-muted, #9ca3af);
+    font-size: 11px;
+    margin: 4px 0 0;
+    font-style: italic;
+}
+
+/* === Hash generator section === */
+.dev-section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 0;
+}
+.dev-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-light, #818cf8);
+    margin: 0 0 4px 0;
+}
+.dev-hash-output {
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 6px;
+    animation: hashFadeIn 0.25s ease-out;
+}
+@keyframes hashFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.dev-hash-output input[readonly] {
+    cursor: text;
+    user-select: all;
+    -webkit-user-select: all;
+}
+
+.dev-modal .modal-footer {
+    background: var(--bg-primary);
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.modal-btn {
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.modal-btn:hover { background: var(--surface-hover); }
+.modal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.modal-btn-primary {
+    background: var(--accent, #6366f1);
+    border-color: var(--accent);
+    color: white;
+}
+.modal-btn-primary:hover { background: var(--accent-light, #818cf8); }
+.modal-btn-danger {
+    background: var(--danger, #ef4444);
+    border-color: var(--danger);
+    color: white;
+}
+.modal-btn-danger:hover { background: #dc2626; }
 
 /* === SIDEBAR === */
 #sidebar {
@@ -440,7 +861,7 @@ body {
     flex: 1;
     position: relative;
     overflow: hidden;
-    background: var(--bg-primary);
+    background: var(--workspace-outside);
     cursor: default;
 }
 
@@ -465,19 +886,73 @@ body {
     width: 6000px;
     height: 4000px;
     transform-origin: 0 0;
-    background:
-        radial-gradient(circle, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
-    background-size: 10px 10px;
+    /* الخلفية العامة معتمة لتمييز المنطقة العمياء */
+    background: var(--workspace-outside);
 }
+
+/* === منطقة البناء المسموحة (Buildable Circuit Area) ===
+   خلفية كريمية دافئة تحاكي ورق الرسم الهندسي الحقيقي.
+   الألوان الداكنة المُشبّعة للأسلاك والإشارات تظهر بوضوح عليها
+   بدون halation أو إجهاد للعيون. */
+#build-area-boundary {
+    position: absolute;
+    background: var(--workspace-bg);
+    background-image:
+        linear-gradient(var(--workspace-grid-major) 1px, transparent 1px),
+        linear-gradient(90deg, var(--workspace-grid-major) 1px, transparent 1px),
+        radial-gradient(circle, var(--workspace-grid) 1px, transparent 1px);
+    background-size:
+        100px 100px,
+        100px 100px,
+        20px 20px;
+    background-position: 0 0, 0 0, 0 0;
+    border: 1.5px solid var(--workspace-border);
+    border-radius: 6px;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.05),
+        0 8px 30px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.build-area-label {
+    position: absolute;
+    top: -28px;
+    left: 12px;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-light);
+    background: var(--bg-primary);
+    padding: 4px 12px;
+    border-radius: 6px 6px 0 0;
+    border: 1px solid var(--workspace-border);
+    border-bottom: none;
+    letter-spacing: 0.3px;
+}
+
+/* أركان منطقة البناء — تأكيد بصري للحدود (لون داكن على الفاتح) */
+.build-area-corner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2.5px solid var(--canvas-text-secondary);
+    opacity: 0.7;
+}
+.build-area-corner.tl { top: -2px; left: -2px; border-right: none; border-bottom: none; border-radius: 6px 0 0 0; }
+.build-area-corner.tr { top: -2px; right: -2px; border-left: none; border-bottom: none; border-radius: 0 6px 0 0; }
+.build-area-corner.bl { bottom: -2px; left: -2px; border-right: none; border-top: none; border-radius: 0 0 0 6px; }
+.build-area-corner.br { bottom: -2px; right: -2px; border-left: none; border-top: none; border-radius: 0 0 6px 0; }
 
 #wire-layer {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 6000px;
+    height: 4000px;
     pointer-events: none;
     z-index: 10;
+    overflow: visible;
 }
 
 #wire-layer line,
@@ -491,8 +966,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 6000px;
+    height: 4000px;
     z-index: 20;
     pointer-events: none;
 }
@@ -791,7 +1266,7 @@ COMPONENT STYLES ON WORKSPACE
     height: 10px;
     border-radius: 50%;
     background: var(--pin-default);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(0, 0, 0, 0.15);
     flex-shrink: 0;
     transition: all 0.15s;
     z-index: 20;
@@ -799,30 +1274,42 @@ COMPONENT STYLES ON WORKSPACE
 
 .pin-dot:hover {
     background: var(--pin-hover);
-    box-shadow: 0 0 10px var(--pin-hover-glow);
+    box-shadow: 0 0 8px var(--pin-hover-glow);
     transform: scale(1.3);
 }
 
 .pin-dot.high {
     background: var(--high);
-    box-shadow: 0 0 6px var(--high-glow);
+    box-shadow: 0 0 4px var(--high-glow);
 }
 
 .pin-num {
     font-family: var(--font-mono);
     font-size: 8px;
-    color: var(--text-muted);
+    color: var(--canvas-text-secondary);
     width: 14px;
     text-align: center;
     flex-shrink: 0;
+    font-weight: 600;
 }
 
 .pin-name {
     font-family: var(--font-mono);
     font-size: 8px;
-    color: var(--text-secondary);
+    color: var(--canvas-text);
     padding: 0 2px;
     white-space: nowrap;
+    font-weight: 600;
+}
+
+/* أطراف Active-LOW — تُعرض مع شرطة فوقية (overbar) كما في الـ datasheet */
+.pin-name.pin-active-low {
+    text-decoration: overline;
+    text-decoration-thickness: 1.2px;
+    text-underline-offset: 0;
+    color: #6d28d9;                   /* بنفسجي داكن واضح على الكريمي */
+    font-weight: 700;
+    letter-spacing: 0.3px;
 }
 
 .ic-body-el {
@@ -1460,19 +1947,26 @@ COMPONENT STYLES ON WORKSPACE
 /* === WIRE STYLES === */
 .wire {
     stroke: var(--wire-inactive);
-    stroke-width: 2.5;
+    stroke-width: 2;
     fill: none;
     stroke-linecap: round;
     stroke-linejoin: round;
-    transition: stroke-width 0.15s;
+    transition: stroke-width 0.15s, opacity 0.15s;
 }
 
 .wire.active {
-    stroke-width: 3;
+    stroke-width: 2.5;
 }
 
 .wire:hover {
-    stroke-width: 4.5;
+    stroke-width: 4;
+    opacity: 1 !important;
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.25));
+}
+
+/* عند تحديد سلك معيّن، يصبح غيره باهتاً قليلاً للمساعدة في التتبع */
+#wire-layer.has-hover .wire:not(:hover) {
+    opacity: 0.45;
 }
 
 .wire-drawing {
@@ -1481,19 +1975,16 @@ COMPONENT STYLES ON WORKSPACE
     stroke-dasharray: 6 4;
     fill: none;
     pointer-events: none;
-    opacity: 0.8;
+    opacity: 0.85;
 }
 
 /* === ANIMATIONS === */
 @keyframes led-pulse {
-
-    0%,
-    100% {
-        box-shadow: 0 0 15px var(--led-on-glow), 0 0 40px var(--led-on-glow);
+    0%, 100% {
+        box-shadow: 0 0 12px var(--led-on-glow), 0 0 28px var(--led-on-glow);
     }
-
     50% {
-        box-shadow: 0 0 25px var(--led-on-glow), 0 0 60px var(--led-on-glow);
+        box-shadow: 0 0 18px var(--led-on-glow), 0 0 42px var(--led-on-glow);
     }
 }
 

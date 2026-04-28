@@ -4,13 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ====================================================== -->
+    <!-- منع المتصفح من تخزين النسخة القديمة من index.html       -->
+    <!-- (مهم لـ GitHub Pages — بدونها قد يحمّل المتصفح النسخة     -->
+    <!-- المحفوظة بدلاً من المحدّثة)                                 -->
+    <!-- ====================================================== -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <title>IC Circuit Simulator | محاكي الدوائر المتكاملة</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <!-- ====================================================== -->
+    <!-- Cache busting: غيّر الرقم بعد ?v= مع كل تحديث على GitHub -->
+    <!-- مثال: v=20250428-1  → v=20250428-2 → v=20250429-1 ...  -->
+    <!-- ====================================================== -->
+    <link rel="stylesheet" href="style.css?v=20250428-1">
 </head>
 
 <body>
@@ -20,49 +34,83 @@
             <div class="header-left">
                 <div class="logo">
                     <span class="logo-icon">⚡</span>
-                    <h1>IC Simulator</h1>
+                    <h1 data-i18n="app.title">IC Simulator</h1>
                 </div>
-                <span class="subtitle">IC Circuit Simulator</span>
+                <span class="subtitle" data-i18n="app.subtitle">IC Circuit Simulator</span>
             </div>
 
             <div class="header-center">
                 <div class="tool-group">
                     <button class="tool-btn active" data-tool="select">
                         <span>🖱️</span>
-                        <small>Select</small>
+                        <small data-i18n="tool.select">Select</small>
                     </button>
                     <button class="tool-btn" data-tool="wire">
                         <span>🔌</span>
-                        <small>Wire</small>
+                        <small data-i18n="tool.wire">Wire</small>
                     </button>
                     <button class="tool-btn" data-tool="cut-wire">
                         <span>✂️</span>
-                        <small>Cut</small>
+                        <small data-i18n="tool.cut">Cut</small>
                     </button>
                     <button class="tool-btn" data-tool="delete">
                         <span>🗑️</span>
-                        <small>Delete</small>
+                        <small data-i18n="tool.delete">Delete</small>
                     </button>
                 </div>
                 <div class="tool-group" style="margin-left: 8px;">
-                    <button class="tool-btn" id="btn-undo" title="Undo (Ctrl+Z)">
+                    <button class="tool-btn" id="btn-undo" data-i18n-title="tool.undo.tooltip" title="Undo (Ctrl+Z)">
                         <span>↩️</span>
-                        <small>Undo</small>
+                        <small data-i18n="tool.undo">Undo</small>
                     </button>
-                    <button class="tool-btn" id="btn-redo" title="Redo (Ctrl+Y)">
+                    <button class="tool-btn" id="btn-redo" data-i18n-title="tool.redo.tooltip" title="Redo (Ctrl+Y)">
                         <span>↪️</span>
-                        <small>Redo</small>
+                        <small data-i18n="tool.redo">Redo</small>
                     </button>
                 </div>
             </div>
 
             <div class="header-right">
-                <button class="action-btn" id="btn-help">❓ Help</button>
-                <button class="action-btn" id="btn-example1">📋 AND Gate</button>
-                <button class="action-btn" id="btn-example2">📋 Comparator</button>
-                <button class="action-btn" id="btn-example3">📋 7447 Display</button>
-                <button class="action-btn" id="btn-example4">📋 555 Timer</button>
-                <button class="action-btn danger" id="btn-clear">🗑️ Clear All</button>
+                <button class="action-btn lang-btn" id="btn-toggle-lang" data-i18n-title="header.langToggle.tooltip" title="Switch language">
+                    <span>🌐</span>
+                    <span id="lang-display">العربية</span>
+                </button>
+                <button class="action-btn refresh-btn" id="btn-hard-refresh" data-i18n-title="header.refresh.tooltip" title="Force refresh (clears cache)">🔄</button>
+                <button class="action-btn exam-enter-btn" id="btn-enter-exam" data-i18n-title="exam.enterTooltip" title="Enter Exam Mode">📝 <span data-i18n="exam.enter">Exam</span></button>
+                <button class="action-btn exam-exit-btn" id="btn-exit-exam" style="display:none;">🛑 <span data-i18n="exam.exit">Exit Exam</span></button>
+                <button class="action-btn" id="btn-help">❓ <span data-i18n="header.help">Help</span></button>
+                <button class="action-btn" id="btn-save-project" data-i18n-title="header.save.tooltip" title="Save circuit as JSON">💾 <span data-i18n="header.save">Save</span></button>
+                <button class="action-btn" id="btn-load-project" data-i18n-title="header.load.tooltip" title="Load circuit from JSON">📂 <span data-i18n="header.load">Load</span></button>
+                <input type="file" id="file-load-input" accept="application/json,.json" style="display:none">
+
+                <!-- قائمة الأمثلة المنسدلة -->
+                <div class="dropdown" id="dropdown-examples">
+                    <button class="action-btn dropdown-toggle" id="btn-examples-toggle"
+                            data-i18n-title="header.examples.tooltip" title="Load an example circuit">
+                        📋 <span data-i18n="header.examples">Examples</span>
+                        <span class="dropdown-chevron">▾</span>
+                    </button>
+                    <div class="dropdown-menu" id="examples-menu" role="menu">
+                        <button class="dropdown-item" id="btn-example1" role="menuitem">
+                            <span class="dropdown-item-icon">⚡</span>
+                            <span class="dropdown-item-label" data-i18n="header.example1">AND Gate</span>
+                        </button>
+                        <button class="dropdown-item" id="btn-example2" role="menuitem">
+                            <span class="dropdown-item-icon">⚖️</span>
+                            <span class="dropdown-item-label" data-i18n="header.example2">Comparator</span>
+                        </button>
+                        <button class="dropdown-item" id="btn-example3" role="menuitem">
+                            <span class="dropdown-item-icon">🔢</span>
+                            <span class="dropdown-item-label" data-i18n="header.example3">7447 Display</span>
+                        </button>
+                        <button class="dropdown-item" id="btn-example4" role="menuitem">
+                            <span class="dropdown-item-icon">⏱️</span>
+                            <span class="dropdown-item-label" data-i18n="header.example4">555 Timer</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="action-btn danger" id="btn-clear">🗑️ <span data-i18n="header.clearAll">Clear All</span></button>
             </div>
         </header>
 
@@ -71,13 +119,13 @@
             <!-- Sidebar -->
             <aside id="sidebar">
                 <div class="sidebar-search">
-                    <input type="text" id="comp-search" placeholder="🔍 Search components...">
+                    <input type="text" id="comp-search" data-i18n-placeholder="sidebar.searchPlaceholder" placeholder="🔍 Search components...">
                 </div>
 
                 <div class="sidebar-category">
                     <div class="sidebar-category-header">
                         <span class="category-icon">🔌</span>
-                        <span class="category-title">Integrated Circuits</span>
+                        <span class="category-title" data-i18n="sidebar.cat.ic">Integrated Circuits</span>
                         <span class="category-chevron">▾</span>
                     </div>
                     <div class="sidebar-category-items">
@@ -85,35 +133,35 @@
                             <div class="comp-icon ic-icon">7408</div>
                             <div class="comp-info">
                                 <span class="comp-name">IC 7408</span>
-                                <span class="comp-desc">Quad AND Gate</span>
+                                <span class="comp-desc" data-i18n="comp.7408.desc">Quad AND Gate</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="IC7485">
                             <div class="comp-icon ic-icon">7485</div>
                             <div class="comp-info">
                                 <span class="comp-name">IC 7485</span>
-                                <span class="comp-desc">4-Bit Comparator</span>
+                                <span class="comp-desc" data-i18n="comp.7485.desc">4-Bit Comparator</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="IC7447">
                             <div class="comp-icon ic-icon">7447</div>
                             <div class="comp-info">
                                 <span class="comp-name">IC 7447</span>
-                                <span class="comp-desc">BCD → 7-Segment</span>
+                                <span class="comp-desc" data-i18n="comp.7447.desc">BCD → 7-Segment</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="IC74193">
                             <div class="comp-icon ic-icon">74193</div>
                             <div class="comp-info">
                                 <span class="comp-name">IC 74193</span>
-                                <span class="comp-desc">4-Bit Counter ↑↓</span>
+                                <span class="comp-desc" data-i18n="comp.74193.desc">4-Bit Counter ↑↓</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="IC555">
                             <div class="comp-icon ic-icon" data-type="IC555">555</div>
                             <div class="comp-info">
                                 <span class="comp-name">IC 555</span>
-                                <span class="comp-desc">Timer / Oscillator</span>
+                                <span class="comp-desc" data-i18n="comp.555.desc">Timer / Oscillator</span>
                             </div>
                         </button>
                     </div>
@@ -122,50 +170,50 @@
                 <div class="sidebar-category">
                     <div class="sidebar-category-header">
                         <span class="category-icon">📊</span>
-                        <span class="category-title">Inputs / Outputs</span>
+                        <span class="category-title" data-i18n="sidebar.cat.io">Inputs / Outputs</span>
                         <span class="category-chevron">▾</span>
                     </div>
                     <div class="sidebar-category-items">
                         <button class="comp-btn" data-type="SWITCH">
                             <div class="comp-icon switch-icon">⏻</div>
                             <div class="comp-info">
-                                <span class="comp-name">Toggle Switch</span>
-                                <span class="comp-desc">HIGH / LOW</span>
+                                <span class="comp-name" data-i18n="comp.switch.name">Toggle Switch</span>
+                                <span class="comp-desc" data-i18n="comp.switch.desc">HIGH / LOW</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="DIP_SWITCH">
                             <div class="comp-icon switch-icon">⏻⏻</div>
                             <div class="comp-info">
-                                <span class="comp-name">DIP Switch</span>
-                                <span class="comp-desc">4-Bit DIP Switch</span>
+                                <span class="comp-name" data-i18n="comp.dip.name">DIP Switch</span>
+                                <span class="comp-desc" data-i18n="comp.dip.desc">4-Bit DIP Switch</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="PUSH_BUTTON">
                             <div class="comp-icon switch-icon">⦿</div>
                             <div class="comp-info">
-                                <span class="comp-name">Push Button</span>
-                                <span class="comp-desc">Momentary Switch</span>
+                                <span class="comp-name" data-i18n="comp.push.name">Push Button</span>
+                                <span class="comp-desc" data-i18n="comp.push.desc">Momentary Switch</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="LED">
                             <div class="comp-icon led-icon-btn">●</div>
                             <div class="comp-info">
                                 <span class="comp-name">LED</span>
-                                <span class="comp-desc">Light Indicator</span>
+                                <span class="comp-desc" data-i18n="comp.led.desc">Light Indicator</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="SEVEN_SEG_CC">
                             <div class="comp-icon seg-icon">CC</div>
                             <div class="comp-info">
-                                <span class="comp-name">7-Seg CC</span>
-                                <span class="comp-desc">Common Cathode</span>
+                                <span class="comp-name" data-i18n="comp.7segCC.name">7-Seg CC</span>
+                                <span class="comp-desc" data-i18n="comp.7segCC.desc">Common Cathode</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="SEVEN_SEG_CA">
                             <div class="comp-icon seg-icon">CA</div>
                             <div class="comp-info">
-                                <span class="comp-name">7-Seg CA</span>
-                                <span class="comp-desc">Common Anode</span>
+                                <span class="comp-name" data-i18n="comp.7segCA.name">7-Seg CA</span>
+                                <span class="comp-desc" data-i18n="comp.7segCA.desc">Common Anode</span>
                             </div>
                         </button>
                     </div>
@@ -174,7 +222,7 @@
                 <div class="sidebar-category">
                     <div class="sidebar-category-header">
                         <span class="category-icon">⚡</span>
-                        <span class="category-title">Power Sources</span>
+                        <span class="category-title" data-i18n="sidebar.cat.power">Power Sources</span>
                         <span class="category-chevron">▾</span>
                     </div>
                     <div class="sidebar-category-items">
@@ -182,14 +230,14 @@
                             <div class="comp-icon vcc-icon">+5V</div>
                             <div class="comp-info">
                                 <span class="comp-name">VCC</span>
-                                <span class="comp-desc">Positive Supply</span>
+                                <span class="comp-desc" data-i18n="comp.vcc.desc">Positive Supply</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="GND">
                             <div class="comp-icon gnd-icon">⏚</div>
                             <div class="comp-info">
                                 <span class="comp-name">GND</span>
-                                <span class="comp-desc">Ground</span>
+                                <span class="comp-desc" data-i18n="comp.gnd.desc">Ground</span>
                             </div>
                         </button>
                     </div>
@@ -198,35 +246,42 @@
                 <div class="sidebar-category">
                     <div class="sidebar-category-header">
                         <span class="category-icon">🔧</span>
-                        <span class="category-title">Electronic Components</span>
+                        <span class="category-title" data-i18n="sidebar.cat.passive">Electronic Components</span>
                         <span class="category-chevron">▾</span>
                     </div>
                     <div class="sidebar-category-items">
                         <button class="comp-btn" data-type="RESISTOR">
                             <div class="comp-icon res-icon">Ω</div>
                             <div class="comp-info">
-                                <span class="comp-name">Resistor</span>
-                                <span class="comp-desc">Right-click to edit</span>
+                                <span class="comp-name" data-i18n="comp.resistor.name">Resistor</span>
+                                <span class="comp-desc" data-i18n="comp.resistor.desc">Right-click to edit</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="CAPACITOR">
                             <div class="comp-icon cap-icon">⊥</div>
                             <div class="comp-info">
-                                <span class="comp-name">Capacitor</span>
-                                <span class="comp-desc">Right-click to edit</span>
+                                <span class="comp-name" data-i18n="comp.capacitor.name">Capacitor</span>
+                                <span class="comp-desc" data-i18n="comp.capacitor.desc">Right-click to edit</span>
                             </div>
                         </button>
                     </div>
                 </div>
 
                 <div class="sidebar-footer">
-                    <p>Click to add component</p>
+                    <p data-i18n="sidebar.footer">Click to add component</p>
                 </div>
             </aside>
 
             <!-- Workspace -->
             <div id="workspace-container">
                 <div id="workspace">
+                    <div id="build-area-boundary">
+                        <div class="build-area-label" data-i18n="workspace.buildArea">📐 Circuit Build Area</div>
+                        <div class="build-area-corner tl"></div>
+                        <div class="build-area-corner tr"></div>
+                        <div class="build-area-corner bl"></div>
+                        <div class="build-area-corner br"></div>
+                    </div>
                     <svg id="wire-layer"></svg>
                     <div id="components-layer"></div>
                 </div>
@@ -244,8 +299,7 @@
                 <div id="info-content">
                     <div id="info-placeholder" class="info-placeholder">
                         <div class="info-placeholder-icon">📖</div>
-                        <p>Select a component to see details</p>
-                        <p class="info-hint">اختر مكوناً لعرض معلوماته</p>
+                        <p data-i18n="info.placeholder">Select a component to see details</p>
                     </div>
                     <div id="info-details" style="display: none;"></div>
                 </div>
@@ -254,8 +308,8 @@
 
         <!-- Status Bar -->
         <footer id="status-bar">
-            <span id="status-tool">🔧 Tool: Select</span>
-            <span id="status-hint">Click a component from the sidebar then click on workspace to place it</span>
+            <span id="status-tool">🔧 <span data-i18n="status.tool">Tool</span>: <span data-i18n="tool.select">Select</span></span>
+            <span id="status-hint" data-i18n="status.hint.default">Click a component from the sidebar then click on workspace to place it</span>
             <span id="status-coords">X: 0 Y: 0</span>
             <span class="designer-credit">Design: Eng. Ahmed Saeed Al-Alili Al-Maliki</span>
         </footer>
@@ -265,84 +319,91 @@
     <div id="controls-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>تعليمات التحكم | Controls</h3>
+                <h3 data-i18n="help.title">Controls</h3>
                 <span class="close-modal">&times;</span>
             </div>
-            <div class="modal-body" dir="rtl">
+            <div class="modal-body">
                 <div class="shortcuts-section">
-                    <h4>🛠️ الأدوات الأساسية</h4>
+                    <h4 data-i18n="help.section.tools">🛠️ Basic Tools</h4>
                     <ul class="shortcuts-list">
                         <li class="shortcut-item">
-                            <span class="shortcut-desc">أداة التحديد (Select)</span>
+                            <span class="shortcut-desc" data-i18n="help.tool.select">Select tool</span>
                             <span class="shortcut-key">S</span>
                         </li>
                         <li class="shortcut-item">
-                            <span class="shortcut-desc">أداة الأسلاك (Wire)</span>
+                            <span class="shortcut-desc" data-i18n="help.tool.wire">Wire tool</span>
                             <span class="shortcut-key">W</span>
                         </li>
                         <li class="shortcut-item">
-                            <span class="shortcut-desc">قطع الأسلاك (Cut)</span>
+                            <span class="shortcut-desc" data-i18n="help.tool.cut">Cut wire</span>
                             <span class="shortcut-key">X</span>
                         </li>
                         <li class="shortcut-item">
-                            <span class="shortcut-desc">حذف عنصر (Delete)</span>
+                            <span class="shortcut-desc" data-i18n="help.tool.delete">Delete component</span>
                             <span class="shortcut-key">D</span>
                         </li>
                     </ul>
                 </div>
 
                 <div class="shortcuts-section">
-                    <h4>⚡ التحكم والتحرير</h4>
+                    <h4 data-i18n="help.section.editing">⚡ Editing</h4>
                     <ul class="shortcuts-list">
                         <li class="shortcut-item">
-                            <span class="shortcut-desc">تدوير العنصر</span>
+                            <span class="shortcut-desc" data-i18n="help.editing.rotate">Rotate component</span>
                             <span class="shortcut-key">R</span>
                         </li>
                         <li class="shortcut-item">
-                            <span class="shortcut-desc">إلغاء الأمر الحالي</span>
+                            <span class="shortcut-desc" data-i18n="help.editing.cancel">Cancel current action</span>
                             <span class="shortcut-key">Esc</span>
                         </li>
                         <li class="shortcut-item">
-                            <span class="shortcut-desc">تحديد متعدد</span>
+                            <span class="shortcut-desc" data-i18n="help.editing.multi">Multi-select</span>
                             <span class="shortcut-key">Ctrl + Click</span>
                         </li>
                         <li class="shortcut-item">
-                            <span class="shortcut-desc">حذف المحدد (جماعي)</span>
+                            <span class="shortcut-desc" data-i18n="help.editing.delete">Delete selected</span>
                             <span class="shortcut-key">Delete</span>
                         </li>
                     </ul>
                 </div>
 
                 <div class="shortcuts-section">
-                    <h4>🔍 العرض والتنقل</h4>
+                    <h4 data-i18n="help.section.view">🔍 View &amp; Navigation</h4>
                     <ul class="shortcuts-list">
                         <li class="shortcut-item">
-                            <span class="shortcut-desc">تقريب / تبعيد</span>
+                            <span class="shortcut-desc" data-i18n="help.view.zoom">Zoom in / out</span>
                             <span class="shortcut-key">Mouse Wheel</span>
                         </li>
                         <li class="shortcut-item">
-                            <span class="shortcut-desc">تحريك اللوحة (Pan)</span>
+                            <span class="shortcut-desc" data-i18n="help.view.pan">Pan workspace</span>
                             <span class="shortcut-key">Middle Click</span>
+                        </li>
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc" data-i18n="help.view.touchPan">Two-finger drag (trackpad)</span>
+                            <span class="shortcut-key">Pan</span>
+                        </li>
+                        <li class="shortcut-item">
+                            <span class="shortcut-desc" data-i18n="help.view.touchZoom">Pinch (trackpad / touch)</span>
+                            <span class="shortcut-key">Zoom</span>
                         </li>
                     </ul>
                 </div>
 
                 <div class="shortcuts-section">
-                    <h4>💡 تلميحات</h4>
-                    <p style="font-size:12px; color:var(--text-secondary); margin-top:5px;">
-                        • يمكنك تحديد عدة عناصر بحب مفتاح <b>Ctrl</b> والنقر عليها، ثم حذفها جميعاً بزر
-                        <b>Delete</b>.<br>
-                        • انقر بزر الماوس الأيمن على أي عنصر لخيارات إضافية (تغيير القيم، الألوان، التدوير).
+                    <h4 data-i18n="help.section.tips">💡 Tips</h4>
+                    <p style="font-size:12px; color:var(--text-secondary); margin-top:5px;" data-i18n-html="help.tips.body">
+                        • Hold <b>Ctrl</b> and click to multi-select components, then press <b>Delete</b> to remove all of them.<br>
+                        • Right-click any component for additional options (change values, colors, rotation).
                     </p>
                 </div>
             </div>
-            <div class="modal-footer" dir="rtl">
-                <button class="modal-btn" id="btn-close-help">إغلاق</button>
+            <div class="modal-footer">
+                <button class="modal-btn" id="btn-close-help" data-i18n="help.close">Close</button>
             </div>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=20250428-1"></script>
 </body>
 
 </html>

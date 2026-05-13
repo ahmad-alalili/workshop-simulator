@@ -13,7 +13,7 @@ IC Circuit Simulator — Main Application
 //   1. APP_VERSION هنا (في app.js)
 //   2. ?v=... في <link rel="stylesheet"> داخل index.html
 //   3. ?v=... في <script src="app.js"> داخل index.html
-const APP_VERSION = '20260512-44';
+const APP_VERSION = '20260512-46';
 
 // — تحقّق إذا كانت النسخة الحالية مختلفة عن المحفوظة، أعد التحميل —
 (function checkVersionAndReloadIfStale() {
@@ -1936,7 +1936,7 @@ function updateComponentVisuals(comp) {
         const val = comp.pinStates[pinNum] || 0;
         dot.classList.toggle('high', !!val);
 
-        // تحذير floating لمدخلات الـ ICs المُغذّاة فقط (إن كان IC غير مُغذّى لا داعي للتحذير)
+        // مؤشّرات بصرية على ICs: floating (برتقالي)، weak-low/high (pull-up/down)
         if (isICType(comp.type) && isICPowered(comp) && !comp.burned) {
             const def = IC_DEFINITIONS[comp.type];
             const pinDef = def.pins.find(p => p.num === pinNum);
@@ -1945,8 +1945,15 @@ function updateComponentVisuals(comp) {
             const strength = (comp.pinStrengths && comp.pinStrengths[pinNum]) || 'floating';
             const isFloating = isConnected && strength === 'floating';
             dot.classList.toggle('floating', !!(isInput && isFloating));
+            // pull-down (weak-LO) / pull-up (weak-HI) — يُظهر للمستخدم أن المقاومة فاعلة
+            // يُطبَّق على كل أنواع الأطراف الموصولة بـ weak strength (مدخل/خرج/طاقة)
+            const isWeak = isConnected && strength === 'weak';
+            dot.classList.toggle('weak-low',  !!(isWeak && val === 0));
+            dot.classList.toggle('weak-high', !!(isWeak && val === 1));
         } else {
             dot.classList.remove('floating');
+            dot.classList.remove('weak-low');
+            dot.classList.remove('weak-high');
         }
     });
 }
@@ -3632,6 +3639,10 @@ if (compSearchInput) {
 
 wsContainer.addEventListener('mousedown', (e) => {
     if (e.target.closest('#zoom-controls')) return;
+
+    // الزر الأيمن (button=2) لا يجب أن يبدأ سلكاً أو يحرّك أو يبني عنصراً —
+    // نتركه للـ contextmenu handler. (middle-click button=1 يبقى للـ pan في الأسفل)
+    if (e.button === 2) return;
 
     if (placingType && e.button === 0) {
         const coords = getWorkspaceCoords(e.clientX, e.clientY);

@@ -24,7 +24,7 @@
     <!-- Cache busting: غيّر الرقم بعد ?v= مع كل تحديث على GitHub -->
     <!-- مثال: v=20250428-1  → v=20250428-2 → v=20250429-1 ...  -->
     <!-- ====================================================== -->
-    <link rel="stylesheet" href="style.css?v=20250428-1">
+    <link rel="stylesheet" href="style.css?v=20260512-44">
 </head>
 
 <body>
@@ -76,8 +76,6 @@
                     <span id="lang-display">العربية</span>
                 </button>
                 <button class="action-btn refresh-btn" id="btn-hard-refresh" data-i18n-title="header.refresh.tooltip" title="Force refresh (clears cache)">🔄</button>
-                <button class="action-btn exam-enter-btn" id="btn-enter-exam" data-i18n-title="exam.enterTooltip" title="Enter Exam Mode">📝 <span data-i18n="exam.enter">Exam</span></button>
-                <button class="action-btn exam-exit-btn" id="btn-exit-exam" style="display:none;">🛑 <span data-i18n="exam.exit">Exit Exam</span></button>
                 <button class="action-btn" id="btn-help">❓ <span data-i18n="header.help">Help</span></button>
                 <button class="action-btn" id="btn-save-project" data-i18n-title="header.save.tooltip" title="Save circuit as JSON">💾 <span data-i18n="header.save">Save</span></button>
                 <button class="action-btn" id="btn-load-project" data-i18n-title="header.load.tooltip" title="Load circuit from JSON">📂 <span data-i18n="header.load">Load</span></button>
@@ -107,6 +105,22 @@
                             <span class="dropdown-item-icon">⏱️</span>
                             <span class="dropdown-item-label" data-i18n="header.example4">555 Timer</span>
                         </button>
+                        <button class="dropdown-item" id="btn-example5" role="menuitem">
+                            <span class="dropdown-item-icon">🔘</span>
+                            <span class="dropdown-item-label" data-i18n="header.example5">Pull-down + AND</span>
+                        </button>
+                        <button class="dropdown-item" id="btn-example6" role="menuitem">
+                            <span class="dropdown-item-icon">🔢</span>
+                            <span class="dropdown-item-label" data-i18n="header.example6">74193 Counter + LEDs</span>
+                        </button>
+                        <button class="dropdown-item" id="btn-example7" role="menuitem">
+                            <span class="dropdown-item-icon">🔠</span>
+                            <span class="dropdown-item-label" data-i18n="header.example7">74193 + 7447 + 7-Seg</span>
+                        </button>
+                        <button class="dropdown-item" id="btn-example8" role="menuitem">
+                            <span class="dropdown-item-icon">⚙️</span>
+                            <span class="dropdown-item-label" data-i18n="header.example8">Auto Counter (555+74193+7447+7Seg)</span>
+                        </button>
                     </div>
                 </div>
 
@@ -130,35 +144,35 @@
                     </div>
                     <div class="sidebar-category-items">
                         <button class="comp-btn" data-type="IC7408">
-                            <div class="comp-icon ic-icon">7408</div>
+                            <div class="comp-icon ic-icon"><svg viewBox="0 0 44 44"><rect x="11" y="5" width="22" height="34" rx="1" fill="#1e293b" stroke="#000" stroke-width="0.5"/><circle cx="14" cy="9" r="1.5" fill="#0f172a"/><g fill="#94a3b8"><rect x="6" y="8" width="5" height="2"/><rect x="6" y="13" width="5" height="2"/><rect x="6" y="18" width="5" height="2"/><rect x="6" y="23" width="5" height="2"/><rect x="6" y="28" width="5" height="2"/><rect x="6" y="33" width="5" height="2"/><rect x="33" y="8" width="5" height="2"/><rect x="33" y="13" width="5" height="2"/><rect x="33" y="18" width="5" height="2"/><rect x="33" y="23" width="5" height="2"/><rect x="33" y="28" width="5" height="2"/><rect x="33" y="33" width="5" height="2"/></g><text x="22" y="26" font-size="6" font-weight="700" fill="#a5b4fc" text-anchor="middle">7408</text></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name">IC 7408</span>
                                 <span class="comp-desc" data-i18n="comp.7408.desc">Quad AND Gate</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="IC7485">
-                            <div class="comp-icon ic-icon">7485</div>
+                            <div class="comp-icon ic-icon"><svg viewBox="0 0 44 44"><rect x="11" y="5" width="22" height="34" rx="1" fill="#1e293b" stroke="#000" stroke-width="0.5"/><circle cx="14" cy="9" r="1.5" fill="#0f172a"/><g fill="#94a3b8"><rect x="6" y="8" width="5" height="2"/><rect x="6" y="13" width="5" height="2"/><rect x="6" y="18" width="5" height="2"/><rect x="6" y="23" width="5" height="2"/><rect x="6" y="28" width="5" height="2"/><rect x="6" y="33" width="5" height="2"/><rect x="33" y="8" width="5" height="2"/><rect x="33" y="13" width="5" height="2"/><rect x="33" y="18" width="5" height="2"/><rect x="33" y="23" width="5" height="2"/><rect x="33" y="28" width="5" height="2"/><rect x="33" y="33" width="5" height="2"/></g><text x="22" y="26" font-size="6" font-weight="700" fill="#a5b4fc" text-anchor="middle">7485</text></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name">IC 7485</span>
                                 <span class="comp-desc" data-i18n="comp.7485.desc">4-Bit Comparator</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="IC7447">
-                            <div class="comp-icon ic-icon">7447</div>
+                            <div class="comp-icon ic-icon"><svg viewBox="0 0 44 44"><rect x="11" y="5" width="22" height="34" rx="1" fill="#1e293b" stroke="#000" stroke-width="0.5"/><circle cx="14" cy="9" r="1.5" fill="#0f172a"/><g fill="#94a3b8"><rect x="6" y="8" width="5" height="2"/><rect x="6" y="13" width="5" height="2"/><rect x="6" y="18" width="5" height="2"/><rect x="6" y="23" width="5" height="2"/><rect x="6" y="28" width="5" height="2"/><rect x="6" y="33" width="5" height="2"/><rect x="33" y="8" width="5" height="2"/><rect x="33" y="13" width="5" height="2"/><rect x="33" y="18" width="5" height="2"/><rect x="33" y="23" width="5" height="2"/><rect x="33" y="28" width="5" height="2"/><rect x="33" y="33" width="5" height="2"/></g><text x="22" y="26" font-size="6" font-weight="700" fill="#a5b4fc" text-anchor="middle">7447</text></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name">IC 7447</span>
                                 <span class="comp-desc" data-i18n="comp.7447.desc">BCD → 7-Segment</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="IC74193">
-                            <div class="comp-icon ic-icon">74193</div>
+                            <div class="comp-icon ic-icon"><svg viewBox="0 0 44 44"><rect x="11" y="5" width="22" height="34" rx="1" fill="#1e293b" stroke="#000" stroke-width="0.5"/><circle cx="14" cy="9" r="1.5" fill="#0f172a"/><g fill="#94a3b8"><rect x="6" y="8" width="5" height="2"/><rect x="6" y="13" width="5" height="2"/><rect x="6" y="18" width="5" height="2"/><rect x="6" y="23" width="5" height="2"/><rect x="6" y="28" width="5" height="2"/><rect x="6" y="33" width="5" height="2"/><rect x="33" y="8" width="5" height="2"/><rect x="33" y="13" width="5" height="2"/><rect x="33" y="18" width="5" height="2"/><rect x="33" y="23" width="5" height="2"/><rect x="33" y="28" width="5" height="2"/><rect x="33" y="33" width="5" height="2"/></g><text x="22" y="26" font-size="6" font-weight="700" fill="#a5b4fc" text-anchor="middle">74193</text></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name">IC 74193</span>
                                 <span class="comp-desc" data-i18n="comp.74193.desc">4-Bit Counter ↑↓</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="IC555">
-                            <div class="comp-icon ic-icon" data-type="IC555">555</div>
+                            <div class="comp-icon ic-icon" data-type="IC555"><svg viewBox="0 0 44 44"><rect x="11" y="9" width="22" height="26" rx="1" fill="#1e293b" stroke="#000" stroke-width="0.5"/><circle cx="14" cy="13" r="1.5" fill="#0f172a"/><g fill="#94a3b8"><rect x="6" y="12" width="5" height="2"/><rect x="6" y="18" width="5" height="2"/><rect x="6" y="24" width="5" height="2"/><rect x="6" y="30" width="5" height="2"/><rect x="33" y="12" width="5" height="2"/><rect x="33" y="18" width="5" height="2"/><rect x="33" y="24" width="5" height="2"/><rect x="33" y="30" width="5" height="2"/></g><text x="22" y="25" font-size="8" font-weight="700" fill="#fbbf24" text-anchor="middle">555</text></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name">IC 555</span>
                                 <span class="comp-desc" data-i18n="comp.555.desc">Timer / Oscillator</span>
@@ -175,42 +189,56 @@
                     </div>
                     <div class="sidebar-category-items">
                         <button class="comp-btn" data-type="SWITCH">
-                            <div class="comp-icon switch-icon">⏻</div>
+                            <div class="comp-icon switch-icon"><svg viewBox="0 0 44 44"><defs><linearGradient id="swb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a252f"/><stop offset="0.5" stop-color="#3a4760"/><stop offset="1" stop-color="#1a252f"/></linearGradient><radialGradient id="swk" cx="0.35" cy="0.3" r="0.75"><stop offset="0" stop-color="#ffffff"/><stop offset="0.4" stop-color="#e2e8f0"/><stop offset="1" stop-color="#64748b"/></radialGradient></defs><rect x="3" y="16" width="38" height="14" rx="7" fill="url(#swb)" stroke="#000" stroke-width="0.5"/><circle cx="30" cy="23" r="7" fill="url(#swk)" stroke="#000" stroke-width="0.5"/><circle cx="28" cy="21" r="2" fill="rgba(255,255,255,0.6)"/></svg></div>
                             <div class="comp-info">
-                                <span class="comp-name" data-i18n="comp.switch.name">Toggle Switch</span>
-                                <span class="comp-desc" data-i18n="comp.switch.desc">HIGH / LOW</span>
+                                <span class="comp-name" data-i18n="comp.switch.name">Logic Toggle</span>
+                                <span class="comp-desc" data-i18n="comp.switch.desc">HIGH / LOW Source</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="SWITCH_PHYSICAL">
+                            <div class="comp-icon switch-icon"><svg viewBox="0 0 44 44"><defs><linearGradient id="psw1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#64748b"/><stop offset="0.5" stop-color="#475569"/><stop offset="1" stop-color="#1e293b"/></linearGradient><linearGradient id="psw2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2e8f0"/><stop offset="0.5" stop-color="#94a3b8"/><stop offset="1" stop-color="#475569"/></linearGradient></defs><rect x="11" y="14" width="22" height="22" rx="3" fill="url(#psw1)" stroke="#000" stroke-width="0.5"/><rect x="18" y="6" width="8" height="20" rx="2" fill="url(#psw2)" stroke="#1e293b" stroke-width="0.5"/><rect x="20" y="9" width="2" height="14" fill="rgba(255,255,255,0.35)"/></svg></div>
+                            <div class="comp-info">
+                                <span class="comp-name" data-i18n="comp.switchPhys.name">Physical Toggle</span>
+                                <span class="comp-desc" data-i18n="comp.switchPhys.desc">SPST — needs Pull</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="DIP_SWITCH">
-                            <div class="comp-icon switch-icon">⏻⏻</div>
+                            <div class="comp-icon switch-icon"><svg viewBox="0 0 44 44"><defs><linearGradient id="dipBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dc2626"/><stop offset="0.5" stop-color="#b91c1c"/><stop offset="1" stop-color="#7f1d1d"/></linearGradient></defs><rect x="4" y="11" width="36" height="22" rx="2" fill="url(#dipBody)" stroke="#5a1414" stroke-width="0.5"/><rect x="5" y="12" width="34" height="2" fill="rgba(255,255,255,0.25)"/><rect x="8" y="17" width="6" height="11" fill="#0a0a0a"/><rect x="9" y="22" width="4" height="5" fill="#f1f5f9"/><rect x="16" y="17" width="6" height="11" fill="#0a0a0a"/><rect x="17" y="18" width="4" height="5" fill="#f1f5f9"/><rect x="24" y="17" width="6" height="11" fill="#0a0a0a"/><rect x="25" y="22" width="4" height="5" fill="#f1f5f9"/><rect x="32" y="17" width="6" height="11" fill="#0a0a0a"/><rect x="33" y="18" width="4" height="5" fill="#f1f5f9"/></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name" data-i18n="comp.dip.name">DIP Switch</span>
                                 <span class="comp-desc" data-i18n="comp.dip.desc">4-Bit DIP Switch</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="PUSH_BUTTON">
-                            <div class="comp-icon switch-icon">⦿</div>
+                            <div class="comp-icon switch-icon"><svg viewBox="0 0 44 44"><defs><radialGradient id="pbb" cx="0.5" cy="0.4" r="0.7"><stop offset="0" stop-color="#475569"/><stop offset="1" stop-color="#1e293b"/></radialGradient><radialGradient id="pbt" cx="0.35" cy="0.28" r="0.75"><stop offset="0" stop-color="#fca5a5"/><stop offset="0.5" stop-color="#dc2626"/><stop offset="1" stop-color="#7f1d1d"/></radialGradient></defs><circle cx="22" cy="22" r="18" fill="url(#pbb)" stroke="#000" stroke-width="0.5"/><circle cx="22" cy="22" r="13" fill="url(#pbt)" stroke="#5a0e0e" stroke-width="0.5"/><ellipse cx="18" cy="17" rx="5" ry="3" fill="rgba(255,255,255,0.5)"/></svg></div>
                             <div class="comp-info">
-                                <span class="comp-name" data-i18n="comp.push.name">Push Button</span>
-                                <span class="comp-desc" data-i18n="comp.push.desc">Momentary Switch</span>
+                                <span class="comp-name" data-i18n="comp.push.name">Logic Push</span>
+                                <span class="comp-desc" data-i18n="comp.push.desc">Momentary Source</span>
+                            </div>
+                        </button>
+                        <button class="comp-btn" data-type="PUSH_BUTTON_PHYSICAL">
+                            <div class="comp-icon switch-icon"><svg viewBox="0 0 44 44"><defs><radialGradient id="ppbb" cx="0.5" cy="0.4" r="0.7"><stop offset="0" stop-color="#475569"/><stop offset="1" stop-color="#1e293b"/></radialGradient><radialGradient id="ppbt" cx="0.35" cy="0.28" r="0.75"><stop offset="0" stop-color="#fcd34d"/><stop offset="0.5" stop-color="#ea580c"/><stop offset="1" stop-color="#7c2d12"/></radialGradient></defs><circle cx="22" cy="22" r="18" fill="url(#ppbb)" stroke="#000" stroke-width="0.5"/><circle cx="22" cy="22" r="13" fill="url(#ppbt)" stroke="#5a2810" stroke-width="0.5"/><ellipse cx="18" cy="17" rx="5" ry="3" fill="rgba(255,255,255,0.55)"/></svg></div>
+                            <div class="comp-info">
+                                <span class="comp-name" data-i18n="comp.pushPhys.name">Physical Push</span>
+                                <span class="comp-desc" data-i18n="comp.pushPhys.desc">Momentary — needs Pull</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="LED">
-                            <div class="comp-icon led-icon-btn">●</div>
+                            <div class="comp-icon led-icon-btn"><svg viewBox="0 0 44 44"><defs><radialGradient id="ledg" cx="0.32" cy="0.28" r="0.75"><stop offset="0" stop-color="#fecaca"/><stop offset="0.45" stop-color="#dc2626"/><stop offset="1" stop-color="#450a0a"/></radialGradient></defs><rect x="15" y="30" width="2" height="10" fill="#71717a"/><rect x="27" y="30" width="2" height="10" fill="#71717a"/><path d="M 9 32 L 9 16 Q 9 6, 22 6 Q 35 6, 35 16 L 35 32 Z" fill="url(#ledg)" stroke="#3f0a0a" stroke-width="0.5"/><ellipse cx="17" cy="15" rx="5" ry="3.5" fill="rgba(255,255,255,0.5)"/><ellipse cx="14" cy="12" rx="1.5" ry="1" fill="rgba(255,255,255,0.85)"/></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name">LED</span>
                                 <span class="comp-desc" data-i18n="comp.led.desc">Light Indicator</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="SEVEN_SEG_CC">
-                            <div class="comp-icon seg-icon">CC</div>
+                            <div class="comp-icon seg-icon"><svg viewBox="0 0 44 44"><rect x="6" y="3" width="32" height="36" rx="3" fill="#0a0a0a" stroke="#2a2a2a" stroke-width="0.5"/><g fill="#22c55e" fill-opacity="0.85"><polygon points="14,7 24,7 26,9 24,11 14,11 12,9"/><polygon points="25,10 27,12 27,19 25,21 23,19 23,12"/><polygon points="25,23 27,25 27,32 25,34 23,32 23,25"/><polygon points="14,33 24,33 26,35 24,37 14,37 12,35"/><polygon points="13,23 11,25 11,32 13,34 15,32 15,25"/><polygon points="13,10 11,12 11,19 13,21 15,19 15,12"/><polygon points="14,20 24,20 26,22 24,24 14,24 12,22"/></g><text x="32" y="14" font-size="5" fill="#888" font-weight="700">CC</text></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name" data-i18n="comp.7segCC.name">7-Seg CC</span>
                                 <span class="comp-desc" data-i18n="comp.7segCC.desc">Common Cathode</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="SEVEN_SEG_CA">
-                            <div class="comp-icon seg-icon">CA</div>
+                            <div class="comp-icon seg-icon"><svg viewBox="0 0 44 44"><rect x="6" y="3" width="32" height="36" rx="3" fill="#0a0a0a" stroke="#2a2a2a" stroke-width="0.5"/><g fill="#f97316" fill-opacity="0.85"><polygon points="14,7 24,7 26,9 24,11 14,11 12,9"/><polygon points="25,10 27,12 27,19 25,21 23,19 23,12"/><polygon points="25,23 27,25 27,32 25,34 23,32 23,25"/><polygon points="14,33 24,33 26,35 24,37 14,37 12,35"/><polygon points="13,23 11,25 11,32 13,34 15,32 15,25"/><polygon points="13,10 11,12 11,19 13,21 15,19 15,12"/><polygon points="14,20 24,20 26,22 24,24 14,24 12,22"/></g><text x="32" y="14" font-size="5" fill="#888" font-weight="700">CA</text></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name" data-i18n="comp.7segCA.name">7-Seg CA</span>
                                 <span class="comp-desc" data-i18n="comp.7segCA.desc">Common Anode</span>
@@ -227,14 +255,14 @@
                     </div>
                     <div class="sidebar-category-items">
                         <button class="comp-btn" data-type="VCC">
-                            <div class="comp-icon vcc-icon">+5V</div>
+                            <div class="comp-icon vcc-icon"><svg viewBox="0 0 44 44"><defs><linearGradient id="vccg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22c55e"/><stop offset="0.5" stop-color="#16a34a"/><stop offset="1" stop-color="#14532d"/></linearGradient></defs><rect x="6" y="10" width="32" height="24" rx="5" fill="url(#vccg)" stroke="#000" stroke-width="0.5"/><rect x="7" y="11" width="30" height="3" fill="rgba(255,255,255,0.25)" rx="3"/><text x="22" y="27" font-size="11" font-weight="700" fill="#f0fdf4" text-anchor="middle">+5V</text></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name">VCC</span>
                                 <span class="comp-desc" data-i18n="comp.vcc.desc">Positive Supply</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="GND">
-                            <div class="comp-icon gnd-icon">⏚</div>
+                            <div class="comp-icon gnd-icon"><svg viewBox="0 0 44 44"><rect x="20" y="6" width="4" height="14" fill="#94a3b8"/><polygon points="22,22 32,22 30,26 14,26 12,22" fill="#cbd5e1"/><rect x="15" y="28" width="14" height="3" fill="#cbd5e1"/><rect x="18" y="33" width="8" height="2.5" fill="#cbd5e1"/><rect x="20" y="37" width="4" height="2" fill="#cbd5e1"/></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name">GND</span>
                                 <span class="comp-desc" data-i18n="comp.gnd.desc">Ground</span>
@@ -251,14 +279,14 @@
                     </div>
                     <div class="sidebar-category-items">
                         <button class="comp-btn" data-type="RESISTOR">
-                            <div class="comp-icon res-icon">Ω</div>
+                            <div class="comp-icon res-icon"><svg viewBox="0 0 44 44"><line x1="2" y1="22" x2="9" y2="22" stroke="#94a3b8" stroke-width="2"/><line x1="35" y1="22" x2="42" y2="22" stroke="#94a3b8" stroke-width="2"/><rect x="9" y="14" width="26" height="16" rx="2" fill="#d4a574" stroke="#5a3a1a" stroke-width="0.5"/><rect x="12" y="14" width="3" height="16" fill="#92400e"/><rect x="17" y="14" width="3" height="16" fill="#dc2626"/><rect x="22" y="14" width="3" height="16" fill="#000"/><rect x="29" y="14" width="3" height="16" fill="#fbbf24"/></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name" data-i18n="comp.resistor.name">Resistor</span>
                                 <span class="comp-desc" data-i18n="comp.resistor.desc">Right-click to edit</span>
                             </div>
                         </button>
                         <button class="comp-btn" data-type="CAPACITOR">
-                            <div class="comp-icon cap-icon">⊥</div>
+                            <div class="comp-icon cap-icon"><svg viewBox="0 0 44 44"><line x1="2" y1="22" x2="18" y2="22" stroke="#94a3b8" stroke-width="2"/><line x1="26" y1="22" x2="42" y2="22" stroke="#94a3b8" stroke-width="2"/><rect x="17" y="10" width="3" height="24" fill="#cbd5e1"/><path d="M 24 10 Q 28 22, 24 34" stroke="#cbd5e1" stroke-width="3" fill="none"/><text x="22" y="6" font-size="6" fill="#fcd34d" text-anchor="middle">+</text></svg></div>
                             <div class="comp-info">
                                 <span class="comp-name" data-i18n="comp.capacitor.name">Capacitor</span>
                                 <span class="comp-desc" data-i18n="comp.capacitor.desc">Right-click to edit</span>
@@ -297,7 +325,7 @@
             <!-- Info Panel -->
             <aside id="info-panel">
                 <div id="info-content">
-                    <div id="info-placeholder" class="info-placeholder">
+                                 <div id="info-placeholder" class="info-placeholder">
                         <div class="info-placeholder-icon">📖</div>
                         <p data-i18n="info.placeholder">Select a component to see details</p>
                     </div>
@@ -326,75 +354,27 @@
                 <div class="shortcuts-section">
                     <h4 data-i18n="help.section.tools">🛠️ Basic Tools</h4>
                     <ul class="shortcuts-list">
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.tool.select">Select tool</span>
-                            <span class="shortcut-key">S</span>
-                        </li>
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.tool.wire">Wire tool</span>
-                            <span class="shortcut-key">W</span>
-                        </li>
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.tool.cut">Cut wire</span>
-                            <span class="shortcut-key">X</span>
-                        </li>
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.tool.delete">Delete component</span>
-                            <span class="shortcut-key">D</span>
-                        </li>
+                        <li class="shortcut-item"><span class="shortcut-desc" data-i18n="help.tool.select">Select tool</span><span class="shortcut-key">S</span></li>
+                        <li class="shortcut-item"><span class="shortcut-desc" data-i18n="help.tool.wire">Wire tool</span><span class="shortcut-key">W</span></li>
+                        <li class="shortcut-item"><span class="shortcut-desc" data-i18n="help.tool.cut">Cut wire</span><span class="shortcut-key">X</span></li>
+                        <li class="shortcut-item"><span class="shortcut-desc" data-i18n="help.tool.delete">Delete component</span><span class="shortcut-key">D</span></li>
                     </ul>
                 </div>
-
                 <div class="shortcuts-section">
                     <h4 data-i18n="help.section.editing">⚡ Editing</h4>
                     <ul class="shortcuts-list">
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.editing.rotate">Rotate component</span>
-                            <span class="shortcut-key">R</span>
-                        </li>
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.editing.cancel">Cancel current action</span>
-                            <span class="shortcut-key">Esc</span>
-                        </li>
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.editing.multi">Multi-select</span>
-                            <span class="shortcut-key">Ctrl + Click</span>
-                        </li>
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.editing.delete">Delete selected</span>
-                            <span class="shortcut-key">Delete</span>
-                        </li>
+                        <li class="shortcut-item"><span class="shortcut-desc" data-i18n="help.editing.rotate">Rotate component</span><span class="shortcut-key">R</span></li>
+                        <li class="shortcut-item"><span class="shortcut-desc" data-i18n="help.editing.cancel">Cancel current action</span><span class="shortcut-key">Esc</span></li>
+                        <li class="shortcut-item"><span class="shortcut-desc" data-i18n="help.editing.multi">Multi-select</span><span class="shortcut-key">Ctrl + Click</span></li>
+                        <li class="shortcut-item"><span class="shortcut-desc" data-i18n="help.editing.delete">Delete selected</span><span class="shortcut-key">Delete</span></li>
                     </ul>
                 </div>
-
                 <div class="shortcuts-section">
                     <h4 data-i18n="help.section.view">🔍 View &amp; Navigation</h4>
                     <ul class="shortcuts-list">
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.view.zoom">Zoom in / out</span>
-                            <span class="shortcut-key">Mouse Wheel</span>
-                        </li>
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.view.pan">Pan workspace</span>
-                            <span class="shortcut-key">Middle Click</span>
-                        </li>
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.view.touchPan">Two-finger drag (trackpad)</span>
-                            <span class="shortcut-key">Pan</span>
-                        </li>
-                        <li class="shortcut-item">
-                            <span class="shortcut-desc" data-i18n="help.view.touchZoom">Pinch (trackpad / touch)</span>
-                            <span class="shortcut-key">Zoom</span>
-                        </li>
+                        <li class="shortcut-item"><span class="shortcut-desc" data-i18n="help.view.zoom">Zoom in / out</span><span class="shortcut-key">Mouse Wheel</span></li>
+                        <li class="shortcut-item"><span class="shortcut-desc" data-i18n="help.view.pan">Pan workspace</span><span class="shortcut-key">Middle Click</span></li>
                     </ul>
-                </div>
-
-                <div class="shortcuts-section">
-                    <h4 data-i18n="help.section.tips">💡 Tips</h4>
-                    <p style="font-size:12px; color:var(--text-secondary); margin-top:5px;" data-i18n-html="help.tips.body">
-                        • Hold <b>Ctrl</b> and click to multi-select components, then press <b>Delete</b> to remove all of them.<br>
-                        • Right-click any component for additional options (change values, colors, rotation).
-                    </p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -403,7 +383,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=20250428-1"></script>
+    <script src="app.js?v=20260512-44"></script>
 </body>
 
 </html>

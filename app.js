@@ -13,7 +13,7 @@ IC Circuit Simulator — Main Application
 //   1. APP_VERSION هنا (في app.js)
 //   2. ?v=... في <link rel="stylesheet"> داخل index.html
 //   3. ?v=... في <script src="app.js"> داخل index.html
-const APP_VERSION = '20250428-1';
+const APP_VERSION = '20260512-44';
 
 // — تحقّق إذا كانت النسخة الحالية مختلفة عن المحفوظة، أعد التحميل —
 (function checkVersionAndReloadIfStale() {
@@ -42,8 +42,6 @@ const APP_VERSION = '20250428-1';
 function hardRefreshApp() {
     try {
         // امسح version flag ليعتبر التحميل التالي "أول مرة"
-        // ⚠️ ملاحظة: لا نمسح "icsim-exam-active" حتى يبقى نمط الاختبار مفعّلاً
-        // بعد التحديث (هذا حماية ضد محاولة الطالب الخروج بـ refresh)
         localStorage.removeItem('icsim-app-version');
     } catch (e) {}
     // امسح caches
@@ -102,6 +100,10 @@ const TRANSLATIONS = {
         'header.example2':      'Comparator',
         'header.example3':      '7447 Display',
         'header.example4':      '555 Timer',
+        'header.example5':      'Pull-down + AND',
+        'header.example6':      '74193 Counter + LEDs',
+        'header.example7':      '74193 + 7447 + 7-Seg',
+        'header.example8':      'Auto Counter (555+74193+7447+7Seg)',
         'header.examples':      'Examples',
         'header.examples.tooltip': 'Load an example circuit',
         'header.clearAll':      'Clear All',
@@ -126,12 +128,16 @@ const TRANSLATIONS = {
         'comp.7447.desc':       'BCD → 7-Segment',
         'comp.74193.desc':      '4-Bit Counter ↑↓',
         'comp.555.desc':        'Timer / Oscillator',
-        'comp.switch.name':     'Toggle Switch',
-        'comp.switch.desc':     'HIGH / LOW',
+        'comp.switch.name':     'Logic Toggle',
+        'comp.switch.desc':     'HIGH / LOW Source',
+        'comp.switchPhys.name': 'Physical Toggle',
+        'comp.switchPhys.desc': 'SPST — needs Pull',
         'comp.dip.name':        'DIP Switch',
         'comp.dip.desc':        '4-Bit DIP Switch',
-        'comp.push.name':       'Push Button',
-        'comp.push.desc':       'Momentary Switch',
+        'comp.push.name':       'Logic Push',
+        'comp.push.desc':       'Momentary Source',
+        'comp.pushPhys.name':   'Physical Push',
+        'comp.pushPhys.desc':   'Momentary — needs Pull',
         'comp.led.desc':        'Light Indicator',
         'comp.7segCC.name':     '7-Seg CC',
         'comp.7segCC.desc':     'Common Cathode',
@@ -213,54 +219,6 @@ const TRANSLATIONS = {
         'help.tips.body':       '• Hold <b>Ctrl</b> and click to multi-select components, then press <b>Delete</b> to remove all of them.<br>• Right-click any component for additional options (change values, colors, rotation).',
         'help.close':           'Close',
 
-        // === Developer + Exam Mode ===
-        'dev.loginTitle':       'Developer Login',
-        'dev.username':         'Username',
-        'dev.password':         'Password',
-        'dev.welcome':          'Welcome, developer',
-        'dev.wrongCreds':       'Wrong credentials',
-        'dev.panelTitle':       'Developer Panel',
-        'dev.panelHint':        'Set the password students must use to exit exam mode. Students enter exam mode with code 0000.',
-        'dev.exitPassword':     'Exam exit password',
-        'dev.entryHint':        'Students enter exam mode with code:',
-        'dev.examStatus':       'Exam mode status',
-        'dev.examInactive':     'inactive',
-        'dev.examActive':       'Exam mode is currently ACTIVE',
-        'dev.forceExit':        'End exam mode now',
-        'dev.passwordRequired': 'Password required',
-        'dev.passwordSaved':    'Exit password saved',
-        'dev.saveFailed':       'Failed to save',
-        'dev.cancel':           'Cancel',
-        'dev.ok':               'OK',
-        'dev.save':             'Save',
-        'dev.close':            'Close',
-        // === أداة hash ===
-        'dev.changeDevPwd':     'Change developer password',
-        'dev.changeDevPwdHint': 'Generate a hash for your new password, then paste it into app.js on GitHub mobile.',
-        'dev.newDevPwd':        'New password',
-        'dev.newDevPwdPh':      'Enter new password to hash',
-        'dev.generateHash':     'Generate hash',
-        'dev.hashResult':       'Hash result — copy this and paste into app.js',
-        'dev.hashInstructions': 'Open app.js on GitHub mobile, find the line starting with "const DEV_PASSWORD_HASH", and replace the value between quotes with this hash. Commit, then press 🔄 in the app.',
-        'dev.copy':             'Copy',
-        'dev.copied':           'Copied to clipboard',
-        'dev.copyManual':       'Select and copy manually',
-        'dev.hashGenerated':    'Hash generated',
-        'exam.enter':           'Exam',
-        'exam.enterTooltip':    'Enter exam mode (code 0000)',
-        'exam.entryTitle':      'Enter Exam Mode',
-        'exam.entryCode':       'Entry code',
-        'exam.wrongCode':       'Wrong entry code',
-        'exam.alreadyActive':   'Exam mode is already active',
-        'exam.entered':         'Exam mode activated',
-        'exam.exited':          'Exam mode ended',
-        'exam.wrongPassword':   'Wrong password',
-        'exam.exitTitle':       'Exit exam mode',
-        'exam.enterPassword':   'Enter exit password',
-        'exam.cantClear':       'Cannot clear during exam mode',
-        'exam.cantLoad':        'Cannot load during exam mode',
-        'exam.cantUseExamples': 'Examples are disabled in exam mode',
-        'exam.exit':            'Exit Exam',
     },
 
     ar: {
@@ -286,6 +244,10 @@ const TRANSLATIONS = {
         'header.example2':      'مقارن',
         'header.example3':      'عرض 7447',
         'header.example4':      'مؤقت 555',
+        'header.example5':      'سحب سفلي + AND',
+        'header.example6':      'عدّاد 74193 + LEDs',
+        'header.example7':      'عدّاد 74193 + 7447 + شاشة',
+        'header.example8':      'عدّاد أوتوماتيكي (555+74193+7447+شاشة)',
         'header.examples':      'أمثلة',
         'header.examples.tooltip': 'تحميل دائرة مثال',
         'header.clearAll':      'مسح الكل',
@@ -310,12 +272,16 @@ const TRANSLATIONS = {
         'comp.7447.desc':       'BCD ← 7-أجزاء',
         'comp.74193.desc':      'عدّاد 4-بت ↑↓',
         'comp.555.desc':        'مؤقت / مذبذب',
-        'comp.switch.name':     'مفتاح ثنائي',
-        'comp.switch.desc':     'HIGH / LOW',
+        'comp.switch.name':     'مفتاح منطقي',
+        'comp.switch.desc':     'مصدر HIGH / LOW',
+        'comp.switchPhys.name': 'مفتاح فيزيائي',
+        'comp.switchPhys.desc': 'يحتاج Pull-up/down',
         'comp.dip.name':        'مفتاح DIP',
         'comp.dip.desc':        'مفتاح DIP رباعي',
-        'comp.push.name':       'زر ضاغط',
-        'comp.push.desc':       'مفتاح لحظي',
+        'comp.push.name':       'زر منطقي',
+        'comp.push.desc':       'مصدر لحظي',
+        'comp.pushPhys.name':   'زر فيزيائي',
+        'comp.pushPhys.desc':   'يحتاج Pull-up/down',
         'comp.led.desc':        'مؤشر ضوئي',
         'comp.7segCC.name':     '7-أجزاء CC',
         'comp.7segCC.desc':     'كاثود مشترك',
@@ -397,54 +363,6 @@ const TRANSLATIONS = {
         'help.tips.body':       '• يمكنك تحديد عدة عناصر بحبس مفتاح <b>Ctrl</b> والنقر عليها، ثم حذفها جميعاً بزر <b>Delete</b>.<br>• انقر بزر الماوس الأيمن على أي عنصر لخيارات إضافية (تغيير القيم، الألوان، التدوير).',
         'help.close':           'إغلاق',
 
-        // === Developer + Exam Mode ===
-        'dev.loginTitle':       'تسجيل دخول المطوّر',
-        'dev.username':         'اسم المستخدم',
-        'dev.password':         'كلمة المرور',
-        'dev.welcome':          'مرحباً بك أيها المطوّر',
-        'dev.wrongCreds':       'بيانات غير صحيحة',
-        'dev.panelTitle':       'لوحة المطوّر',
-        'dev.panelHint':        'حدّد كلمة المرور التي يحتاجها الطلاب للخروج من نمط الاختبار. الطلاب يدخلون نمط الاختبار برمز 0000.',
-        'dev.exitPassword':     'كلمة مرور خروج الاختبار',
-        'dev.entryHint':        'يدخل الطلاب نمط الاختبار بالرمز:',
-        'dev.examStatus':       'حالة نمط الاختبار',
-        'dev.examInactive':     'غير مفعّل',
-        'dev.examActive':       'نمط الاختبار مُفعّل حالياً',
-        'dev.forceExit':        'إنهاء نمط الاختبار فوراً',
-        'dev.passwordRequired': 'كلمة المرور مطلوبة',
-        'dev.passwordSaved':    'تم حفظ كلمة مرور الخروج',
-        'dev.saveFailed':       'فشل الحفظ',
-        'dev.cancel':           'إلغاء',
-        'dev.ok':               'موافق',
-        'dev.save':             'حفظ',
-        'dev.close':            'إغلاق',
-        // === أداة hash ===
-        'dev.changeDevPwd':     'تغيير كلمة مرور المطوّر',
-        'dev.changeDevPwdHint': 'ولّد بصمة (hash) لكلمة المرور الجديدة، ثم الصقها في app.js على GitHub من هاتفك.',
-        'dev.newDevPwd':        'كلمة المرور الجديدة',
-        'dev.newDevPwdPh':      'أدخل كلمة المرور الجديدة',
-        'dev.generateHash':     'توليد البصمة',
-        'dev.hashResult':       'البصمة — انسخها والصقها في app.js',
-        'dev.hashInstructions': 'افتح app.js على GitHub من هاتفك، ابحث عن السطر "const DEV_PASSWORD_HASH"، واستبدل القيمة داخل علامتَي الاقتباس بهذه البصمة. ثم Commit، ثم اضغط 🔄 في التطبيق.',
-        'dev.copy':             'نسخ',
-        'dev.copied':           'تم النسخ',
-        'dev.copyManual':       'حدّد وانسخ يدوياً',
-        'dev.hashGenerated':    'تم توليد البصمة',
-        'exam.enter':           'اختبار',
-        'exam.enterTooltip':    'دخول نمط الاختبار (الرمز 0000)',
-        'exam.entryTitle':      'الدخول إلى نمط الاختبار',
-        'exam.entryCode':       'رمز الدخول',
-        'exam.wrongCode':       'رمز الدخول خاطئ',
-        'exam.alreadyActive':   'نمط الاختبار مُفعّل بالفعل',
-        'exam.entered':         'تم تفعيل نمط الاختبار',
-        'exam.exited':          'تم إنهاء نمط الاختبار',
-        'exam.wrongPassword':   'كلمة المرور خاطئة',
-        'exam.exitTitle':       'الخروج من نمط الاختبار',
-        'exam.enterPassword':   'أدخل كلمة مرور الخروج',
-        'exam.cantClear':       'لا يمكن المسح في نمط الاختبار',
-        'exam.cantLoad':        'لا يمكن التحميل في نمط الاختبار',
-        'exam.cantUseExamples': 'الأمثلة معطّلة في نمط الاختبار',
-        'exam.exit':            'خروج من الاختبار',
     }
 };
 
@@ -516,6 +434,10 @@ const IC_DEFINITIONS = {
         descKey: 'ic.7408.desc',
         sublabel: 'AND',
         pinCount: 14,
+        // نطاق التشغيل من datasheet 74LS08 (TTL)
+        voltageMin: 4.75,    // أدنى فولتية للعمل الموثوق
+        voltageMax: 5.25,    // أعلى فولتية للعمل العادي
+        absoluteMax: 7.0,    // فوقها → احتراق دائم
         pins: [
             { num: 1, name: '1A', type: 'input', side: 'left' },
             { num: 2, name: '1B', type: 'input', side: 'left' },
@@ -532,8 +454,11 @@ const IC_DEFINITIONS = {
             { num: 13, name: '4B', type: 'input', side: 'right' },
             { num: 14, name: 'VCC', type: 'power', side: 'right' },
         ],
-        evaluate(pinStates) {
-            const g = (p) => pinStates[p] || 0;
+        evaluate(pinStates, comp) {
+            // مدخلات floating → 0 (LOW) لتجنّب وميض الخرج
+            const s = comp.pinStrengths || {};
+            const isDriven = (p) => s[p] === 'strong' || s[p] === 'weak';
+            const g = (p) => isDriven(p) ? (pinStates[p] || 0) : 0;
             return {
                 3: g(1) && g(2),
                 6: g(4) && g(5),
@@ -568,6 +493,9 @@ Y = A · B (Quad 2-input AND)`,
         descKey: 'ic.7485.desc',
         sublabel: 'CMP',
         pinCount: 16,
+        voltageMin: 4.75,
+        voltageMax: 5.25,
+        absoluteMax: 7.0,
         pins: [
             { num: 1, name: 'B3', type: 'input', side: 'left' },
             { num: 2, name: 'IA<B', type: 'input', side: 'left' },        // Cascade Input
@@ -587,23 +515,32 @@ Y = A · B (Quad 2-input AND)`,
             { num: 16, name: 'VCC', type: 'power', side: 'right' },
         ],
         evaluate(pinStates, comp, nets) {
-            const g = (p) => pinStates[p] || 0;
-            const pin2Grounded = isPinGrounded(comp, 2, nets);
-            const pin4Grounded = isPinGrounded(comp, 4, nets);
-            const pin3High = g(3) === 1;
+            // — قارئ ذكي يستبدل القيم العشوائية floating بـ 0 (LOW) —
+            // المقارن حساس جداً لأي ضوضاء على أيٍّ من 11 مدخلاً، فنُجبر
+            // الـ floating على LOW حتى لا يقفز الخرج عشوائياً (سلوك مماثل
+            // لـ pull-down داخلي ضمني). الأطراف الموصولة فعلياً تأخذ قيمها.
+            const strengths = comp.pinStrengths || {};
+            const isDriven = (p) => strengths[p] === 'strong' || strengths[p] === 'weak';
+            const g = (p, dflt = 0) => isDriven(p) ? (pinStates[p] || 0) : dflt;
 
-            if (!pin2Grounded || !pin3High || !pin4Grounded) {
-                return { 5: 0, 6: 0, 7: 0 };
-            }
+            // Cascade inputs: defaults للعمل المستقل single-chip mode
+            const iLT = g(2, 0);    // IA<B floating → 0
+            const iEQ = g(3, 1);    // IA=B floating → 1 (يسمح بمقارنة 4 بت كاملة)
+            const iGT = g(4, 0);    // IA>B floating → 0
 
-            const A = [g(10), g(12), g(13), g(15)];
-            const B = [g(9), g(11), g(14), g(1)];
+            // مداخل البيانات: floating → 0 (مثل pull-down داخلي)
+            const A = [g(10), g(12), g(13), g(15)];   // A0..A3
+            const B = [g(9),  g(11), g(14), g(1)];    // B0..B3
 
+            // المقارنة 4-بت بدءاً من MSB
             for (let i = 3; i >= 0; i--) {
                 if (A[i] > B[i]) return { 5: 1, 6: 0, 7: 0 };
                 if (A[i] < B[i]) return { 5: 0, 6: 0, 7: 1 };
             }
-            return { 5: 0, 6: 1, 7: 0 };
+            // A == B → cascade يقرّر
+            if (iGT === 1 && iLT === 0) return { 5: 1, 6: 0, 7: 0 };
+            if (iLT === 1 && iGT === 0) return { 5: 0, 6: 0, 7: 1 };
+            return { 5: 0, 6: iEQ, 7: 0 };
         },
         pinout: `         ┌──U──┐
    B3    │ 1 16│ VCC
@@ -632,6 +569,9 @@ I = Cascade Input | O = Comparator Output`,
         descKey: 'ic.7447.desc',
         sublabel: 'BCD→7S',
         pinCount: 16,
+        voltageMin: 4.75,
+        voltageMax: 5.25,
+        absoluteMax: 7.0,
         pins: [
             // BCD inputs: A=LSB (weight 1), B (weight 2), C (weight 4), D=MSB (weight 8)
             { num: 1, name: 'B', type: 'input', side: 'left' },                          // BCD bit 1 (weight 2)
@@ -651,16 +591,23 @@ I = Cascade Input | O = Comparator Output`,
             { num: 15, name: 'f', type: 'output', side: 'right' },
             { num: 16, name: 'VCC', type: 'power', side: 'right' },
         ],
-        evaluate(pinStates) {
-            const g = (p) => pinStates[p] || 0;
+        evaluate(pinStates, comp) {
+            // floating → القيمة الافتراضية الآمنة (BCD=0، control inputs=1 للتعطيل)
+            const _strengths = comp.pinStrengths || {};
+            const isDriven = (p) => _strengths[p] === 'strong' || _strengths[p] === 'weak';
+            // BCD: floating → 0 (يعرض الرقم 0)
+            const g = (p) => isDriven(p) ? (pinStates[p] || 0) : 0;
+            // Control inputs (active LOW): floating → 1 (HIGH = معطّل)
+            const gc = (p) => isDriven(p) ? (pinStates[p] || 0) : 1;
+
             // BCD inputs per datasheet: A=pin7 (LSB), B=pin1, C=pin2, D=pin6 (MSB)
             const A = g(7), B = g(1), C = g(2), D = g(6);
             const bcd = A + B * 2 + C * 4 + D * 8;
 
             // Auxiliary inputs (active LOW): pin 4 = BI̅, pin 3 = LT̅, pin 5 = RBI̅
-            if (g(4) === 0) return { 13: 1, 12: 1, 11: 1, 10: 1, 9: 1, 15: 1, 14: 1 }; // BI̅=0 → blank
-            if (g(3) === 0) return { 13: 0, 12: 0, 11: 0, 10: 0, 9: 0, 15: 0, 14: 0 }; // LT̅=0 → all segments
-            if (g(5) === 0 && bcd === 0) return { 13: 1, 12: 1, 11: 1, 10: 1, 9: 1, 15: 1, 14: 1 }; // RBI̅=0 & BCD=0 → blank
+            if (gc(4) === 0) return { 13: 1, 12: 1, 11: 1, 10: 1, 9: 1, 15: 1, 14: 1 }; // BI̅=0 → blank
+            if (gc(3) === 0) return { 13: 0, 12: 0, 11: 0, 10: 0, 9: 0, 15: 0, 14: 0 }; // LT̅=0 → all segments
+            if (gc(5) === 0 && bcd === 0) return { 13: 1, 12: 1, 11: 1, 10: 1, 9: 1, 15: 1, 14: 1 }; // RBI̅=0 & BCD=0 → blank
 
             const T = [
                 [0, 0, 0, 0, 0, 0, 1],
@@ -717,6 +664,9 @@ A=LSB, D=MSB | (\\) = Active-LOW`,
         descKey: 'ic.74193.desc',
         sublabel: 'CTR',
         pinCount: 16,
+        voltageMin: 4.75,
+        voltageMax: 5.25,
+        absoluteMax: 7.0,
         // الأطراف موثّقة من Motorola/ON-Semi SN74LS193 datasheet
         // P0–P3: مداخل البيانات المتوازية (P0 = LSB)
         // Q0–Q3: مخارج العدّاد (Q0 = LSB)
@@ -745,19 +695,31 @@ A=LSB, D=MSB | (\\) = Active-LOW`,
             { num: 16, name: 'VCC', type: 'power', side: 'right' },
         ],
         evaluate(pinStates, comp) {
-            const g = (p) => pinStates[p] || 0;
+            // — مساعد ذكي للتعويم —
+            // CPU (pin 5) و CPD (pin 4): تقرأ القيم الخام (تشمل الضوضاء العشوائية)
+            //   ← هذا يحافظ على الدرس التربوي: floating clock = عدّ عشوائي
+            // باقي المداخل (MR, PL, P0..P3): floating → قيمة افتراضية آمنة
+            const s = comp.pinStrengths || {};
+            const isDriven = (p) => s[p] === 'strong' || s[p] === 'weak';
+            const g = (p) => pinStates[p] || 0;                                  // raw (للـ clock)
+            const gSafe = (p, dflt) => isDriven(p) ? (pinStates[p] || 0) : dflt; // مع default
+
             if (comp.counterValue === undefined) comp.counterValue = 0;
             if (!comp._prevClk) comp._prevClk = { up: 0, dn: 0 };
 
-            // CPU=Pin5, CPD=Pin4, MR=Pin14, PL=Pin11 (active LOW)
-            const CPU = g(5), CPD = g(4), MR = g(14), PL = g(11);
+            // Clock pins: raw (تشمل floating noise)
+            const CPU = g(5), CPD = g(4);
+            // Control pins: مع defaults آمنة
+            const MR = gSafe(14, 0);  // floating → LOW (لا reset)
+            const PL = gSafe(11, 1);  // floating → HIGH (active LOW disabled)
 
             if (MR === 1) {
                 // Master Reset (active HIGH) — يصفّر العدّاد
                 comp.counterValue = 0;
             } else if (PL === 0) {
-                // Parallel Load (active LOW) — يحمّل P0..P3
-                comp.counterValue = g(15) + g(1) * 2 + g(10) * 4 + g(9) * 8;
+                // Parallel Load (active LOW) — يحمّل P0..P3 (مع defaults 0)
+                const P0 = gSafe(15, 0), P1 = gSafe(1, 0), P2 = gSafe(10, 0), P3 = gSafe(9, 0);
+                comp.counterValue = P0 + P1 * 2 + P2 * 4 + P3 * 8;
             } else if (!comp._edgeProcessed) {
                 // كشف الحافة الصاعدة لـ CPU أو CPD
                 if (CPU === 1 && comp._prevClk.up === 0) {
@@ -815,6 +777,10 @@ P0=LSB, P3=MSB | (\\) = Active-LOW`,
         descKey: 'ic.555.desc',
         sublabel: 'TMR',
         pinCount: 8,
+        // NE555 يقبل نطاق فولتية واسع جداً مقارنة بـ TTL
+        voltageMin: 4.5,
+        voltageMax: 16.0,
+        absoluteMax: 18.0,
         // الأطراف موثّقة من Texas Instruments NE555 datasheet
         // T̄R̄Ī (Trigger, active LOW): يبدأ النبضة عندما V<1/3·VCC
         // R̄Ē̄S̄Ē̄T̄ (active LOW): يطفئ المخرج فوراً
@@ -832,7 +798,11 @@ P0=LSB, P3=MSB | (\\) = Active-LOW`,
             { num: 8, name: 'VCC', type: 'power', side: 'right' },
         ],
         evaluate(pinStates, comp, nets) {
-            const g = (p) => pinStates[p] || 0;
+            // floating defaults آمنة: RST=1 (لا reset)، TRIG=1 (لا trigger)، THRES=0 (تحت العتبة)
+            const _str = comp.pinStrengths || {};
+            const isDriven = (p) => _str[p] === 'strong' || _str[p] === 'weak';
+            const gSafe = (p, dflt) => isDriven(p) ? (pinStates[p] || 0) : dflt;
+            const g = (p) => pinStates[p] || 0; // raw للأطراف غير الحرجة
 
             if (comp.timerState === undefined) {
                 comp.timerState = {
@@ -844,9 +814,22 @@ P0=LSB, P3=MSB | (\\) = Active-LOW`,
             }
 
             const state = comp.timerState;
-            const reset = g(4);
-            const trigger = g(2);
-            const threshold = g(6);
+            const reset = gSafe(4, 1);   // floating → 1 (HIGH = لا reset، active LOW)
+
+            // إذا كان في وضع astable مكتشف، الـ output يُحدَّث من المؤقّت الزمني (خارج evaluate).
+            // هنا نحترم RESET فقط، ونُرجع الحالة الحالية.
+            if (comp._astableConfig) {
+                if (reset === 0) {
+                    state.output = 0;
+                    state.discharge = 0;
+                    comp._astableTimeAcc = 0;   // إعادة تصفير المؤقّت عند الـ reset
+                    return { 3: 0, 7: 0 };
+                }
+                return { 3: state.output, 7: state.discharge };
+            }
+
+            const trigger = gSafe(2, 1);      // floating → 1 (HIGH = لا trigger، active LOW)
+            const threshold = gSafe(6, 0);    // floating → 0 (تحت العتبة، لا تذبذب طارئ)
 
             if (reset === 0) {
                 state.output = 0;
@@ -856,10 +839,10 @@ P0=LSB, P3=MSB | (\\) = Active-LOW`,
 
             if (trigger === 0) {
                 state.output = 1;
-                state.discharge = 0;
+                state.discharge = 1;   // OUT HIGH → ترانزستور DISCH مغلق → pin 7 = HIGH (مع pull-up)
             } else if (threshold === 1) {
                 state.output = 0;
-                state.discharge = 1;
+                state.discharge = 0;   // OUT LOW → ترانزستور DISCH مفتوح → pin 7 يصرّف للأرضي = LOW
             }
 
             return {
@@ -928,20 +911,27 @@ class HistoryManager {
 
     undo() {
         if (this.undoStack.length === 0) return;
+        // تنظيف حالات الواجهة قبل التراجع لمنع تجمّد التطبيق
+        // (مثلاً مرجع قديم لعنصر تم حذفه ثم استعادته)
+        resetInteractionState();
         const action = this.undoStack.pop();
         this.redoStack.push(action);
         this.isRestoring = true;
-        this.apply(action, true);
+        try { this.apply(action, true); }
+        catch (err) { console.error('Undo apply error:', err); }
         this.isRestoring = false;
         this.updateUI();
     }
 
     redo() {
         if (this.redoStack.length === 0) return;
+        // نفس التنظيف قبل الإعادة
+        resetInteractionState();
         const action = this.redoStack.pop();
         this.undoStack.push(action);
         this.isRestoring = true;
-        this.apply(action, false);
+        try { this.apply(action, false); }
+        catch (err) { console.error('Redo apply error:', err); }
         this.isRestoring = false;
         this.updateUI();
     }
@@ -1030,6 +1020,44 @@ class HistoryManager {
 const history = new HistoryManager();
 
 // ==========================================
+// INTERACTION STATE RESET — يُنادى قبل undo/redo
+// ==========================================
+// يضمن أن أي حالة معلّقة (سحب، رسم سلك، وضع مكوّن) تنتهي قبل التراجع،
+// حتى لا تبقى مراجع للعناصر المحذوفة وتسبّب تجمّد الواجهة.
+function resetInteractionState() {
+    try {
+        // إلغاء رسم سلك إذا كان جارياً
+        if (typeof wireStartComp !== 'undefined' && wireStartComp) {
+            wireStartComp = null;
+            if (typeof wireStartPin !== 'undefined') wireStartPin = null;
+            if (typeof wireDrawLine !== 'undefined' && wireDrawLine) {
+                wireDrawLine.remove();
+                wireDrawLine = null;
+            }
+        }
+        // إلغاء سحب مكوّن
+        if (typeof isDragging !== 'undefined') isDragging = false;
+        if (typeof dragComp !== 'undefined') dragComp = null;
+        // إلغاء وضع مكوّن
+        if (typeof placingType !== 'undefined' && placingType) {
+            placingType = null;
+            if (typeof ghostPreview !== 'undefined' && ghostPreview) {
+                ghostPreview.remove();
+                ghostPreview = null;
+            }
+        }
+        // إلغاء تحديد مربّع
+        if (typeof isSelecting !== 'undefined') isSelecting = false;
+        if (typeof selectionRect !== 'undefined' && selectionRect) {
+            selectionRect.remove();
+            selectionRect = null;
+        }
+    } catch (e) {
+        console.warn('resetInteractionState issue:', e);
+    }
+}
+
+// ==========================================
 // RESTORE HELPERS
 // ==========================================
 function restoreComponent(compData) {
@@ -1108,6 +1136,114 @@ let compIdCounter = 0;
 let wireIdCounter = 0;
 const components = new Map();
 const wires = new Map();
+
+// تحليل قوّة الإشارة لكل شبكة (يُحدَّث في نهاية simulate)
+// كل عنصر: { net, drivers, value, strength, conflict }
+//   strength: 'strong' | 'weak' | 'floating' | 'conflict'
+let netAnalysis = [];
+
+// مؤقّت تذبذب الـ 555 (يعمل فقط عند وجود 555 في وضع astable)
+let astableTimerHandle = null;
+let astableLastTime = 0;
+
+function startAstableTimer() {
+    if (astableTimerHandle) return;
+    astableLastTime = performance.now();
+    astableTimerHandle = setInterval(astableTick, 50);   // 20 Hz refresh
+}
+
+function stopAstableTimer() {
+    if (astableTimerHandle) {
+        clearInterval(astableTimerHandle);
+        astableTimerHandle = null;
+    }
+}
+
+function astableTick() {
+    const now = performance.now();
+    const dt = (now - astableLastTime) / 1000;   // ثوانٍ
+    astableLastTime = now;
+
+    let anyChanged = false;
+    for (const [, comp] of components) {
+        if (comp.type !== 'IC555' || !comp._astableConfig) continue;
+        if (!comp.timerState) comp.timerState = { output: 0, discharge: 0 };
+
+        // نتقدّم بالزمن المتراكم وفقاً لـ T_high أو T_low بحسب الحالة
+        comp._astableTimeAcc = (comp._astableTimeAcc || 0) + dt;
+        const tH = comp._astablePeriodHigh;
+        const tL = comp._astablePeriodLow;
+
+        // إذا كان الـ output حالياً HIGH، الانتظار T_high ثم القلب إلى LOW
+        // إذا كان LOW، الانتظار T_low ثم القلب إلى HIGH
+        let didFlip = false;
+        let safety = 0;
+        while (safety++ < 100) {
+            const target = comp.timerState.output ? tH : tL;
+            if (comp._astableTimeAcc < target) break;
+            comp._astableTimeAcc -= target;
+            comp.timerState.output = comp.timerState.output ? 0 : 1;
+            comp.timerState.discharge = comp.timerState.output;   // pin 7 يطابق pin 3
+            didFlip = true;
+        }
+
+        if (didFlip) {
+            anyChanged = true;
+            // نسخ القيم إلى pinStates مباشرة (لأن evaluate() لن يعيد الحساب إلا عند simulate)
+            comp.pinStates[3] = comp.timerState.output;
+            comp.pinStates[7] = comp.timerState.discharge;
+        }
+    }
+
+    if (anyChanged) simulate();
+}
+
+// ==========================================
+// NOISE TIMER — محاكاة الضوضاء على الـ floating inputs
+// ==========================================
+// عندما يكون هناك input على IC في حالة floating (غير متصل بـ pull-up/down)،
+// نُعيد تشغيل simulate() عدة مرات في الثانية لتوليد قيم عشوائية متجدّدة.
+// هذا يُظهر للطالب السلوك غير الموثوق للدوائر الحقيقية:
+//   • العدّاد يقفز عشوائياً
+//   • الـ LEDs ترمش
+//   • مخارج البوابات تتذبذب
+let noiseTimerHandle = null;
+
+function startNoiseTimer() {
+    if (noiseTimerHandle) return;
+    noiseTimerHandle = setInterval(noiseTick, 100);   // 10 Hz — ضوضاء مرئية للعين
+}
+
+function stopNoiseTimer() {
+    if (noiseTimerHandle) {
+        clearInterval(noiseTimerHandle);
+        noiseTimerHandle = null;
+    }
+}
+
+function hasFloatingICInput() {
+    // الساعة الدورية تعمل عند وجود أي IC بمدخل floating
+    // (لتجديد القيم العشوائية بصرياً كل 100ms)
+    for (const [, comp] of components) {
+        if (!isICType(comp.type)) continue;
+        const def = IC_DEFINITIONS[comp.type];
+        if (!def) continue;
+        const s = comp.pinStrengths || {};
+        for (const pinDef of def.pins) {
+            if (pinDef.type !== 'input') continue;
+            if (s[pinDef.num] === 'floating') return true;
+        }
+    }
+    return false;
+}
+
+function noiseTick() {
+    if (!hasFloatingICInput()) {
+        stopNoiseTimer();
+        return;
+    }
+    simulate();   // إعادة الحساب — القيم العشوائية ستتجدّد في تحليل الـ nets
+}
 let currentTool = 'select';
 let placingType = null;
 let selectedCompId = null;
@@ -1252,9 +1388,11 @@ function getPinDirection(compId, pinNum) {
     } else if (comp.type === 'DIP_SWITCH') {
         dir = pinNum <= 4 ? { dx: -1, dy: 0 } : { dx: 1, dy: 0 };
     } else if (comp.type === 'SWITCH') {
-        dir = pinNum === 1 ? { dx: 0, dy: -1 } : { dx: 0, dy: 1 };
+        dir = { dx: 0, dy: -1 };       // مفتاح منطقي: قطب واحد للأعلى
     } else if (comp.type === 'PUSH_BUTTON') {
-        dir = pinNum === 1 ? { dx: 0, dy: -1 } : { dx: 0, dy: 1 };
+        dir = { dx: 0, dy: -1 };       // زر منطقي: قطب واحد للأعلى
+    } else if (comp.type === 'SWITCH_PHYSICAL' || comp.type === 'PUSH_BUTTON_PHYSICAL') {
+        dir = pinNum === 1 ? { dx: 0, dy: -1 } : { dx: 0, dy: 1 };   // فيزيائي: قطبان
     } else if (comp.type === 'LED') {
         dir = { dx: 0, dy: 1 };
     } else if (comp.type === 'VCC') {
@@ -1294,7 +1432,8 @@ function getWireExtension(compId, pinNum) {
     }
 
     if (comp.type === 'DIP_SWITCH') return 12;
-    if (comp.type === 'SWITCH' || comp.type === 'PUSH_BUTTON') return 12;
+    if (comp.type === 'SWITCH' || comp.type === 'PUSH_BUTTON' ||
+        comp.type === 'SWITCH_PHYSICAL' || comp.type === 'PUSH_BUTTON_PHYSICAL') return 12;
     return 12;
 }
 
@@ -1334,6 +1473,7 @@ function createComponent(type, x, y) {
         x: clampedX,
         y: clampedY,
         pinStates: {},
+        pinStrengths: {},   // 'strong' | 'weak' | 'floating' لكل قطب
         outputStates: {},
         state: 0,
         rotation: 0,
@@ -1355,14 +1495,24 @@ function createComponent(type, x, y) {
         SEVEN_SEG_PINS.forEach(p => { comp.pinStates[p.num] = 0; });
         comp.color = 'red';
     } else if (type === 'SWITCH') {
+        // مفتاح منطقي ثنائي مستقرّ — قطب واحد، يولّد HIGH/LOW
         comp.state = 0;
         comp.pinStates = { 1: 0 };
     } else if (type === 'PUSH_BUTTON') {
+        // زر منطقي لحظي — قطب واحد، يولّد HIGH عند الضغط
+        comp.state = 0;
+        comp.pinStates = { 1: 0 };
+    } else if (type === 'SWITCH_PHYSICAL') {
+        // مفتاح فيزيائي ثنائي مستقرّ — قطبان، يصلهما عند الإغلاق
+        comp.state = 0;
+        comp.pinStates = { 1: 0, 2: 0 };
+    } else if (type === 'PUSH_BUTTON_PHYSICAL') {
+        // زر فيزيائي لحظي — قطبان، يصلهما أثناء الضغط
         comp.state = 0;
         comp.pinStates = { 1: 0, 2: 0 };
     } else if (type === 'DIP_SWITCH') {
         comp.state = [0, 0, 0, 0];
-        comp.pinStates = { 1: 0, 2: 0, 3: 0, 4: 0 };
+        comp.pinStates = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 };
     } else if (type === 'LED') {
         comp.state = 0;
         comp.burned = false;
@@ -1375,8 +1525,8 @@ function createComponent(type, x, y) {
         comp.capacitance = '100nF';
         comp.pinStates = { 1: 0, 2: 0 };
     } else if (type === 'VCC') {
-        comp.voltage = '5V';
-        comp.pinStates = { 1: 1 };
+        comp.voltage = 0;          // الافتراضي: مطفأ — المستخدم يجب أن يحدّد الفولتية
+        comp.pinStates = { 1: 0 };
     } else if (type === 'GND') {
         comp.pinStates = { 1: 0 };
     }
@@ -1391,6 +1541,15 @@ function createComponent(type, x, y) {
     });
 
     return comp;
+}
+
+/** ينشئ VCC ويضبطه على فولتية محدّدة (للأمثلة المضمّنة). */
+function createPoweredVCC(x, y, voltage = 5) {
+    const v = createComponent('VCC', x, y);
+    v.voltage = voltage;
+    v.pinStates[1] = voltage > 0 ? 1 : 0;
+    renderComponent(v);
+    return v;
 }
 
 // ==========================================
@@ -1420,6 +1579,10 @@ function renderComponent(comp) {
         renderSwitch(el, comp);
     } else if (comp.type === 'PUSH_BUTTON') {
         renderPushButton(el, comp);
+    } else if (comp.type === 'SWITCH_PHYSICAL') {
+        renderSwitchPhysical(el, comp);
+    } else if (comp.type === 'PUSH_BUTTON_PHYSICAL') {
+        renderPushButtonPhysical(el, comp);
     } else if (comp.type === 'DIP_SWITCH') {
         renderDIPSwitch(el, comp);
     } else if (comp.type === 'LED') {
@@ -1484,14 +1647,41 @@ function renderSwitch(el, comp) {
         <div class="switch-body ${comp.state ? 'on' : ''}" data-comp="${comp.id}">
             <div class="switch-knob"></div>
         </div>
+    `;
+}
+
+function renderPushButton(el, comp) {
+    // الزر المنطقي: قطب واحد، يولّد إشارة بنفسه
+    el.classList.add('push-button-component');
+    el.innerHTML = `
+        <div class="switch-pin" data-comp="${comp.id}" data-pin="1">
+            <div class="pin-dot" data-comp="${comp.id}" data-pin="1"></div>
+        </div>
+        <div class="push-button-body ${comp.state ? 'pressed' : ''}" data-comp="${comp.id}">
+            <div class="push-button-cap"></div>
+        </div>
+    `;
+}
+
+function renderSwitchPhysical(el, comp) {
+    // مفتاح فيزيائي: قطبان (علوي وسفلي)
+    el.classList.add('switch-component', 'switch-physical');
+    el.innerHTML = `
+        <div class="switch-pin" data-comp="${comp.id}" data-pin="1">
+            <div class="pin-dot" data-comp="${comp.id}" data-pin="1"></div>
+        </div>
+        <div class="switch-body ${comp.state ? 'on' : ''}" data-comp="${comp.id}">
+            <div class="switch-knob"></div>
+        </div>
         <div class="switch-pin" data-comp="${comp.id}" data-pin="2">
             <div class="pin-dot" data-comp="${comp.id}" data-pin="2"></div>
         </div>
     `;
 }
 
-function renderPushButton(el, comp) {
-    el.classList.add('push-button-component');
+function renderPushButtonPhysical(el, comp) {
+    // زر فيزيائي: قطبان (علوي وسفلي)
+    el.classList.add('push-button-component', 'push-button-physical');
     el.innerHTML = `
         <div class="switch-pin" data-comp="${comp.id}" data-pin="1">
             <div class="pin-dot" data-comp="${comp.id}" data-pin="1"></div>
@@ -1576,8 +1766,11 @@ function renderCapacitor(el, comp) {
 
 function renderVCC(el, comp) {
     el.classList.add('vcc-component');
+    const v = (typeof comp.voltage === 'number') ? comp.voltage : 5;
+    const label = (v === 0) ? 'OFF' : `+${v}V`;
+    el.classList.toggle('unpowered', v === 0);
     el.innerHTML = `
-        <div class="vcc-symbol">+${comp.voltage || '5V'}</div>
+        <div class="vcc-symbol">${label}</div>
         <div class="power-pin" data-comp="${comp.id}" data-pin="1">
             <div class="pin-dot" data-comp="${comp.id}" data-pin="1"></div>
         </div>
@@ -1681,10 +1874,10 @@ function updateComponentVisuals(comp) {
     const el = document.getElementById(comp.id);
     if (!el) return;
 
-    if (comp.type === 'SWITCH') {
+    if (comp.type === 'SWITCH' || comp.type === 'SWITCH_PHYSICAL') {
         const body = el.querySelector('.switch-body');
         if (body) body.classList.toggle('on', !!comp.state);
-    } else if (comp.type === 'PUSH_BUTTON') {
+    } else if (comp.type === 'PUSH_BUTTON' || comp.type === 'PUSH_BUTTON_PHYSICAL') {
         const body = el.querySelector('.push-button-body');
         if (body) body.classList.toggle('pressed', !!comp.state);
     } else if (comp.type === 'DIP_SWITCH') {
@@ -1733,7 +1926,8 @@ function updateComponentVisuals(comp) {
 
     if (isICType(comp.type)) {
         const powered = isICPowered(comp);
-        el.classList.toggle('unpowered', !powered);
+        el.classList.toggle('unpowered', !powered && !comp.burned);
+        el.classList.toggle('ic-burned', !!comp.burned);
     }
 
     const dots = el.querySelectorAll('.pin-dot');
@@ -1741,6 +1935,19 @@ function updateComponentVisuals(comp) {
         const pinNum = parseInt(dot.dataset.pin);
         const val = comp.pinStates[pinNum] || 0;
         dot.classList.toggle('high', !!val);
+
+        // تحذير floating لمدخلات الـ ICs المُغذّاة فقط (إن كان IC غير مُغذّى لا داعي للتحذير)
+        if (isICType(comp.type) && isICPowered(comp) && !comp.burned) {
+            const def = IC_DEFINITIONS[comp.type];
+            const pinDef = def.pins.find(p => p.num === pinNum);
+            const isInput = pinDef && pinDef.type === 'input';
+            const isConnected = isPinConnected(comp.id, pinNum);
+            const strength = (comp.pinStrengths && comp.pinStrengths[pinNum]) || 'floating';
+            const isFloating = isConnected && strength === 'floating';
+            dot.classList.toggle('floating', !!(isInput && isFloating));
+        } else {
+            dot.classList.remove('floating');
+        }
     });
 }
 
@@ -2229,6 +2436,31 @@ function isICPowered(comp) {
     return vccHigh && gndConnected;
 }
 
+/**
+ * يحسب فولتية التغذية الفعلية على pin VCC للـ IC، بفحص الشبكة المتصلة.
+ * يُرجع 0 إن لم يكن هناك VCC مُغذٍّ في الشبكة، وأعلى فولتية إن وُجدت عدّة مصادر.
+ */
+function getICSupplyVoltage(comp, nets) {
+    const def = IC_DEFINITIONS[comp.type];
+    const vccPin = def.pins.find(p => p.name === 'VCC');
+    if (!vccPin) return 0;
+
+    for (const net of nets) {
+        const hasIcVcc = net.some(p => p.comp === comp.id && p.pin === vccPin.num);
+        if (!hasIcVcc) continue;
+        let maxV = 0;
+        for (const p of net) {
+            const c = components.get(p.comp);
+            if (c && c.type === 'VCC') {
+                const v = (typeof c.voltage === 'number') ? c.voltage : 5;
+                if (v > maxV) maxV = v;
+            }
+        }
+        return maxV;
+    }
+    return 0;
+}
+
 function isLEDProtected(ledComp, nets) {
     for (const net of nets) {
         const hasLED = net.some(p => p.comp === ledComp.id && p.pin === 1);
@@ -2284,11 +2516,92 @@ function isPinConnected(compId, pinNum) {
     return false;
 }
 
+/**
+ * تحويل قيمة المكثّف من نص (مثل "100nF") إلى رقم بالـ Farads.
+ */
+function parseCapacitance(str) {
+    if (!str) return 100e-9;
+    const m = str.match(/^([\d.]+)\s*(pF|nF|µF|uF)?$/i);
+    if (!m) return 100e-9;
+    const val = parseFloat(m[1]);
+    const unit = (m[2] || '').toLowerCase().replace('µ', 'u');
+    const mult = { 'pf': 1e-12, 'nf': 1e-9, 'uf': 1e-6 }[unit] || 1e-9;
+    return val * mult;
+}
+
+/**
+ * يكشف ما إذا كان الـ 555 موصولاً في وضع astable الكلاسيكي،
+ * ويُرجع قيم R1 و R2 و C إذا نجح الكشف.
+ *
+ * شروط الكشف:
+ *   - TRIG (pin 2) و THRES (pin 6) على نفس الشبكة
+ *   - مكثّف موصول بين هذه الشبكة و GND (يستخدم القيمة الافتراضية إن لم يوجد)
+ *   - مقاومة بين هذه الشبكة و DISCH (pin 7)  → R2
+ *   - مقاومة بين DISCH و VCC                → R1
+ */
+function detectAstable555(comp, nets) {
+    const findNet = (pin) => nets.find(n => n.some(p => p.comp === comp.id && p.pin === pin));
+
+    const netTrigThres = findNet(2);
+    if (!netTrigThres) return null;
+    if (!netTrigThres.some(p => p.comp === comp.id && p.pin === 6)) return null;
+
+    // قيم افتراضية احتياطية
+    let C = 100e-9;
+    let R1 = 1000;
+    let R2 = 10000;
+
+    // ابحث عن مكثّف على الشبكة TRIG/THRES
+    for (const pinRef of netTrigThres) {
+        const c = components.get(pinRef.comp);
+        if (c && c.type === 'CAPACITOR') {
+            C = parseCapacitance(c.capacitance);
+            break;
+        }
+    }
+
+    // ابحث عن مقاومة بين TRIG/THRES و DISCH (R2)
+    const netDisch = findNet(7);
+    if (netDisch) {
+        for (const pinRef of netTrigThres) {
+            const c = components.get(pinRef.comp);
+            if (c && c.type === 'RESISTOR') {
+                const otherPin = pinRef.pin === 1 ? 2 : 1;
+                const onDisch = netDisch.some(p => p.comp === pinRef.comp && p.pin === otherPin);
+                if (onDisch) { R2 = c.resistance || 10000; break; }
+            }
+        }
+    }
+
+    // ابحث عن مقاومة بين DISCH و VCC (R1)
+    const netVcc = findNet(8);
+    if (netDisch && netVcc) {
+        for (const pinRef of netDisch) {
+            const c = components.get(pinRef.comp);
+            if (c && c.type === 'RESISTOR') {
+                const otherPin = pinRef.pin === 1 ? 2 : 1;
+                const onVcc = netVcc.some(p => p.comp === pinRef.comp && p.pin === otherPin);
+                if (onVcc) { R1 = c.resistance || 1000; break; }
+            }
+        }
+    }
+
+    return { R1, R2, C };
+}
+
 // ==========================================
 // SIMULATION ENGINE
 // ==========================================
 function simulate() {
     const nets = buildNets();
+
+    // ضمان تزامن VCC pinStates مع قيمة voltage الحالية
+    for (const [, comp] of components) {
+        if (comp.type === 'VCC') {
+            const v = (typeof comp.voltage === 'number') ? comp.voltage : 5;
+            comp.pinStates[1] = v > 0 ? 1 : 0;
+        }
+    }
 
     for (const [, comp] of components) {
         if (isICType(comp.type)) {
@@ -2314,34 +2627,113 @@ function simulate() {
         }
     }
 
+    // إعادة تصفير pinStrengths في بداية كل دورة
+    for (const [, comp] of components) {
+        if (!comp.pinStrengths) comp.pinStrengths = {};
+        for (const k in comp.pinStates) {
+            comp.pinStrengths[k] = 'floating';
+        }
+    }
+
     for (let iter = 0; iter < 20; iter++) {
         let changed = false;
 
         for (const net of nets) {
-            let value = 0;
+            // **التقييم الجديد المعتمد على قوّة الإشارة:**
+            //
+            // المساهمون "المباشرون" (يُولّدون قوّتهم بأنفسهم):
+            //   strong-HI: VCC مباشر (voltage>0)، SWITCH ON، PUSH_BUTTON ON،
+            //              مخرج IC نشط HIGH
+            //   strong-LO: GND مباشر، مخرج IC نشط LOW
+            //
+            // المكوّنات "الناقلة" (تنقل قوّة قطبها الآخر، مع تعديل):
+            //   المقاومة: strong → weak (تُضعف الإشارة)، weak → weak، floating → floating
+            //   المكثّف: مثل المقاومة
+            //   المفتاح الفيزيائي / الزر الفيزيائي: ينقل القوّة كما هي (strong→strong)
+            //   DIP_SWITCH: مثل المفتاح الفيزيائي
+            //
+            // ترتيب الأولوية:
+            //   strong-1 + strong-0 → conflict (نُعتبره HIGH افتراضياً)
+            //   strong وحده → القوّة قويّة، القيمة بحسبه
+            //   weak وحده → القوّة ضعيفة، القيمة بحسبه (هذا هو الـ pull-up/down الطبيعي)
+            //   لا شيء → floating
+
+            let strongHi = false, strongLo = false;
+            let weakHi = false, weakLo = false;
+
             for (const pin of net) {
                 const comp = components.get(pin.comp);
                 if (!comp) continue;
+
                 if (comp.type === 'VCC') {
-                    value = 1;
+                    const v = (typeof comp.voltage === 'number') ? comp.voltage : 5;
+                    if (v > 0) strongHi = true;
                 } else if (comp.type === 'GND') {
-                    // value stays 0
-                } else if (comp.type === 'RESISTOR' || comp.type === 'CAPACITOR' || comp.type === 'SWITCH' || comp.type === 'PUSH_BUTTON') {
+                    strongLo = true;
+                } else if (comp.type === 'SWITCH') {
+                    // Logic Toggle: مصدر منطقي نشط في الحالتَين — يدفع HIGH عند ON و LOW عند OFF.
+                    // (لا يصبح floating أبداً — لذلك لا يتأثر بنظام الضوضاء)
+                    if (comp.state) strongHi = true;
+                    else            strongLo = true;
+                } else if (comp.type === 'PUSH_BUTTON') {
+                    // Logic Push: نفس السلوك — مصدر نشط دائماً
+                    if (comp.state) strongHi = true;
+                    else            strongLo = true;
+                } else if (comp.type === 'SWITCH_PHYSICAL' || comp.type === 'PUSH_BUTTON_PHYSICAL') {
+                    // المفتاح الفيزيائي: عند state=1، merge في buildNets يجمع الشبكتَين تلقائياً.
+                    // عند state=0، الشبكتان منفصلتان ولا يُسمح بأي نقل.
+                    // لا حاجة لمعالجة هنا — السلوك ينبع من بنية الشبكة.
+                } else if (comp.type === 'RESISTOR') {
+                    // المقاومة تُضعف الإشارة: strong → weak
                     const otherPin = pin.pin === 1 ? 2 : 1;
-                    value = value || (comp.pinStates[otherPin] || 0);
-                } else if (comp.type === 'DIP_SWITCH') {
-                    const pairs = { 1: 8, 2: 7, 3: 6, 4: 5, 5: 4, 6: 3, 7: 2, 8: 1 };
-                    const otherPin = pairs[pin.pin];
-                    if (otherPin) {
-                        value = value || (comp.pinStates[otherPin] || 0);
+                    const otherV = comp.pinStates[otherPin] || 0;
+                    const otherS = comp.pinStrengths[otherPin] || 'floating';
+                    if (otherS === 'strong' || otherS === 'weak') {
+                        if (otherV) weakHi = true; else weakLo = true;
                     }
+                } else if (comp.type === 'CAPACITOR') {
+                    // المكثّف يمرّر مثل المقاومة (نموذج مبسّط)
+                    const otherPin = pin.pin === 1 ? 2 : 1;
+                    const otherV = comp.pinStates[otherPin] || 0;
+                    const otherS = comp.pinStrengths[otherPin] || 'floating';
+                    if (otherS === 'strong' || otherS === 'weak') {
+                        if (otherV) weakHi = true; else weakLo = true;
+                    }
+                } else if (comp.type === 'DIP_SWITCH') {
+                    // مثل المفتاح الفيزيائي: merge في buildNets يجمع الشبكات للـ bits المفعّلة.
+                    // لا حاجة للنقل اليدوي هنا.
                 } else if (isICType(comp.type)) {
                     const def = IC_DEFINITIONS[comp.type];
                     const pinDef = def.pins.find(p => p.num === pin.pin);
                     if (pinDef && pinDef.type === 'output') {
-                        value = value || (comp.pinStates[pin.pin] || 0);
+                        if (isICPowered(comp) && !comp.burned) {
+                            if (comp.pinStates[pin.pin] === 1) strongHi = true;
+                            else strongLo = true;
+                        }
                     }
                 }
+            }
+
+            // قرار القيمة + القوّة
+            let value, strength;
+            if (strongHi && strongLo)      { value = 1; strength = 'strong'; }   // conflict (نُعتبره strong-1)
+            else if (strongHi)             { value = 1; strength = 'strong'; }
+            else if (strongLo)             { value = 0; strength = 'strong'; }
+            else if (weakHi && weakLo)     { value = 1; strength = 'weak'; }     // weak conflict
+            else if (weakHi)               { value = 1; strength = 'weak'; }
+            else if (weakLo)               { value = 0; strength = 'weak'; }
+            else                           {
+                // FLOATING — قيمة ثابتة LOW افتراضياً (لا وميض في الأسلاك)،
+                // **إلّا** إذا كانت الشبكة متصلة بساعة 74193 (CPU=5 أو CPD=4):
+                // عندها نُولّد قيمة عشوائية لتعليم الطالب أهمية pull resistors
+                // على الـ edge-triggered clock pins. كل الـ ICs الأخرى تستخدم
+                // isDriven داخلياً، فمخارجها ثابتة بكل الأحوال.
+                const has193Clock = net.some(p => {
+                    const c = components.get(p.comp);
+                    return c && c.type === 'IC74193' && (p.pin === 4 || p.pin === 5);
+                });
+                value = has193Clock ? (Math.random() < 0.5 ? 1 : 0) : 0;
+                strength = 'floating';
             }
 
             for (const pin of net) {
@@ -2349,6 +2741,7 @@ function simulate() {
                 if (!comp) continue;
                 if (comp.type === 'LED') {
                     if (comp.pinStates[1] !== value) { comp.pinStates[1] = value; changed = true; }
+                    comp.pinStrengths[1] = strength;
                     comp.state = value;
 
                     if (value) {
@@ -2397,8 +2790,10 @@ function simulate() {
                     }
                 } else if (isSevenSegType(comp.type)) {
                     if (comp.pinStates[pin.pin] !== value) { comp.pinStates[pin.pin] = value; changed = true; }
+                    comp.pinStrengths[pin.pin] = strength;
                 } else if (comp.type === 'RESISTOR' || comp.type === 'CAPACITOR') {
                     if (comp.pinStates[pin.pin] !== value) { comp.pinStates[pin.pin] = value; changed = true; }
+                    comp.pinStrengths[pin.pin] = strength;
                 } else if (isICType(comp.type)) {
                     const def = IC_DEFINITIONS[comp.type];
                     const pinDef = def.pins.find(p => p.num === pin.pin);
@@ -2407,15 +2802,34 @@ function simulate() {
                             comp.pinStates[pin.pin] = value;
                             changed = true;
                         }
+                        comp.pinStrengths[pin.pin] = strength;
                     }
+                } else if (comp.type === 'SWITCH_PHYSICAL' || comp.type === 'PUSH_BUTTON_PHYSICAL') {
+                    // المفاتيح الفيزيائية: تحفظ القيمة والقوّة لتمريرها للجانب الآخر في iter لاحق
+                    if (comp.pinStates[pin.pin] !== value) { comp.pinStates[pin.pin] = value; changed = true; }
+                    if (comp.pinStrengths[pin.pin] !== strength) { comp.pinStrengths[pin.pin] = strength; changed = true; }
+                } else if (comp.type === 'DIP_SWITCH') {
+                    if (comp.pinStates[pin.pin] !== value) { comp.pinStates[pin.pin] = value; changed = true; }
+                    if (comp.pinStrengths[pin.pin] !== strength) { comp.pinStrengths[pin.pin] = strength; changed = true; }
                 }
             }
         }
 
         for (const [, comp] of components) {
             if (isICType(comp.type)) {
-                if (!isICPowered(comp)) {
-                    const def = IC_DEFINITIONS[comp.type];
+                const def = IC_DEFINITIONS[comp.type];
+
+                // فحص الفولتية الفعلية ومنطق الاحتراق
+                const supplyV = getICSupplyVoltage(comp, nets);
+                const absMax = def.absoluteMax || Infinity;
+                const vMin = def.voltageMin || 0;
+
+                // الاحتراق ديناميكي — يعكس الفولتية الحالية فقط (للتجربة في الدوائر المعقدة)
+                comp.burned = supplyV > absMax;
+
+                // IC محترق أو غير مغذٍّ بشكل صحيح → كل المخارج 0
+                const undervolted = supplyV > 0 && supplyV < vMin;
+                if (comp.burned || !isICPowered(comp) || undervolted) {
                     def.pins.forEach(p => {
                         if (p.type === 'output' && comp.pinStates[p.num] !== 0) {
                             comp.pinStates[p.num] = 0;
@@ -2424,7 +2838,6 @@ function simulate() {
                     });
                     continue;
                 }
-                const def = IC_DEFINITIONS[comp.type];
                 const outputs = def.evaluate(comp.pinStates, comp, nets);
                 for (const [pin, val] of Object.entries(outputs)) {
                     const pinNum = parseInt(pin);
@@ -2468,18 +2881,48 @@ function simulate() {
         }
     }
 
+    // تحليل قوّة الإشارة لكل شبكة (للمكوّنات الجديدة وفحوصات الاحتراق)
+    netAnalysis = analyzeNets(nets);
+
+    // كشف وضع astable للـ 555 وتحديث المؤقّت
+    let anyAstable = false;
+    for (const [, comp] of components) {
+        if (comp.type === 'IC555') {
+            // الـ 555 المحترق أو غير المغذّى لا يتذبذب
+            const supplyV = getICSupplyVoltage(comp, nets);
+            const def = IC_DEFINITIONS.IC555;
+            const powered = isICPowered(comp) && !comp.burned &&
+                supplyV >= (def.voltageMin || 0) && supplyV <= (def.absoluteMax || Infinity);
+
+            if (powered) {
+                comp._astableConfig = detectAstable555(comp, nets);
+                if (comp._astableConfig) {
+                    const cfg = comp._astableConfig;
+                    comp._astablePeriodHigh = 0.693 * (cfg.R1 + cfg.R2) * cfg.C;
+                    comp._astablePeriodLow  = 0.693 * cfg.R2 * cfg.C;
+                    if (comp._astableTimeAcc === undefined) comp._astableTimeAcc = 0;
+                    anyAstable = true;
+                }
+            } else {
+                comp._astableConfig = null;
+            }
+        }
+    }
+    if (anyAstable) startAstableTimer();
+    else stopAstableTimer();
+
     for (const [, wire] of wires) {
         const fromComp = components.get(wire.from.comp);
         const toComp = components.get(wire.to.comp);
         let active = false;
 
         if (fromComp) {
-            if (fromComp.type === 'VCC') active = true;
+            if (fromComp.type === 'VCC') active = (typeof fromComp.voltage === 'number' ? fromComp.voltage : 5) > 0;
             else if (fromComp.type === 'SWITCH') active = !!fromComp.state;
             else active = !!(fromComp.pinStates[wire.from.pin]);
         }
         if (toComp && !active) {
-            if (toComp.type === 'VCC') active = true;
+            if (toComp.type === 'VCC') active = (typeof toComp.voltage === 'number' ? toComp.voltage : 5) > 0;
             else if (toComp.type === 'SWITCH') active = !!toComp.state;
             else active = !!(toComp.pinStates[wire.to.pin]);
         }
@@ -2502,6 +2945,13 @@ function simulate() {
         if (comp && isICType(comp.type)) {
             updatePinStatesDisplay(comp);
         }
+    }
+
+    // === تفعيل/تعطيل ساعة الضوضاء حسب وجود floating inputs على ICs ===
+    if (hasFloatingICInput()) {
+        startNoiseTimer();
+    } else {
+        stopNoiseTimer();
     }
 }
 
@@ -2545,26 +2995,140 @@ function buildNets() {
         }
     }
 
+    // المرور 1: دمج الشبكات بناءً على الأسلاك فقط
     for (const [, wire] of wires) {
         merge(wire.from.comp, wire.from.pin, wire.to.comp, wire.to.pin);
     }
 
+    // === فحص: هل يصل من هذا الطرف مصدر قوي (VCC/GND/مخرج IC/مفتاح منطقي)؟ ===
+    // الفحص يعبر عبر المقاومات (لدعم pull-up/pull-down) ولا يعبر عبر المفاتيح
+    // الفيزيائية (لأنها هي ما نقرّر تفعيله الآن).
+    function hasReachableStrongSource(compId, pinNum, visited) {
+        const k = pinKey(compId, pinNum);
+        if (visited.has(k)) return false;
+        visited.add(k);
+        const netIdx = pinToNet.get(k);
+        if (netIdx === undefined) return false;
+        for (const p of nets[netIdx]) {
+            const c = components.get(p.comp);
+            if (!c) continue;
+            if (c.type === 'VCC' || c.type === 'GND') return true;
+            if (c.type === 'SWITCH' || c.type === 'PUSH_BUTTON') return true;   // مصدر نشط دائماً
+            if (isICType(c.type)) {
+                const def = IC_DEFINITIONS[c.type];
+                const pinDef = def && def.pins.find(pp => pp.num === p.pin);
+                if (pinDef && pinDef.type === 'output') return true;
+            }
+            if (c.type === 'RESISTOR') {
+                // المقاومة تمرّر — اعبر إلى الطرف الآخر (لدعم pull-up و pull-down)
+                const otherPin = p.pin === 1 ? 2 : 1;
+                if (hasReachableStrongSource(p.comp, otherPin, visited)) return true;
+            }
+        }
+        return false;
+    }
+
+    // المرور 2: دمج الشبكات عبر المفاتيح الفيزيائية و DIP — بشرط وجود مصدر طاقة
+    // قاعدة جديدة: المفتاح الفيزيائي/الزر لا يعمل إلا إذا كان أحد قطبَيه متصلاً
+    // (مباشرة أو عبر مقاومة) بـ VCC، GND، مخرج IC، أو مفتاح منطقي.
+    // هذا يدعم نمطَي pull-up و pull-down بشكل طبيعي.
     for (const [id, comp] of components) {
-        if (comp.type === 'SWITCH') {
-            if (comp.state) merge(id, 1, id, 2);
-        } else if (comp.type === 'PUSH_BUTTON') {
-            if (comp.state) merge(id, 1, id, 2);
+        if (comp.type === 'SWITCH_PHYSICAL' || comp.type === 'PUSH_BUTTON_PHYSICAL') {
+            if (comp.state) {
+                const hasPower = hasReachableStrongSource(id, 1, new Set()) ||
+                                 hasReachableStrongSource(id, 2, new Set());
+                if (hasPower) merge(id, 1, id, 2);
+                // بدون مصدر طاقة: المفتاح ميت كهربائياً — لا يصل قطبَيه
+            }
         } else if (comp.type === 'DIP_SWITCH') {
             const states = comp.state;
             for (let i = 0; i < 4; i++) {
                 if (states[i]) {
-                    merge(id, i + 1, id, 8 - i);
+                    const a = i + 1, b = 8 - i;
+                    const hasPower = hasReachableStrongSource(id, a, new Set()) ||
+                                     hasReachableStrongSource(id, b, new Set());
+                    if (hasPower) merge(id, a, id, b);
                 }
             }
         }
     }
 
     return nets.filter(n => n.length > 0);
+}
+
+/**
+ * يحلّل قوّة الإشارة في كل شبكة بعد انتهاء حلقة simulate.
+ * لا يُغيّر pinStates ولا يؤثّر على المنطق الحالي — فقط يوفّر بيانات
+ * للمكوّنات الجديدة (المفاتيح الفيزيائية، pull-up/pull-down، فحوصات الاحتراق).
+ *
+ * أنواع المساهمات:
+ *   strong   = مصدر يقود الشبكة بقوة (VCC، GND، مخارج ICs، المفاتيح المنطقية ON)
+ *   weak     = مقاومة pull-up/pull-down (للمراحل اللاحقة)
+ *   floating = لا مصدر، الشبكة تطفو
+ *   conflict = strong-1 و strong-0 معاً → خطأ كهربائي (للمرحلة 3)
+ */
+function analyzeNets(nets) {
+    return nets.map(net => {
+        const drivers = { strongHi: [], strongLo: [], weakHi: [], weakLo: [] };
+
+        for (const pinRef of net) {
+            const comp = components.get(pinRef.comp);
+            if (!comp) continue;
+
+            if (comp.type === 'VCC') {
+                if ((comp.voltage || 0) > 0) {
+                    drivers.strongHi.push({ compId: pinRef.comp, pin: pinRef.pin });
+                }
+            } else if (comp.type === 'GND') {
+                drivers.strongLo.push({ compId: pinRef.comp, pin: pinRef.pin });
+            } else if (comp.type === 'SWITCH') {
+                // المفتاح المنطقي: ON → strong-1، OFF → لا مساهمة (يطفو)
+                if (comp.state) {
+                    drivers.strongHi.push({ compId: pinRef.comp, pin: pinRef.pin });
+                }
+            } else if (comp.type === 'PUSH_BUTTON') {
+                // الزر المنطقي: pressed → strong-1، released → لا مساهمة
+                if (comp.state) {
+                    drivers.strongHi.push({ compId: pinRef.comp, pin: pinRef.pin });
+                }
+            } else if (isICType(comp.type)) {
+                const def = IC_DEFINITIONS[comp.type];
+                const pinDef = def.pins.find(p => p.num === pinRef.pin);
+                if (pinDef && pinDef.type === 'output') {
+                    if (comp.pinStates[pinRef.pin] === 1) {
+                        drivers.strongHi.push({ compId: pinRef.comp, pin: pinRef.pin });
+                    } else {
+                        drivers.strongLo.push({ compId: pinRef.comp, pin: pinRef.pin });
+                    }
+                }
+            }
+            // ملاحظة: المقاومات والـ PUSH_BUTTON و DIP_SWITCH لا يُساهمون مباشرةً.
+            // الـ DIP/PUSH يمرّرون الإشارة عبر merge في buildNets، فمساهمتهم تظهر عبر
+            // الأقطاب الأخرى المتّصلة بنفس الشبكة الموسّعة.
+        }
+
+        const hasStrongHi = drivers.strongHi.length > 0;
+        const hasStrongLo = drivers.strongLo.length > 0;
+        const conflict = hasStrongHi && hasStrongLo;
+
+        let value, strength;
+        if (conflict) {
+            value = 1;          // افتراضياً نُبقيها HIGH للتوافق مع OR-logic الحالية
+            strength = 'conflict';
+        } else if (hasStrongHi) {
+            value = 1; strength = 'strong';
+        } else if (hasStrongLo) {
+            value = 0; strength = 'strong';
+        } else if (drivers.weakHi.length > 0) {
+            value = 1; strength = 'weak';
+        } else if (drivers.weakLo.length > 0) {
+            value = 0; strength = 'weak';
+        } else {
+            value = 0; strength = 'floating';
+        }
+
+        return { net, drivers, value, strength, conflict };
+    });
 }
 
 // ==========================================
@@ -2583,8 +3147,8 @@ function showComponentInfo(comp) {
         showICInfo(comp);
     } else if (comp.type === 'SWITCH') {
         infoDetails.innerHTML = `
-            <div class="info-title">مفتاح تبديل</div>
-            <div class="info-subtitle">Toggle Switch — ${comp.state ? 'HIGH (1)' : 'LOW (0)'}</div>
+            <div class="info-title">مفتاح منطقي</div>
+            <div class="info-subtitle">Logic Toggle — ${comp.state ? 'HIGH (1)' : 'LOW (0)'}</div>
             <div class="info-section">
                 <div class="info-section-title">الحالة</div>
                 <p style="color: ${comp.state ? 'var(--high)' : 'var(--text-muted)'}; font-size:18px; font-weight:700; text-align:center; padding:10px;">
@@ -2594,7 +3158,61 @@ function showComponentInfo(comp) {
             <div class="info-section">
                 <div class="info-section-title">الاستخدام</div>
                 <p style="font-size:11px; color:var(--text-secondary); line-height:1.6;">
-                    انقر على المفتاح لتبديل الحالة بين HIGH و LOW. قم بتوصيل المخرج بمدخل IC عبر سلك.
+                    مصدر إشارة مباشر — لا يحتاج VCC أو مقاومات. انقر للتبديل بين HIGH و LOW.
+                </p>
+            </div>
+        `;
+    } else if (comp.type === 'SWITCH_PHYSICAL') {
+        const stateLbl = comp.state ? 'مغلق (Closed)' : 'مفتوح (Open)';
+        infoDetails.innerHTML = `
+            <div class="info-title">مفتاح فيزيائي</div>
+            <div class="info-subtitle">Physical SPST — ${stateLbl}</div>
+            <div class="info-section">
+                <div class="info-section-title">الحالة</div>
+                <p style="color: ${comp.state ? 'var(--high)' : 'var(--text-muted)'}; font-size:16px; font-weight:700; text-align:center; padding:10px;">
+                    ${comp.state ? '⊢⊣ Closed' : '⊢ ⊣ Open'}
+                </p>
+            </div>
+            <div class="info-section">
+                <div class="info-section-title">الاستخدام</div>
+                <p style="font-size:11px; color:var(--text-secondary); line-height:1.6;">
+                    مفتاح حقيقي — يصل قطبَيه عند الإغلاق فقط. لا يولّد إشارة بنفسه.
+                    لاستخدامه في دائرة منطقية: VCC → مقاومة → نقطة → مفتاح → GND.
+                </p>
+            </div>
+        `;
+    } else if (comp.type === 'PUSH_BUTTON') {
+        infoDetails.innerHTML = `
+            <div class="info-title">زر منطقي</div>
+            <div class="info-subtitle">Logic Push — ${comp.state ? 'PRESSED' : 'RELEASED'}</div>
+            <div class="info-section">
+                <div class="info-section-title">الحالة</div>
+                <p style="color: ${comp.state ? 'var(--high)' : 'var(--text-muted)'}; font-size:16px; font-weight:700; text-align:center; padding:10px;">
+                    ${comp.state ? '⬤ HIGH (مضغوط)' : '○ LOW (محرّر)'}
+                </p>
+            </div>
+            <div class="info-section">
+                <div class="info-section-title">الاستخدام</div>
+                <p style="font-size:11px; color:var(--text-secondary); line-height:1.6;">
+                    مصدر لحظي — يُرسل HIGH أثناء الضغط فقط. لا يحتاج VCC.
+                </p>
+            </div>
+        `;
+    } else if (comp.type === 'PUSH_BUTTON_PHYSICAL') {
+        const stateLbl = comp.state ? 'مضغوط (Pressed)' : 'محرّر (Released)';
+        infoDetails.innerHTML = `
+            <div class="info-title">زر فيزيائي</div>
+            <div class="info-subtitle">Physical Push — ${stateLbl}</div>
+            <div class="info-section">
+                <div class="info-section-title">الحالة</div>
+                <p style="color: ${comp.state ? 'var(--high)' : 'var(--text-muted)'}; font-size:16px; font-weight:700; text-align:center; padding:10px;">
+                    ${comp.state ? '⊢⊣ Closed' : '⊢ ⊣ Open'}
+                </p>
+            </div>
+            <div class="info-section">
+                <div class="info-section-title">الاستخدام</div>
+                <p style="font-size:11px; color:var(--text-secondary); line-height:1.6;">
+                    زر حقيقي لحظي — يصل قطبَيه أثناء الضغط فقط. يحتاج دائرة pull-up أو pull-down.
                 </p>
             </div>
         `;
@@ -2870,12 +3488,16 @@ function updatePinStatesDisplay(comp) {
 // EVENT HANDLERS
 // ==========================================
 document.querySelectorAll('.tool-btn').forEach(btn => {
+    // تجاهل أزرار Undo/Redo (لها class="tool-btn" بدون data-tool)
+    if (!btn.dataset.tool) return;
     btn.addEventListener('click', () => {
         setTool(btn.dataset.tool);
     });
 });
 
 function setTool(tool) {
+    // حماية: تجاهل الاستدعاءات بقيمة غير صالحة (تجنّب "undefined" في شريط الحالة)
+    if (!tool) return;
     currentTool = tool;
     placingType = null;
     cancelWireDrawing();
@@ -2888,11 +3510,14 @@ function setTool(tool) {
     else if (tool === 'delete') wsContainer.classList.add('tool-delete');
     else if (tool === 'cut-wire') wsContainer.classList.add('tool-cut-wire');
 
-    wsContainer.dataset.toolLabel = '';
-    const toolNames = { select: 'اختيار', wire: 'سلك', delete: 'حذف', 'cut-wire': 'قطع سلك' };
-    if (tool !== 'select') wsContainer.dataset.toolLabel = toolNames[tool] || tool;
+    // اسم الأداة المترجم: cut-wire → tool.cut ، البقية tool.<name>
+    const toolKey = 'tool.' + (tool === 'cut-wire' ? 'cut' : tool);
+    const toolName = t(toolKey, tool);
 
-    statusTool.textContent = `🔧 الأداة: ${toolNames[tool] || tool}`;
+    wsContainer.dataset.toolLabel = '';
+    if (tool !== 'select') wsContainer.dataset.toolLabel = toolName;
+
+    statusTool.textContent = `🔧 ${t('status.tool', 'Tool')}: ${toolName}`;
     removeGhostPreview();
     updateHint();
 }
@@ -2932,14 +3557,16 @@ function createGhostPreview(type) {
     const tempComp = { id: tempId, type: type, x: -9999, y: -9999, pinStates: {}, rotation: 0 };
 
     if (type === 'DIP_SWITCH') tempComp.state = [0, 0, 0, 0];
-    else if (type === 'SWITCH') tempComp.state = 0;
+    else if (type === 'SWITCH' || type === 'SWITCH_PHYSICAL') tempComp.state = 0;
+    else if (type === 'PUSH_BUTTON' || type === 'PUSH_BUTTON_PHYSICAL') tempComp.state = 0;
     else if (type === 'LED') { tempComp.state = 0; tempComp.color = 'red'; }
-    else if (type === 'VCC') tempComp.voltage = '5V';
+    else if (type === 'VCC') tempComp.voltage = 5;
     else if (type === 'RESISTOR') tempComp.resistance = 330;
     else if (type === 'CAPACITOR') tempComp.capacitance = '100nF';
 
     ghostPreview = document.createElement('div');
     ghostPreview.className = 'component ghost-preview';
+    ghostPreview.dataset.type = type;       // مهم: ليطابق قواعد CSS الخاصة بكل نوع
     ghostPreview.style.position = 'absolute';
     ghostPreview.style.pointerEvents = 'none';
     ghostPreview.style.opacity = '0.45';
@@ -2947,9 +3574,14 @@ function createGhostPreview(type) {
     ghostPreview.style.filter = 'blur(0.5px)';
 
     if (isICType(type)) renderIC(ghostPreview, tempComp);
-    else if (type === 'SWITCH') {
+    else if (type === 'SWITCH' || type === 'SWITCH_PHYSICAL') {
         ghostPreview.classList.add('switch-component');
+        if (type === 'SWITCH_PHYSICAL') ghostPreview.classList.add('switch-physical');
         ghostPreview.innerHTML = '<div class="switch-body"><div class="switch-track"><div class="switch-knob"></div></div><span class="switch-label">OFF</span></div>';
+    } else if (type === 'PUSH_BUTTON' || type === 'PUSH_BUTTON_PHYSICAL') {
+        ghostPreview.classList.add('push-button-component');
+        if (type === 'PUSH_BUTTON_PHYSICAL') ghostPreview.classList.add('push-button-physical');
+        ghostPreview.innerHTML = '<div class="push-button-body"><div class="push-button-cap"></div></div>';
     } else if (type === 'LED') {
         ghostPreview.classList.add('led-component');
         ghostPreview.innerHTML = '<div class="led-body" style="background:rgba(255,0,0,0.3)"><div class="led-glow"></div></div>';
@@ -3050,7 +3682,11 @@ wsContainer.addEventListener('mousedown', (e) => {
             const comp = components.get(switchBody.dataset.comp);
             if (comp) {
                 comp.state = comp.state ? 0 : 1;
-                comp.pinStates[1] = comp.state;
+                if (comp.type === 'SWITCH') {
+                    // المنطقي: يولّد إشارة بنفسه
+                    comp.pinStates[1] = comp.state;
+                }
+                // الفيزيائي: لا يُحدّث pinStates مباشرة — يعتمد على ما يصله من الخارج
                 simulate();
                 updateComponentVisuals(comp);
                 showComponentInfo(comp);
@@ -3076,10 +3712,12 @@ wsContainer.addEventListener('mousedown', (e) => {
             const comp = components.get(pbBody.dataset.comp);
             if (comp) {
                 comp.state = 1;
+                if (comp.type === 'PUSH_BUTTON') comp.pinStates[1] = 1;   // الزر المنطقي: مصدر إشارة
                 simulate();
                 updateComponentVisuals(comp);
                 const releaseHandler = () => {
                     comp.state = 0;
+                    if (comp.type === 'PUSH_BUTTON') comp.pinStates[1] = 0;
                     simulate();
                     updateComponentVisuals(comp);
                     document.removeEventListener('mouseup', releaseHandler);
@@ -3430,17 +4068,67 @@ document.getElementById('btn-zoom-out').addEventListener('click', () => {
     updateAllWires();
 });
 
-document.getElementById('btn-zoom-fit').addEventListener('click', () => {
-    wsZoom = 1;
-    wsPanX = 0;
-    wsPanY = 0;
-    applyTransform();
-    updateAllWires();
-});
-
 function applyTransform() {
     workspace.style.transform = `translate(${wsPanX}px, ${wsPanY}px) scale(${wsZoom})`;
     zoomLevelText.textContent = Math.round(wsZoom * 100) + '%';
+}
+
+// ==========================================
+// ZOOM TO FIT — احسب bounding box لجميع المكونات ووسّط/كبّر لإظهار التجربة كاملة
+// ==========================================
+function fitWorkspaceToContents() {
+    const containerRect = wsContainer.getBoundingClientRect();
+    const cW = containerRect.width;
+    const cH = containerRect.height;
+
+    let minX, minY, maxX, maxY;
+
+    if (components.size === 0) {
+        // لا توجد مكونات → اعرض منطقة البناء كاملة
+        minX = BUILD_AREA.x;
+        minY = BUILD_AREA.y;
+        maxX = BUILD_AREA.x + BUILD_AREA.width;
+        maxY = BUILD_AREA.y + BUILD_AREA.height;
+    } else {
+        // bounding box من جميع المكونات (نستخدم x,y المخزّنة + قياس تقديري)
+        minX = Infinity; minY = Infinity;
+        maxX = -Infinity; maxY = -Infinity;
+        for (const [, comp] of components) {
+            // قياس تقديري لكل نوع (الـ ICs أعرض، الـ LEDs أصغر، إلخ)
+            let w = 100, h = 80;
+            if (isICType(comp.type))         { w = 200; h = 110; }
+            else if (isSevenSegType(comp.type)) { w = 110; h = 180; }
+            else if (comp.type === 'LED')       { w = 50;  h = 50;  }
+            else if (comp.type === 'RESISTOR' || comp.type === 'CAPACITOR') { w = 120; h = 50; }
+            else if (comp.type === 'VCC' || comp.type === 'GND') { w = 70; h = 70; }
+            else if (comp.type === 'DIP_SWITCH') { w = 160; h = 80; }
+            // الإحداثيات المخزّنة (x,y) تمثّل الزاوية اليسرى العليا تقريباً
+            const x0 = comp.x, y0 = comp.y;
+            const x1 = x0 + w, y1 = y0 + h;
+            if (x0 < minX) minX = x0;
+            if (y0 < minY) minY = y0;
+            if (x1 > maxX) maxX = x1;
+            if (y1 > maxY) maxY = y1;
+        }
+    }
+
+    // هامش حول المحتوى ليبدو مريحاً بصرياً
+    const padding = 60;
+    const bboxW = (maxX - minX) + padding * 2;
+    const bboxH = (maxY - minY) + padding * 2;
+    const bboxCenterX = (minX + maxX) / 2;
+    const bboxCenterY = (minY + maxY) / 2;
+
+    // مقياس مناسب — أصغر القيمتَين لضمان احتواء البُعدَين
+    const scale = Math.max(0.25, Math.min(2.5, Math.min(cW / bboxW, cH / bboxH)));
+
+    wsZoom = scale;
+    // الـ pan = منتصف الـ container - منتصف الـ bbox مضروباً بالـ scale
+    wsPanX = cW / 2 - bboxCenterX * scale;
+    wsPanY = cH / 2 - bboxCenterY * scale;
+
+    applyTransform();
+    updateAllWires();
 }
 
 document.getElementById('btn-zoom-out').addEventListener('click', () => {
@@ -3449,14 +4137,7 @@ document.getElementById('btn-zoom-out').addEventListener('click', () => {
     updateAllWires();
 });
 
-document.getElementById('btn-zoom-fit').addEventListener('click', () => {
-    wsZoom = 1;
-    // Center the workspace on the buildable area when fitting
-    wsPanX = 100;
-    wsPanY = 50;
-    applyTransform();
-    updateAllWires();
-});
+document.getElementById('btn-zoom-fit').addEventListener('click', fitWorkspaceToContents);
 
 function handlePinClick(compId, pinNum, e) {
     e.stopPropagation();
@@ -3664,7 +4345,13 @@ wsContainer.addEventListener('contextmenu', (e) => {
                 </div>
             `;
         } else if (comp.type === 'VCC') {
-            extraOptions = `<div class="context-menu-item" data-action="voltage">⚡ تغيير الجهد (${comp.voltage || '5V'})</div>`;
+            const voltOptions = [0, 3.3, 5, 9, 12];
+            const curV = (typeof comp.voltage === 'number') ? comp.voltage : 5;
+            const btns = voltOptions.map(v => {
+                const lbl = (v === 0) ? 'OFF (0V)' : `${v}V`;
+                return `<div class="context-menu-item ${v === curV ? 'active-freq' : ''}" data-action="set-voltage" data-volt="${v}">⚡ ${lbl}</div>`;
+            }).join('');
+            extraOptions = btns;
         } else if (comp.type === 'RESISTOR') {
             extraOptions = `<div class="context-menu-item" data-action="resistance">Ω قيمة المقاومة: ${formatResistance(comp.resistance || 330)}</div>`;
         } else if (comp.type === 'CAPACITOR') {
@@ -3769,19 +4456,19 @@ wsContainer.addEventListener('contextmenu', (e) => {
                 removeContextMenu();
             }
 
-            if (action === 'voltage') {
-                const volts = ['5V', '3.3V', '12V'];
-                const currIdx = volts.indexOf(comp.voltage || '5V');
-                const oldVal = comp.voltage || '5V';
-                const newVal = volts[(currIdx + 1) % volts.length];
-
-                comp.voltage = newVal;
-                history.push({
-                    type: 'PROP_CHANGE',
-                    data: { id: comp.id, key: 'voltage', oldVal: oldVal, newVal: newVal }
-                });
-
-                renderComponent(comp);
+            if (action === 'set-voltage') {
+                const newVal = parseFloat(ev.target.closest('.context-menu-item').dataset.volt);
+                const oldVal = (typeof comp.voltage === 'number') ? comp.voltage : 5;
+                if (newVal !== oldVal) {
+                    comp.voltage = newVal;
+                    comp.pinStates[1] = newVal > 0 ? 1 : 0;   // VCC = 0V يصبح غير مُفعَّل
+                    history.push({
+                        type: 'PROP_CHANGE',
+                        data: { id: comp.id, key: 'voltage', oldVal: oldVal, newVal: newVal }
+                    });
+                    renderComponent(comp);
+                    simulate();
+                }
                 removeContextMenu();
             }
 
@@ -3799,6 +4486,12 @@ wsContainer.addEventListener('contextmenu', (e) => {
                             data: { id: comp.id, key: 'resistance', oldVal: r, newVal: val }
                         });
                         renderComponent(comp);
+                        // إعادة تصفير حالة astable لمنع تراكم التوقيت القديم
+                        for (const [, c] of components) {
+                            if (c.type === 'IC555') {
+                                c._astableTimeAcc = 0;
+                            }
+                        }
                         simulate();
                         if (selectedCompId && components.get(selectedCompId)?.type === 'IC555') {
                             showComponentInfo(components.get(selectedCompId));
@@ -3817,6 +4510,19 @@ wsContainer.addEventListener('contextmenu', (e) => {
                         data: { id: comp.id, key: 'capacitance', oldVal: oldCap, newVal: newCap }
                     });
                     renderComponent(comp);
+                    // إعادة تصفير حالة الـ astable على كل 555 في الدائرة لمنع
+                    // تراكم القديم مع التوقيت الجديد (الذي كان يُسبّب "تجمّداً" ظاهرياً)
+                    for (const [, c] of components) {
+                        if (c.type === 'IC555') {
+                            c._astableTimeAcc = 0;
+                            if (c.timerState) {
+                                c.timerState.output = 0;
+                                c.timerState.discharge = 0;
+                            }
+                        }
+                    }
+                    // استدعاء simulate لإعادة حساب _astablePeriodHigh/Low بالقيم الجديدة
+                    simulate();
                     if (selectedCompId && components.get(selectedCompId)?.type === 'IC555') {
                         showComponentInfo(components.get(selectedCompId));
                     }
@@ -3841,7 +4547,40 @@ wsContainer.addEventListener('contextmenu', (e) => {
     }
 
     document.body.appendChild(contextMenu);
+    // تموضع ذكي: إذا تخطّت القائمة حدود الشاشة، نُحرّكها داخلها
+    positionContextMenuSmart(contextMenu, e.clientX, e.clientY);
 });
+
+// ==========================================
+// CONTEXT MENU SMART POSITIONING
+// ==========================================
+// يُموضع القائمة قرب نقطة النقر، ولو لم تتسع للأسفل/اليمين يُحرّكها
+// للأعلى/اليسار. إذا كانت أطول من الشاشة، CSS max-height يُظهر شريط تمرير.
+function positionContextMenuSmart(menuEl, clickX, clickY) {
+    const margin = 8;
+    const rect = menuEl.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    let left = clickX;
+    let top  = clickY;
+
+    // لو امتدت تحت الشاشة → اعرضها فوق نقطة النقر
+    if (top + rect.height > vh - margin) {
+        const aboveTop = clickY - rect.height;
+        top = (aboveTop >= margin) ? aboveTop : margin;
+    }
+    // لو امتدت يمين الشاشة → أزحها لليسار
+    if (left + rect.width > vw - margin) {
+        left = Math.max(margin, vw - rect.width - margin);
+    }
+    // ضمان عدم خروجها من اليسار/الأعلى
+    if (left < margin) left = margin;
+    if (top  < margin) top  = margin;
+
+    menuEl.style.left = left + 'px';
+    menuEl.style.top  = top  + 'px';
+}
 
 document.addEventListener('click', () => removeContextMenu());
 
@@ -3932,7 +4671,6 @@ setupDropdowns();
 
 // --- Example 1: AND Gate (IC 7408) — مثال بسيط ---
 document.getElementById('btn-example1').addEventListener('click', () => {
-    if (examMode) { showToast('⚠️ ' + t('exam.cantUseExamples', 'Examples are disabled in exam mode'), 'warning'); return; }
     clearAll();
     // المكونات: 2 مفاتيح → IC AND → مقاومة → LED → GND. VCC في الأعلى.
     const sw1 = createComponent('SWITCH',   200, 220);
@@ -3940,7 +4678,7 @@ document.getElementById('btn-example1').addEventListener('click', () => {
     const ic  = createComponent('IC7408',   460, 230);
     const res = createComponent('RESISTOR', 740, 270);
     const led = createComponent('LED',      900, 270);
-    const vcc = createComponent('VCC',      640, 100);
+    const vcc = createPoweredVCC(      640, 100);
     const gnd = createComponent('GND',      400, 500);
 
     led.color = 'green';
@@ -3968,7 +4706,6 @@ document.getElementById('btn-example1').addEventListener('click', () => {
 
 // --- Example 2: 4-Bit Comparator (IC 7485) ---
 document.getElementById('btn-example2').addEventListener('click', () => {
-    if (examMode) { showToast('⚠️ ' + t('exam.cantUseExamples', 'Examples are disabled in exam mode'), 'warning'); return; }
     clearAll();
     // — DIP switches للمدخلات A و B، IC في الوسط، 3 LEDs للمخارج —
     const dipA = createComponent('DIP_SWITCH', 200, 200);    // A0..A3
@@ -3984,9 +4721,9 @@ document.getElementById('btn-example2').addEventListener('click', () => {
     const ledLT = createComponent('LED',     1040, 500);
 
     // الطاقة
-    const vccIC    = createComponent('VCC', 760, 100);   // VCC للـ IC
-    const vccDip   = createComponent('VCC', 360, 380);   // VCC تغذية مفاتيح DIP
-    const vccCasc  = createComponent('VCC', 460, 700);   // cascade A=B input HIGH
+    const vccIC    = createPoweredVCC( 760, 100);   // VCC للـ IC
+    const vccDip   = createPoweredVCC( 360, 380);   // VCC تغذية مفاتيح DIP
+    const vccCasc  = createPoweredVCC( 460, 700);   // cascade A=B input HIGH
     const gnd      = createComponent('GND', 600, 770);
 
     ledGT.color = 'green';
@@ -4047,7 +4784,6 @@ document.getElementById('btn-example2').addEventListener('click', () => {
 
 // --- Example 3: BCD → 7-Segment Display (IC 7447 + Common-Anode 7-Seg) ---
 document.getElementById('btn-example3').addEventListener('click', () => {
-    if (examMode) { showToast('⚠️ ' + t('exam.cantUseExamples', 'Examples are disabled in exam mode'), 'warning'); return; }
     clearAll();
     // — 4 مفاتيح للـ BCD، IC في الوسط، شاشة 7-أجزاء على اليمين —
     const sw0 = createComponent('SWITCH', 200, 220);   // A = LSB → pin 7
@@ -4061,9 +4797,9 @@ document.getElementById('btn-example3').addEventListener('click', () => {
 
     // الطاقة: VCC للـ IC، VCC للـ COM (لأن الشاشة Common-Anode)،
     // VCC لمداخل التحكم (LT, BI, RBI كلها active-LOW = HIGH تعطيلها)
-    const vccIC    = createComponent('VCC', 700, 100);
-    const vccSeg   = createComponent('VCC', 950, 100);
-    const vccCtrl  = createComponent('VCC', 320, 580);
+    const vccIC    = createPoweredVCC( 700, 100);
+    const vccSeg   = createPoweredVCC( 950, 100);
+    const vccCtrl  = createPoweredVCC( 320, 580);
     const gnd      = createComponent('GND', 480, 660);
 
     requestAnimationFrame(() => {
@@ -4104,7 +4840,6 @@ document.getElementById('btn-example3').addEventListener('click', () => {
 
 // --- Example 4: 555 Timer in Astable Mode ---
 document.getElementById('btn-example4').addEventListener('click', () => {
-    if (examMode) { showToast('⚠️ ' + t('exam.cantUseExamples', 'Examples are disabled in exam mode'), 'warning'); return; }
     clearAll();
     // — مذبذب astable: R1, R2, C يحدّدون التردد. الخرج (pin 3) → LED —
     const timer = createComponent('IC555', 500, 280);
@@ -4116,6 +4851,7 @@ document.getElementById('btn-example4').addEventListener('click', () => {
     r2.resistance = 10000;
 
     const cap = createComponent('CAPACITOR', 500, 460);
+    cap.capacitance = '100µF';   // مكثّف كبير → تردّد بطيء (~0.7Hz) لإظهار التذبذب بصرياً
 
     // مقاومة الحماية + LED على المخرج
     const outRes = createComponent('RESISTOR', 760, 290);
@@ -4124,7 +4860,7 @@ document.getElementById('btn-example4').addEventListener('click', () => {
     led.color = 'red';
     renderComponent(led);
 
-    const vcc = createComponent('VCC', 500, 80);
+    const vcc = createPoweredVCC( 500, 80);
     const gnd = createComponent('GND', 500, 580);
 
     requestAnimationFrame(() => {
@@ -4152,6 +4888,345 @@ document.getElementById('btn-example4').addEventListener('click', () => {
             updateAllWires();
             simulate();
             selectComponent(timer.id);
+        });
+    });
+});
+
+// --- Example 5: Pull-down + Physical Switches + AND Gate ---
+// مثال تربوي: مفتاحان فيزيائيان، كلٌّ منهما مع مقاومة عادية موصولة بـ GND (= pull-down طبيعي)
+// → AND gate → LED. عند ضغط الزرّين معاً فقط، الـ LED يضيء.
+document.getElementById('btn-example5').addEventListener('click', () => {
+    clearAll();
+
+    // المكوّنات الرئيسية
+    const sw1 = createComponent('SWITCH_PHYSICAL', 240, 200);   // مفتاح فيزيائي 1
+    const sw2 = createComponent('SWITCH_PHYSICAL', 240, 380);   // مفتاح فيزيائي 2
+
+    // مقاومتان عاديّتان (10kΩ) تعملان pull-down — كلّ واحدة بين نقطة الإدخال و GND
+    const pd1 = createComponent('RESISTOR', 400, 280);
+    pd1.resistance = 10000;
+    const pd2 = createComponent('RESISTOR', 400, 460);
+    pd2.resistance = 10000;
+
+    const ic  = createComponent('IC7408', 580, 240);   // AND gate
+    const res = createComponent('RESISTOR', 840, 280);
+    res.resistance = 330;
+    const led = createComponent('LED', 1000, 280);
+    led.color = 'green';
+    renderComponent(led);
+
+    // الطاقة
+    const vcc = createPoweredVCC(580, 80, 5);          // VCC للـ IC والمفاتيح
+    const gnd = createComponent('GND', 600, 600);
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            // ============ الزرّ 1 ============
+            // VCC → قطب 1 من المفتاح
+            createWire(vcc.id, 1, sw1.id, 1);
+            // قطب 2 → 1A على IC (نقطة الإدخال)
+            createWire(sw1.id, 2, ic.id, 1);
+            // نفس النقطة → مقاومة pull-down → GND
+            createWire(sw1.id, 2, pd1.id, 1);
+            createWire(pd1.id, 2, gnd.id, 1);
+
+            // ============ الزرّ 2 ============
+            createWire(vcc.id, 1, sw2.id, 1);
+            createWire(sw2.id, 2, ic.id, 2);
+            createWire(sw2.id, 2, pd2.id, 1);
+            createWire(pd2.id, 2, gnd.id, 1);
+
+            // ============ خرج البوابة → LED ============
+            createWire(ic.id, 3, res.id, 1);
+            createWire(res.id, 2, led.id, 1);
+
+            // ============ طاقة الـ IC ============
+            createWire(vcc.id, 1, ic.id, 14);   // VCC على pin 14
+            createWire(gnd.id, 1, ic.id, 7);    // GND على pin 7
+
+            recomputeWireLanes();
+            updateAllWires();
+            simulate();
+            selectComponent(sw1.id);
+
+            showToast('💡 اضغط الزرّين الفيزيائيَّين معاً ليضيء الـ LED', 'info');
+        });
+    });
+});
+
+// --- Example 6: 74193 Up Counter with 4 LEDs ---
+// عدّاد تصاعدي 4-بت: زر فيزيائي → نبضة صعود على CPU → +1 على العدّاد
+// المخارج Q0..Q3 تعرض القيمة بالنظام الثنائي على 4 LEDs
+// PL=HIGH (لا تحميل)، MR=LOW (لا إعادة ضبط)، CPD=HIGH (لا عد تنازلي)
+document.getElementById('btn-example6').addEventListener('click', () => {
+    clearAll();
+
+    // العدّاد في المنتصف
+    const ic = createComponent('IC74193', 700, 320);
+
+    // الزر الفيزيائي للعدّ التصاعدي + مقاومة pull-down (10kΩ)
+    const btn = createComponent('PUSH_BUTTON_PHYSICAL', 280, 320);
+    const pdR = createComponent('RESISTOR', 460, 460);
+    pdR.resistance = 10000;
+
+    // 4 LEDs مع مقاومات حماية (330Ω) على Q0..Q3
+    // Q0 = pin 3 (LSB)، Q1 = pin 2، Q2 = pin 6، Q3 = pin 7 (MSB)
+    const r0 = createComponent('RESISTOR', 980, 220);   r0.resistance = 330;
+    const led0 = createComponent('LED', 1140, 220);     led0.color = 'red';
+    const r1 = createComponent('RESISTOR', 980, 300);   r1.resistance = 330;
+    const led1 = createComponent('LED', 1140, 300);     led1.color = 'yellow';
+    const r2 = createComponent('RESISTOR', 980, 380);   r2.resistance = 330;
+    const led2 = createComponent('LED', 1140, 380);     led2.color = 'green';
+    const r3 = createComponent('RESISTOR', 980, 460);   r3.resistance = 330;
+    const led3 = createComponent('LED', 1140, 460);     led3.color = 'blue';
+    [led0, led1, led2, led3].forEach(l => renderComponent(l));
+
+    // الطاقة
+    const vcc = createPoweredVCC(700, 140, 5);
+    const gnd = createComponent('GND', 700, 640);
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            // === طاقة الـ IC ===
+            createWire(vcc.id, 1, ic.id, 16);   // VCC على pin 16
+            createWire(gnd.id, 1, ic.id, 8);    // GND على pin 8
+
+            // === ضبط أوضاع التحكم ===
+            createWire(vcc.id, 1, ic.id, 11);   // PL = HIGH → تعطيل التحميل المتوازي
+            createWire(gnd.id, 1, ic.id, 14);   // MR = LOW → تعطيل إعادة الضبط
+            createWire(vcc.id, 1, ic.id, 4);    // CPD = HIGH → لا حافة صاعدة للعد التنازلي
+            // P0..P3 = LOW (لا أهمية لأن PL=HIGH، لكن لتجنّب floating inputs)
+            createWire(gnd.id, 1, ic.id, 15);   // P0
+            createWire(gnd.id, 1, ic.id, 1);    // P1
+            createWire(gnd.id, 1, ic.id, 10);   // P2
+            createWire(gnd.id, 1, ic.id, 9);    // P3
+
+            // === الزر مع pull-down → CPU (pin 5) ===
+            createWire(vcc.id, 1, btn.id, 1);   // VCC → طرف 1 من الزر
+            createWire(btn.id, 2, ic.id, 5);    // طرف 2 → CPU (إشارة الساعة)
+            createWire(btn.id, 2, pdR.id, 1);   // طرف 2 → مقاومة pull-down
+            createWire(pdR.id, 2, gnd.id, 1);   // المقاومة → GND
+
+            // === المخارج Q0..Q3 → مقاومة → LED ===
+            createWire(ic.id, 3, r0.id, 1);   createWire(r0.id, 2, led0.id, 1);   // Q0
+            createWire(ic.id, 2, r1.id, 1);   createWire(r1.id, 2, led1.id, 1);   // Q1
+            createWire(ic.id, 6, r2.id, 1);   createWire(r2.id, 2, led2.id, 1);   // Q2
+            createWire(ic.id, 7, r3.id, 1);   createWire(r3.id, 2, led3.id, 1);   // Q3
+
+            recomputeWireLanes();
+            updateAllWires();
+            simulate();
+            selectComponent(btn.id);
+
+            showToast('🔢 اضغط الزر لزيادة العدّاد. الـ LEDs تعرض القيمة الثنائية (Q3 Q2 Q1 Q0)', 'info');
+        });
+    });
+});
+
+// --- Example 7: 74193 + 7447 + 7-Segment Display ---
+// تجربة شاملة: زر فيزيائي → عدّاد 4-بت → مفكّك BCD → شاشة سبعية
+// • كل ضغطة → +1 على العدّاد → الشاشة تعرض الرقم
+// • القيم 0-9: تعرض كأرقام عادية
+// • القيم 10-15: تعرض رموزاً غير قياسية (7447 BCD لا hex)
+// • القيمة 16 تعود لـ 0 (دورة العدّاد 4-بت)
+document.getElementById('btn-example7').addEventListener('click', () => {
+    clearAll();
+
+    // المكونات الرئيسية
+    const ic193 = createComponent('IC74193', 540, 320);
+    const ic7447 = createComponent('IC7447', 940, 320);
+    const seg = createComponent('SEVEN_SEG_CA', 1480, 240);
+    seg.color = 'green';
+    renderComponent(seg);
+
+    // زر العدّ + pull-down (10kΩ)
+    const btn = createComponent('PUSH_BUTTON_PHYSICAL', 200, 320);
+    const pdR = createComponent('RESISTOR', 360, 460);
+    pdR.resistance = 10000;
+
+    // 7 مقاومات حماية للشاشة (330Ω) — قطعة لكل segment
+    const ra = createComponent('RESISTOR', 1220, 100);   ra.resistance = 330;
+    const rb = createComponent('RESISTOR', 1220, 180);   rb.resistance = 330;
+    const rc = createComponent('RESISTOR', 1220, 260);   rc.resistance = 330;
+    const rd = createComponent('RESISTOR', 1220, 340);   rd.resistance = 330;
+    const re = createComponent('RESISTOR', 1220, 420);   re.resistance = 330;
+    const rf = createComponent('RESISTOR', 1220, 500);   rf.resistance = 330;
+    const rg = createComponent('RESISTOR', 1220, 580);   rg.resistance = 330;
+
+    // مصادر الطاقة
+    const vccMain  = createPoweredVCC(680, 100, 5);
+    const vccSeg   = createPoweredVCC(1540, 100, 5);
+    const gnd      = createComponent('GND', 680, 720);
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            // === طاقة 74193 + إعدادات التحكم ===
+            createWire(vccMain.id, 1, ic193.id, 16);   // VCC
+            createWire(gnd.id,     1, ic193.id, 8);    // GND
+            createWire(vccMain.id, 1, ic193.id, 11);   // PL = HIGH (no load)
+            createWire(gnd.id,     1, ic193.id, 14);   // MR = LOW (no reset)
+            createWire(vccMain.id, 1, ic193.id, 4);    // CPD = HIGH (no down count)
+            createWire(gnd.id,     1, ic193.id, 15);   // P0 = LOW
+            createWire(gnd.id,     1, ic193.id, 1);    // P1 = LOW
+            createWire(gnd.id,     1, ic193.id, 10);   // P2 = LOW
+            createWire(gnd.id,     1, ic193.id, 9);    // P3 = LOW
+
+            // === الزر + pull-down → CPU (pin 5) ===
+            createWire(vccMain.id, 1, btn.id, 1);
+            createWire(btn.id, 2, ic193.id, 5);        // CPU clock
+            createWire(btn.id, 2, pdR.id, 1);
+            createWire(pdR.id, 2, gnd.id, 1);
+
+            // === مخارج 74193 → مدخلات BCD على 7447 ===
+            // 7447 inputs (datasheet): A=pin7, B=pin1, C=pin2, D=pin6
+            createWire(ic193.id, 3, ic7447.id, 7);     // Q0 (LSB) → A
+            createWire(ic193.id, 2, ic7447.id, 1);     // Q1 → B
+            createWire(ic193.id, 6, ic7447.id, 2);     // Q2 → C
+            createWire(ic193.id, 7, ic7447.id, 6);     // Q3 (MSB) → D
+
+            // === طاقة 7447 + تعطيل تحكمات active-LOW ===
+            createWire(vccMain.id, 1, ic7447.id, 16);  // VCC
+            createWire(gnd.id,     1, ic7447.id, 8);   // GND
+            createWire(vccMain.id, 1, ic7447.id, 3);   // LT = HIGH (no lamp test)
+            createWire(vccMain.id, 1, ic7447.id, 4);   // BI/RBO = HIGH (no blanking)
+            createWire(vccMain.id, 1, ic7447.id, 5);   // RBI = HIGH (no ripple blank)
+
+            // === مخارج 7447 → مقاومات → segments الشاشة ===
+            createWire(ic7447.id, 13, ra.id, 1);   createWire(ra.id, 2, seg.id, 7);    // a
+            createWire(ic7447.id, 12, rb.id, 1);   createWire(rb.id, 2, seg.id, 6);    // b
+            createWire(ic7447.id, 11, rc.id, 1);   createWire(rc.id, 2, seg.id, 4);    // c
+            createWire(ic7447.id, 10, rd.id, 1);   createWire(rd.id, 2, seg.id, 2);    // d
+            createWire(ic7447.id, 9,  re.id, 1);   createWire(re.id, 2, seg.id, 1);    // e
+            createWire(ic7447.id, 15, rf.id, 1);   createWire(rf.id, 2, seg.id, 9);    // f
+            createWire(ic7447.id, 14, rg.id, 1);   createWire(rg.id, 2, seg.id, 10);   // g
+
+            // === طاقة الشاشة (Common-Anode → VCC على COM-1 و COM-2) ===
+            createWire(vccSeg.id, 1, seg.id, 3);
+            createWire(vccSeg.id, 1, seg.id, 8);
+
+            recomputeWireLanes();
+            updateAllWires();
+            simulate();
+            selectComponent(btn.id);
+
+            showToast('🔢 اضغط الزر — العدّاد يزيد والشاشة تعرض الرقم (0-9 صحيح، 10-15 رموز غير قياسية)', 'info');
+        });
+    });
+});
+
+// --- Example 8: Auto Counter — 555 Astable + 74193 + 7447 + 7-Segment ---
+// النسخة الأوتوماتيكية من Example 7: IC 555 يُولّد نبضات ساعة مستمرّة
+// تُغذّي العدّاد بدون الحاجة لزر يدوي. العدّاد يدور تلقائياً 0→15.
+// • R1=1kΩ، R2=10kΩ، C1=47µF → f ≈ 1.46 Hz (مرئية للعين)
+// • C2=10nF على CONT لتثبيت الفولتية المرجعية (اختياري)
+// • الباقي مطابق لـ Example 7
+document.getElementById('btn-example8').addEventListener('click', () => {
+    clearAll();
+
+    // ====== المؤقّت 555 في وضع astable ======
+    const timer = createComponent('IC555', 260, 360);
+
+    // المقاومات حسب الـ datasheet للتجربة الورقية: R1=1kΩ، R2=10kΩ
+    const r1 = createComponent('RESISTOR', 100, 200);   r1.resistance = 1000;
+    const r2 = createComponent('RESISTOR', 100, 320);   r2.resistance = 10000;
+
+    // مكثّف التوقيت C1=47µF — ضمن نطاق التجربة (يعطي تردد ≈ 1.46 Hz)
+    const c1 = createComponent('CAPACITOR', 160, 540);  c1.capacitance = '47µF';
+    // مكثّف CONT الترشيحي C2=10nF (اختياري لكن مذكور في الـ datasheet)
+    const c2 = createComponent('CAPACITOR', 400, 540);  c2.capacitance = '10nF';
+
+    // ====== العدّاد 74193 ======
+    const ic193 = createComponent('IC74193', 720, 360);
+
+    // ====== المفكّك 7447 + شاشة + مقاومات حماية ======
+    const ic7447 = createComponent('IC7447', 1120, 360);
+    const seg = createComponent('SEVEN_SEG_CA', 1620, 280);
+    seg.color = 'green';
+    renderComponent(seg);
+
+    const ra = createComponent('RESISTOR', 1340, 140);   ra.resistance = 330;
+    const rb = createComponent('RESISTOR', 1340, 220);   rb.resistance = 330;
+    const rc = createComponent('RESISTOR', 1340, 300);   rc.resistance = 330;
+    const rd = createComponent('RESISTOR', 1340, 380);   rd.resistance = 330;
+    const re = createComponent('RESISTOR', 1340, 460);   re.resistance = 330;
+    const rf = createComponent('RESISTOR', 1340, 540);   rf.resistance = 330;
+    const rg = createComponent('RESISTOR', 1340, 620);   rg.resistance = 330;
+
+    // ====== مصادر الطاقة ======
+    const vccMain = createPoweredVCC(720, 160, 5);
+    const vccSeg  = createPoweredVCC(1680, 160, 5);
+    const gnd     = createComponent('GND', 720, 760);
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            // ========== 555 Astable wiring (per Example 4) ==========
+            // VCC على pin 8 و pin 4 (RST: تفعيل المؤقت)
+            createWire(vccMain.id, 1, timer.id, 8);
+            createWire(vccMain.id, 1, timer.id, 4);
+            // VCC → R1 → DISCH (pin 7)
+            createWire(vccMain.id, 1, r1.id, 1);
+            createWire(r1.id, 2, timer.id, 7);
+            // R1 → R2 (متّصلة من DISCH عبر pin 7)
+            createWire(r1.id, 2, r2.id, 1);
+            // R2 → THRES (pin 6) و TRIG (pin 2) معاً
+            createWire(r2.id, 2, timer.id, 6);
+            createWire(r2.id, 2, timer.id, 2);
+            // C1 بين THRES (pin 6) و GND
+            createWire(timer.id, 6, c1.id, 1);
+            createWire(c1.id, 2, gnd.id, 1);
+            // C2 بين CONT (pin 5) و GND (ترشيح اختياري)
+            createWire(timer.id, 5, c2.id, 1);
+            createWire(c2.id, 2, gnd.id, 1);
+            // GND على pin 1
+            createWire(timer.id, 1, gnd.id, 1);
+
+            // ========== 555 output → 74193 CPU ==========
+            createWire(timer.id, 3, ic193.id, 5);   // OUT → CPU
+
+            // ========== 74193 power + control ==========
+            createWire(vccMain.id, 1, ic193.id, 16);   // VCC
+            createWire(gnd.id,     1, ic193.id, 8);    // GND
+            createWire(vccMain.id, 1, ic193.id, 11);   // PL = HIGH (no load)
+            createWire(gnd.id,     1, ic193.id, 14);   // MR = LOW (no reset)
+            createWire(vccMain.id, 1, ic193.id, 4);    // CPD = HIGH (no down count)
+            createWire(gnd.id,     1, ic193.id, 15);   // P0..P3 = LOW
+            createWire(gnd.id,     1, ic193.id, 1);
+            createWire(gnd.id,     1, ic193.id, 10);
+            createWire(gnd.id,     1, ic193.id, 9);
+
+            // ========== 74193 outputs → 7447 BCD inputs ==========
+            // 7447 inputs (datasheet): A=pin7, B=pin1, C=pin2, D=pin6
+            createWire(ic193.id, 3, ic7447.id, 7);    // Q0 → A (LSB)
+            createWire(ic193.id, 2, ic7447.id, 1);    // Q1 → B
+            createWire(ic193.id, 6, ic7447.id, 2);    // Q2 → C
+            createWire(ic193.id, 7, ic7447.id, 6);    // Q3 → D (MSB)
+
+            // ========== 7447 power + disable active-LOW controls ==========
+            createWire(vccMain.id, 1, ic7447.id, 16);
+            createWire(gnd.id,     1, ic7447.id, 8);
+            createWire(vccMain.id, 1, ic7447.id, 3);   // LT = HIGH
+            createWire(vccMain.id, 1, ic7447.id, 4);   // BI/RBO = HIGH
+            createWire(vccMain.id, 1, ic7447.id, 5);   // RBI = HIGH
+
+            // ========== 7447 outputs → resistors → segments ==========
+            createWire(ic7447.id, 13, ra.id, 1);   createWire(ra.id, 2, seg.id, 7);    // a
+            createWire(ic7447.id, 12, rb.id, 1);   createWire(rb.id, 2, seg.id, 6);    // b
+            createWire(ic7447.id, 11, rc.id, 1);   createWire(rc.id, 2, seg.id, 4);    // c
+            createWire(ic7447.id, 10, rd.id, 1);   createWire(rd.id, 2, seg.id, 2);    // d
+            createWire(ic7447.id, 9,  re.id, 1);   createWire(re.id, 2, seg.id, 1);    // e
+            createWire(ic7447.id, 15, rf.id, 1);   createWire(rf.id, 2, seg.id, 9);    // f
+            createWire(ic7447.id, 14, rg.id, 1);   createWire(rg.id, 2, seg.id, 10);   // g
+
+            // ========== شاشة Common-Anode → VCC مستقل ==========
+            createWire(vccSeg.id, 1, seg.id, 3);
+            createWire(vccSeg.id, 1, seg.id, 8);
+
+            recomputeWireLanes();
+            updateAllWires();
+            simulate();
+            selectComponent(timer.id);
+
+            showToast('⚙️ المؤقّت 555 يُولّد نبضات الساعة تلقائياً — العدّاد يدور دون تدخّل (15 = شاشة فارغة، طبيعي)', 'info');
         });
     });
 });
@@ -4279,7 +5354,6 @@ function loadProjectFromData(data) {
     history.isRestoring = true;
     try {
         const allCompIds = Array.from(components.keys());
-        allCompIds.forEach(id => deleteComponent(id, true));
         const allWireIds = Array.from(wires.keys());
         allWireIds.forEach(id => deleteWire(id, true));
 
@@ -4297,7 +5371,6 @@ function loadProjectFromData(data) {
         // استرجاع العرض
         if (data.viewport) {
             wsPanX = data.viewport.panX || 100;
-            wsPanY = data.viewport.panY || 50;
             wsZoom = data.viewport.zoom || 1;
             applyTransform();
         }
@@ -4306,7 +5379,7 @@ function loadProjectFromData(data) {
         history.undoStack = [];
         history.redoStack = [];
         history.updateUI();
-        recomputeWireLanes();             // وزّع الأسلاك على lanes بعد التحميل
+        recomputeWireLanes();
         updateAllWires();
         simulate();
         showToast(t('toast.loaded'), 'success');
@@ -4323,7 +5396,8 @@ function loadProjectFromData(data) {
 function loadProjectFromFile(file) {
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload
+ = (ev) => {
         try {
             const data = JSON.parse(ev.target.result);
             loadProjectFromData(data);
@@ -4335,605 +5409,42 @@ function loadProjectFromFile(file) {
     reader.readAsText(file);
 }
 
-// ربط الأزرار
-const btnSaveProject = document.getElementById('btn-save-project');
-const btnLoadProject = document.getElementById('btn-load-project');
-const fileLoadInput = document.getElementById('file-load-input');
+const btnSave = document.getElementById('btn-save-project');
+if (btnSave) btnSave.addEventListener('click', saveProjectToFile);
 
-if (btnSaveProject) {
-    btnSaveProject.addEventListener('click', saveProjectToFile);
-}
-if (btnLoadProject && fileLoadInput) {
-    btnLoadProject.addEventListener('click', () => fileLoadInput.click());
+const btnLoad = document.getElementById('btn-load-project');
+const fileLoadInput = document.getElementById('file-load-input');
+if (btnLoad && fileLoadInput) {
+    btnLoad.addEventListener('click', () => fileLoadInput.click());
     fileLoadInput.addEventListener('change', (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (file) loadProjectFromFile(file);
-        e.target.value = ''; // السماح بإعادة تحميل نفس الملف
+        const f = e.target.files && e.target.files[0];
+        if (f) loadProjectFromFile(f);
+        e.target.value = '';
     });
 }
 
-// ==========================================
-// BUILD AREA VISUAL — رسم حدود منطقة البناء
-// ==========================================
 function setupBuildAreaVisual() {
     const buildBoundary = document.getElementById('build-area-boundary');
     if (buildBoundary) {
         buildBoundary.style.left = BUILD_AREA.x + 'px';
-        buildBoundary.style.top = BUILD_AREA.y + 'px';
+        buildBoundary.style.top = BUILD_AREA.y +
+ 'px';
         buildBoundary.style.width = BUILD_AREA.width + 'px';
         buildBoundary.style.height = BUILD_AREA.height + 'px';
     }
 }
 setupBuildAreaVisual();
 
-// ==========================================
-// LANGUAGE TOGGLE — ربط زر تبديل اللغة
-// ==========================================
 const btnToggleLang = document.getElementById('btn-toggle-lang');
 if (btnToggleLang) {
     btnToggleLang.addEventListener('click', toggleLanguage);
 }
-// تطبيق الترجمة على كل العناصر عند تحميل الصفحة (بناءً على اللغة المحفوظة)
 applyTranslations();
 
-// ============================================================
-// DEVELOPER MODE + EXAM MODE — مود المطور ونمط الاختبار
-// ============================================================
-// ============================================================
-// EXAM MODE + DEVELOPER MODE — نمط الاختبار + مود المطور
-// ============================================================
-// التصميم البسيط:
-//   • الدخول إلى نمط الاختبار: رمز ثابت "0000" — متاح لأي مستخدم
-//     (زر في الـ header). نمط الاختبار يخفي أسماء الأطراف فقط.
-//   • الخروج: كلمة مرور يحدّدها المطوّر (تُحفظ في localStorage)
-//     افتراضياً "admin" حتى يغيّرها المطور.
-//   • مود المطوّر: Ctrl+Shift+D، username=ahmad، password=102030405060
-//     يُتيح تعديل كلمة مرور خروج الاختبار + إنهاءه فوراً.
-//   • التقييم التلقائي للأسلاك مُعطّل حالياً (سيُضاف لاحقاً).
-
-const DEV_USERNAME = 'ahmad';
-
-// ============================================================
-// كلمة مرور المطور — مُخزّنة كـ SHA-256 hash، ليست نصّاً صريحاً
-// ============================================================
-// لتحديث كلمة المرور:
-//   1. ادخل التطبيق → اضغط زر 🔑 المخفي في لوحة المطور
-//   2. أدخل كلمة المرور الجديدة → احصل على الـ hash
-//   3. افتح GitHub على هاتفك → app.js → edit ✏️ → استبدل القيمة أسفل
-//   4. Commit & wait — انتظر ~10 ثوانٍ، اضغط 🔄 في التطبيق
-//
-// كلمة المرور الحالية: 102030405060
-const DEV_HASH_SALT = 'icsim-dev-2025';                                          // ثابت — لا تغيّره
-const DEV_PASSWORD_HASH = '90cfb849a2dbcca653eef606789f2faf3cc15883c3c456b18ea35103d8809002';
-
-// — حساب SHA-256 hash لأيّ نصّ —
-async function sha256Hex(text) {
-    const buf = new TextEncoder().encode(text);
-    const hashBuf = await crypto.subtle.digest('SHA-256', buf);
-    return Array.from(new Uint8Array(hashBuf))
-        .map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-// — التحقّق من كلمة المرور (async لأن SHA-256 async في المتصفح) —
-async function verifyDevPassword(input) {
-    const h = await sha256Hex(DEV_HASH_SALT + (input || ''));
-    return h === DEV_PASSWORD_HASH;
-}
-
-// — توليد hash لكلمة مرور جديدة (للمطوّر، ليكتبها في GitHub) —
-async function generatePasswordHash(newPwd) {
-    return await sha256Hex(DEV_HASH_SALT + (newPwd || ''));
-}
-
-// ============================================================
-// تشويش (obfuscation) لكلمة مرور خروج الاختبار في localStorage
-// ============================================================
-// السبب: لو حفظنا "admin" نصاً صريحاً، أي طالب يفتح F12 →
-// Application → LocalStorage يراها فوراً. التشويش يخفيها عن
-// النظر السريع. ليس أمناً حقيقياً (يمكن فكّه بقراءة الكود)
-// لكنه كافٍ لمنع الكشف العفوي.
-const EXAM_OBFUSCATE_KEY = 'icsim-2025-exam-x9';
-
-function _obfuscate(text) {
-    let xored = '';
-    for (let i = 0; i < text.length; i++) {
-        xored += String.fromCharCode(
-            text.charCodeAt(i) ^ EXAM_OBFUSCATE_KEY.charCodeAt(i % EXAM_OBFUSCATE_KEY.length)
-        );
-    }
-    // base64 لجعل الناتج آمن للتخزين كنصّ
-    try { return btoa(unescape(encodeURIComponent(xored))); } catch (e) { return null; }
-}
-
-function _deobfuscate(encoded) {
-    try {
-        const xored = decodeURIComponent(escape(atob(encoded)));
-        let result = '';
-        for (let i = 0; i < xored.length; i++) {
-            result += String.fromCharCode(
-                xored.charCodeAt(i) ^ EXAM_OBFUSCATE_KEY.charCodeAt(i % EXAM_OBFUSCATE_KEY.length)
-            );
-        }
-        return result;
-    } catch (e) {
-        return null;
-    }
-}
-
-const EXAM_ENTRY_CODE = '0000';                   // ثابت — للدخول السريع
-const EXAM_DEFAULT_EXIT_PWD = 'admin';            // افتراضي حتى يعدّله المطور
-const LS_KEY_EXAM_EXIT_PWD = 'icsim-exam-exit-pwd';
-const LS_KEY_EXAM_ACTIVE  = 'icsim-exam-active';  // حالة نمط الاختبار (يبقى بعد التحديث)
-
-let examMode = false;
-
-// === حفظ/استعادة حالة نمط الاختبار في localStorage ===
-// السبب: نريد أن يبقى نمط الاختبار مفعّلاً حتى لو حدّث الطالب الصفحة (F5)
-// أو أغلق المتصفح وأعاد فتحه. الخروج فقط بكلمة المرور.
-function persistExamModeState() {
-    try {
-        if (examMode) {
-            localStorage.setItem(LS_KEY_EXAM_ACTIVE, '1');
-        } else {
-            localStorage.removeItem(LS_KEY_EXAM_ACTIVE);
-        }
-    } catch (e) { /* localStorage معطّل */ }
-}
-
-function isExamModePersisted() {
-    try {
-        return localStorage.getItem(LS_KEY_EXAM_ACTIVE) === '1';
-    } catch (e) { return false; }
-}
-
-// كلمة مرور الخروج: تُقرأ من localStorage (يحدّدها المطور)، أو القيمة الافتراضية
-// تُخزَّن مشوَّشة لإخفائها عن من يفتح localStorage في DevTools
-const EXAM_PWD_OBF_PREFIX = 'obf:';
-
-function getExamExitPassword() {
-    try {
-        const saved = localStorage.getItem(LS_KEY_EXAM_EXIT_PWD);
-        if (!saved) return EXAM_DEFAULT_EXIT_PWD;
-        // الصيغة الجديدة (مشوَّشة): obf:base64...
-        if (saved.startsWith(EXAM_PWD_OBF_PREFIX)) {
-            const decoded = _deobfuscate(saved.slice(EXAM_PWD_OBF_PREFIX.length));
-            if (decoded && decoded.length > 0) return decoded;
-        } else {
-            // ترحيل البيانات القديمة (نصّ صريح): أعد كتابتها مشوَّشة
-            if (saved.length > 0) {
-                setExamExitPassword(saved);
-                return saved;
-            }
-        }
-    } catch (e) { /* localStorage معطّل */ }
-    return EXAM_DEFAULT_EXIT_PWD;
-}
-
-function setExamExitPassword(newPwd) {
-    if (!newPwd || newPwd.length < 1) return false;
-    try {
-        const obf = _obfuscate(newPwd);
-        if (!obf) return false;
-        localStorage.setItem(LS_KEY_EXAM_EXIT_PWD, EXAM_PWD_OBF_PREFIX + obf);
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-
-// ===== الدخول إلى نمط الاختبار (للجميع برمز 0000) =====
-function enterExamMode() {
-    examMode = true;
-    document.body.classList.add('exam-mode');
-    persistExamModeState();                         // ← يبقى بعد التحديث
-    const btnExitExam = document.getElementById('btn-exit-exam');
-    if (btnExitExam) btnExitExam.style.display = '';
-    showToast('📝 ' + t('exam.entered', 'Exam mode activated'), 'success');
-    return true;
-}
-
-// ===== الخروج (يتطلّب كلمة مرور المطور) =====
-function exitExamMode(password) {
-    const correct = getExamExitPassword();
-    if (password !== correct) {
-        showToast('❌ ' + t('exam.wrongPassword', 'Wrong password'), 'error');
-        return false;
-    }
-    examMode = false;
-    document.body.classList.remove('exam-mode');
-    persistExamModeState();                         // ← يُمسح من localStorage
-    const btnExitExam = document.getElementById('btn-exit-exam');
-    if (btnExitExam) btnExitExam.style.display = 'none';
-    showToast('✅ ' + t('exam.exited', 'Exam mode ended'), 'success');
-    return true;
-}
-
-// ===== إنهاء فوري بدون كلمة مرور (للمطوّر فقط، من لوحته) =====
-function forceExitExamMode() {
-    examMode = false;
-    document.body.classList.remove('exam-mode');
-    persistExamModeState();                         // ← يُمسح من localStorage
-    const btnExitExam = document.getElementById('btn-exit-exam');
-    if (btnExitExam) btnExitExam.style.display = 'none';
-    showToast('✅ ' + t('exam.exited', 'Exam mode ended'), 'success');
-}
-
-// ===== استعادة الحالة عند تحميل الصفحة =====
-// تُستدعى بعد جاهزية الـ DOM، تستعيد نمط الاختبار إذا كان مفعّلاً قبل التحديث
-function restoreExamModeIfPersisted() {
-    if (!isExamModePersisted()) return;
-    examMode = true;
-    document.body.classList.add('exam-mode');
-    const btnExitExam = document.getElementById('btn-exit-exam');
-    if (btnExitExam) btnExitExam.style.display = '';
-    // لا نعرض toast — الطالب يعرف أنه في نمط الاختبار
-}
-
-// ============================================================
-// MODAL HELPERS — لتسجيل الدخول وإدخال كلمات المرور
-// ============================================================
-function showPromptModal({ title, fields, onConfirm, onCancel }) {
-    // fields = [{ name, label, type, value? }, ...]
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay dev-modal-overlay';
-    overlay.innerHTML = `
-        <div class="modal-content dev-modal" role="dialog" aria-modal="true">
-            <div class="modal-header">
-                <h3>${escapeHTML(title)}</h3>
-                <span class="close-modal" data-action="cancel">&times;</span>
-            </div>
-            <div class="modal-body dev-modal-body">
-                ${fields.map(f => `
-                    <label class="dev-field">
-                        <span>${escapeHTML(f.label)}</span>
-                        <input type="${f.type || 'text'}" name="${escapeHTML(f.name)}"
-                               value="${escapeHTML(f.value || '')}" autocomplete="off">
-                    </label>
-                `).join('')}
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-secondary" data-action="cancel">${escapeHTML(t('dev.cancel', 'Cancel'))}</button>
-                <button class="modal-btn modal-btn-primary" data-action="confirm">${escapeHTML(t('dev.ok', 'OK'))}</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-
-    const close = () => overlay.remove();
-    const getValues = () => {
-        const out = {};
-        overlay.querySelectorAll('input').forEach(i => out[i.name] = i.value);
-        return out;
-    };
-
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) { close(); if (onCancel) onCancel(); }
-        const action = e.target.dataset.action;
-        if (action === 'cancel') { close(); if (onCancel) onCancel(); }
-        if (action === 'confirm') {
-            const v = getValues();
-            close();
-            if (onConfirm) onConfirm(v);
-        }
-    });
-    overlay.querySelector('input')?.focus();
-    overlay.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); const v = getValues(); close(); if (onConfirm) onConfirm(v); }
-        if (e.key === 'Escape') { close(); if (onCancel) onCancel(); }
-    });
-}
-
-// ============================================================
-// DEVELOPER LOGIN + PANEL
-// ============================================================
-function showDevLogin() {
-    showPromptModal({
-        title: t('dev.loginTitle', 'Developer Login'),
-        fields: [
-            { name: 'username', label: t('dev.username', 'Username') },
-            { name: 'password', label: t('dev.password', 'Password'), type: 'password' }
-        ],
-        onConfirm: async (vals) => {
-            // التحقّق: اسم المستخدم مطابق + hash كلمة المرور مطابق
-            const usernameOK = (vals.username || '').trim() === DEV_USERNAME;
-            const passwordOK = await verifyDevPassword(vals.password);
-            if (usernameOK && passwordOK) {
-                showToast('✅ ' + t('dev.welcome', 'Welcome, developer'), 'success');
-                showDevPanel();
-            } else {
-                showToast('❌ ' + t('dev.wrongCreds', 'Wrong credentials'), 'error');
-            }
-        }
-    });
-}
-
-function showDevPanel() {
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay dev-modal-overlay';
-    const isExamActive = examMode;
-    const currentExitPwd = getExamExitPassword();
-    overlay.innerHTML = `
-        <div class="modal-content dev-modal">
-            <div class="modal-header">
-                <h3>🛠️ ${escapeHTML(t('dev.panelTitle', 'Developer Panel'))}</h3>
-                <span class="close-modal" data-action="close">&times;</span>
-            </div>
-            <div class="modal-body dev-modal-body">
-                <p style="margin:0 0 8px; font-size:13px; color:var(--text-secondary);">
-                    ${escapeHTML(t('dev.panelHint', 'Set the password students must use to exit exam mode. Students enter exam mode with code 0000.'))}
-                </p>
-
-                <!-- إعداد كلمة مرور الخروج -->
-                <label class="dev-field">
-                    <span>${escapeHTML(t('dev.exitPassword', 'Exam exit password'))}</span>
-                    <div style="display:flex; gap:6px; align-items:center;">
-                        <input type="text" id="dev-exit-pwd-input" value="${escapeHTML(currentExitPwd)}"
-                               style="flex:1;" autocomplete="off">
-                        <button class="modal-btn modal-btn-primary" data-action="save-pwd" style="padding:6px 14px;">
-                            💾 ${escapeHTML(t('dev.save', 'Save'))}
-                        </button>
-                    </div>
-                </label>
-                <p class="dev-warn" style="margin-top:-4px;">
-                    ${escapeHTML(t('dev.entryHint', 'Students enter exam mode with code:'))} <b>${EXAM_ENTRY_CODE}</b>
-                </p>
-
-                <!-- حالة نمط الاختبار -->
-                ${isExamActive ? `
-                    <div class="dev-status-active">
-                        ⚠️ ${escapeHTML(t('dev.examActive', 'Exam mode is currently ACTIVE'))}
-                    </div>
-                    <button class="modal-btn modal-btn-danger" data-action="force-exit">
-                        🛑 ${escapeHTML(t('dev.forceExit', 'End exam mode now'))}
-                    </button>
-                ` : `
-                    <div class="dev-info-row">
-                        <span>${escapeHTML(t('dev.examStatus', 'Exam mode status'))}</span>
-                        <span style="color:var(--text-muted);">${escapeHTML(t('dev.examInactive', 'inactive'))}</span>
-                    </div>
-                `}
-
-                <!-- ============================================ -->
-                <!-- أداة توليد Hash لكلمة مرور المطور الجديدة     -->
-                <!-- ============================================ -->
-                <div class="dev-section-divider"></div>
-                <div class="dev-section-title">🔑 ${escapeHTML(t('dev.changeDevPwd', 'Change developer password'))}</div>
-                <p class="dev-warn" style="margin-top:0;">
-                    ${escapeHTML(t('dev.changeDevPwdHint', 'Generate a hash for your new password, then paste it into app.js on GitHub.'))}
-                </p>
-                <label class="dev-field">
-                    <span>${escapeHTML(t('dev.newDevPwd', 'New password'))}</span>
-                    <input type="text" id="dev-new-pwd-input" placeholder="${escapeHTML(t('dev.newDevPwdPh', 'Enter new password to hash'))}"
-                           autocomplete="off">
-                </label>
-                <button class="modal-btn modal-btn-primary" data-action="generate-hash" style="width:100%;">
-                    🔐 ${escapeHTML(t('dev.generateHash', 'Generate hash'))}
-                </button>
-
-                <div id="dev-hash-output" class="dev-hash-output" style="display:none;">
-                    <label class="dev-field">
-                        <span>${escapeHTML(t('dev.hashResult', 'Hash result — copy this and paste into app.js'))}</span>
-                        <div style="display:flex; gap:6px; align-items:center;">
-                            <input type="text" id="dev-hash-result" readonly style="flex:1; font-family:var(--font-mono); font-size:11px;">
-                            <button class="modal-btn modal-btn-primary" data-action="copy-hash" style="padding:6px 14px;">
-                                📋 ${escapeHTML(t('dev.copy', 'Copy'))}
-                            </button>
-                        </div>
-                    </label>
-                    <p class="dev-warn">
-                        ${escapeHTML(t('dev.hashInstructions', 'Open app.js on GitHub mobile, find the line starting with "const DEV_PASSWORD_HASH", and replace the value between quotes with this hash. Commit, then press 🔄 in the app.'))}
-                    </p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-secondary" data-action="close">${escapeHTML(t('dev.close', 'Close'))}</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-
-    const pwdInput = overlay.querySelector('#dev-exit-pwd-input');
-    pwdInput?.focus();
-    pwdInput?.select();
-
-    overlay.addEventListener('click', async (e) => {
-        const action = e.target.dataset.action;
-        if (e.target === overlay || action === 'close') { overlay.remove(); return; }
-        if (action === 'save-pwd') {
-            const newPwd = pwdInput.value.trim();
-            if (newPwd.length < 1) {
-                showToast('❌ ' + t('dev.passwordRequired', 'Password required'), 'error');
-                return;
-            }
-            if (setExamExitPassword(newPwd)) {
-                showToast('✅ ' + t('dev.passwordSaved', 'Exit password saved'), 'success');
-            } else {
-                showToast('❌ ' + t('dev.saveFailed', 'Failed to save'), 'error');
-            }
-        }
-        if (action === 'force-exit') {
-            overlay.remove();
-            forceExitExamMode();
-        }
-        if (action === 'generate-hash') {
-            const newPwdInput = overlay.querySelector('#dev-new-pwd-input');
-            const newPwd = (newPwdInput?.value || '').trim();
-            if (newPwd.length < 1) {
-                showToast('❌ ' + t('dev.passwordRequired', 'Password required'), 'error');
-                return;
-            }
-            const hash = await generatePasswordHash(newPwd);
-            const out = overlay.querySelector('#dev-hash-output');
-            const resultEl = overlay.querySelector('#dev-hash-result');
-            if (resultEl) resultEl.value = hash;
-            if (out) out.style.display = 'block';
-            showToast('✅ ' + t('dev.hashGenerated', 'Hash generated'), 'success');
-        }
-        if (action === 'copy-hash') {
-            const resultEl = overlay.querySelector('#dev-hash-result');
-            if (resultEl && resultEl.value) {
-                try {
-                    await navigator.clipboard.writeText(resultEl.value);
-                    showToast('📋 ' + t('dev.copied', 'Copied to clipboard'), 'success');
-                } catch (err) {
-                    // fallback: حدّد النصّ ليتمكّن المستخدم من النسخ يدوياً
-                    resultEl.select();
-                    showToast('⚠️ ' + t('dev.copyManual', 'Select and copy manually'), 'warning');
-                }
-            }
-        }
-    });
-
-    overlay.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') overlay.remove();
-        if (e.key === 'Enter' && document.activeElement === pwdInput) {
-            overlay.querySelector('[data-action="save-pwd"]')?.click();
-        }
-    });
-}
-
-// ===== مودال الدخول إلى نمط الاختبار (للجميع، رمز 0000) =====
-function showExamEntry() {
-    if (examMode) {
-        showToast('⚠️ ' + t('exam.alreadyActive', 'Exam mode is already active'), 'warning');
-        return;
-    }
-    showPromptModal({
-        title: t('exam.entryTitle', 'Enter Exam Mode'),
-        fields: [{ name: 'code', label: t('exam.entryCode', 'Entry code'), type: 'password' }],
-        onConfirm: (v) => {
-            if ((v.code || '').trim() === EXAM_ENTRY_CODE) {
-                enterExamMode();
-            } else {
-                showToast('❌ ' + t('exam.wrongCode', 'Wrong entry code'), 'error');
-            }
-        }
-    });
-}
-
-function promptExitExam() {
-    showPromptModal({
-        title: t('exam.exitTitle', 'Exit exam mode'),
-        fields: [{ name: 'pwd', label: t('exam.enterPassword', 'Enter exit password'), type: 'password' }],
-        onConfirm: (v) => exitExamMode(v.pwd || '')
-    });
-}
-
-// ============================================================
-// SHORTCUTS + UI WIRING — اختصارات + ربط
-// ============================================================
-// طريقَتان للوصول لـ Developer Login:
-//   1. الكمبيوتر: Ctrl + Shift + D
-//   2. الهاتف:    اضغط مطوّلاً على اللوغو ⚡ لمدة 3 ثوانٍ
-document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.shiftKey && (e.key === 'D' || e.key === 'd')) {
-        e.preventDefault();
-        showDevLogin();
-    }
-}, true);
-
-// long-press على اللوغو (للهاتف بشكل أساسي، يعمل أيضاً بالماوس)
-(function setupLogoLongPress() {
-    const logoEl = document.querySelector('.logo-icon');
-    if (!logoEl) return;
-
-    // منع تأثيرات الـ long-press الافتراضية على الموبايل (callout, selection)
-    logoEl.style.webkitTouchCallout = 'none';
-    logoEl.style.userSelect = 'none';
-    logoEl.style.webkitUserSelect = 'none';
-    logoEl.style.cursor = 'pointer';
-
-    let pressTimer = null;
-    let pressActive = false;
-    const PRESS_DURATION_MS = 3000;     // ٣ ثوانٍ — يكفي لمنع الفتح بالخطأ
-
-    const startPress = (e) => {
-        if (pressActive) return;
-        pressActive = true;
-        // مؤشر بصري خفيف أن هناك شيئاً يحدث
-        logoEl.style.transform = 'scale(0.92)';
-        logoEl.style.transition = `transform ${PRESS_DURATION_MS}ms ease-out, filter ${PRESS_DURATION_MS}ms`;
-        logoEl.style.filter = 'brightness(1.4) drop-shadow(0 0 8px gold)';
-        pressTimer = setTimeout(() => {
-            pressActive = false;
-            pressTimer = null;
-            // أعد المظهر الطبيعي
-            logoEl.style.transform = '';
-            logoEl.style.filter = '';
-            logoEl.style.transition = '';
-            // افتح Dev Login
-            showDevLogin();
-        }, PRESS_DURATION_MS);
-    };
-
-    const cancelPress = () => {
-        pressActive = false;
-        if (pressTimer) {
-            clearTimeout(pressTimer);
-            pressTimer = null;
-        }
-        // أعد المظهر فوراً
-        logoEl.style.transition = 'transform 0.15s, filter 0.15s';
-        logoEl.style.transform = '';
-        logoEl.style.filter = '';
-    };
-
-    // نستخدم Pointer Events لأنها تُوحِّد الماوس واللمس والقلم
-    logoEl.addEventListener('pointerdown', startPress);
-    logoEl.addEventListener('pointerup', cancelPress);
-    logoEl.addEventListener('pointercancel', cancelPress);
-    logoEl.addEventListener('pointerleave', cancelPress);
-    // منع قائمة السياق (right-click / long-press على الهاتف)
-    logoEl.addEventListener('contextmenu', (e) => e.preventDefault());
-})();
-
-// زر "Exit Exam" في الـ header (يظهر فقط في نمط الاختبار)
-const btnExitExam = document.getElementById('btn-exit-exam');
-if (btnExitExam) {
-    btnExitExam.addEventListener('click', promptExitExam);
-}
-
-// زر "Enter Exam" في الـ header (متاح للجميع برمز 0000)
-const btnEnterExam = document.getElementById('btn-enter-exam');
-if (btnEnterExam) {
-    btnEnterExam.addEventListener('click', showExamEntry);
-}
-
-// زر "🔄 Hard Refresh" في الـ header
 const btnHardRefresh = document.getElementById('btn-hard-refresh');
 if (btnHardRefresh) {
     btnHardRefresh.addEventListener('click', () => {
-        showToast('🔄 ' + t('refresh.refreshing', 'Refreshing from server…'), 'info');
-        // تأخير قليل ليرى المستخدم الـ toast
+        showToast('Refreshing...', 'info');
         setTimeout(hardRefreshApp, 300);
     });
 }
-
-// === استعادة نمط الاختبار إذا كان مفعّلاً قبل تحديث الصفحة ===
-restoreExamModeIfPersisted();
-
-// منع clearAll أثناء الاختبار إلا بكلمة المرور
-const _origClearAll = (typeof clearAll === 'function') ? clearAll : null;
-if (_origClearAll) {
-    clearAll = function (...args) {
-        if (examMode) {
-            showToast('⚠️ ' + t('exam.cantClear', 'Cannot clear during exam mode'), 'warning');
-            return;
-        }
-        return _origClearAll.apply(this, args);
-    };
-}
-
-// منع تحميل مشروع أثناء الاختبار
-const _origLoadProjectFromData = (typeof loadProjectFromData === 'function') ? loadProjectFromData : null;
-if (_origLoadProjectFromData) {
-    loadProjectFromData = function (...args) {
-        if (examMode) {
-            showToast('⚠️ ' + t('exam.cantLoad', 'Cannot load during exam mode'), 'warning');
-            return false;
-        }
-        return _origLoadProjectFromData.apply(this, args);
-    };
-}
-
-

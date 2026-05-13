@@ -390,219 +390,6 @@ html[dir="rtl"] .modal-body { direction: rtl; text-align: right; }
     overflow: hidden;
 }
 
-/* ============================================================
-   EXAM MODE — يخفي أسماء الأطراف ويُظهر شريط حالة النتيجة
-   ============================================================ */
-body.exam-mode .pin-name {
-    visibility: hidden;             /* نُبقي المساحة لتجنّب إعادة التخطيط */
-}
-body.exam-mode .ic-chip-sublabel {
-    opacity: 0.3;                   /* نخفّت العنوان الفرعي للـ IC */
-}
-
-/* الأزرار التي يجب إخفاؤها في نمط الاختبار */
-body.exam-mode #dropdown-examples,
-body.exam-mode #btn-load-project,
-body.exam-mode #btn-save-project,
-body.exam-mode #btn-clear {
-    display: none !important;
-}
-
-/* مؤشر بصري في الـ workspace أن النمط مُفعّل */
-body.exam-mode #workspace-container::before {
-    content: '📝 EXAM MODE';
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(220, 38, 38, 0.85);
-    color: white;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 12px;
-    z-index: 100;
-    pointer-events: none;
-}
-
-/* شارة النتيجة في الـ status bar */
-.exam-status-badge {
-    background: rgba(220, 38, 38, 0.15);
-    color: #fbbf24;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 12px;
-    border: 1px solid rgba(251, 191, 36, 0.4);
-}
-.exam-status-badge.exam-complete {
-    background: rgba(34, 197, 94, 0.18);
-    color: #22c55e;
-    border-color: rgba(34, 197, 94, 0.5);
-}
-
-/* زر Exit Exam في الـ header */
-.action-btn.exam-exit-btn {
-    border-color: #fbbf24 !important;
-    color: #fbbf24 !important;
-    font-weight: 700;
-}
-.action-btn.exam-exit-btn:hover {
-    background: rgba(251, 191, 36, 0.18);
-}
-
-/* زر Enter Exam — مميّز بخلفية ملوّنة ليبرز عن باقي الأزرار */
-.action-btn.exam-enter-btn {
-    background: linear-gradient(135deg, #7c3aed, #a78bfa) !important;
-    border-color: #6d28d9 !important;
-    color: white !important;
-    font-weight: 700;
-    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35);
-}
-.action-btn.exam-enter-btn:hover {
-    background: linear-gradient(135deg, #6d28d9, #8b5cf6) !important;
-    box-shadow: 0 3px 10px rgba(124, 58, 237, 0.5);
-    transform: translateY(-1px);
-}
-/* عند تفعيل نمط الاختبار، نخفي زر الدخول */
-body.exam-mode .action-btn.exam-enter-btn { display: none; }
-
-/* ============================================================
-   DEVELOPER MODAL
-   ============================================================ */
-.dev-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.65);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    backdrop-filter: blur(3px);
-}
-.dev-modal {
-    min-width: 340px;
-    max-width: 480px;
-    background: var(--bg-secondary, #1f2937);
-    border: 1px solid var(--border, #374151);
-    border-radius: 8px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-    color: var(--text-primary, #f3f4f6);
-    overflow: hidden;
-}
-.dev-modal .modal-header {
-    background: var(--bg-primary, #111827);
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border, #374151);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.dev-modal .modal-header h3 {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 700;
-}
-.dev-modal .close-modal {
-    cursor: pointer;
-    font-size: 24px;
-    line-height: 1;
-    color: var(--text-secondary);
-    padding: 0 4px;
-}
-.dev-modal .close-modal:hover { color: var(--danger, #ef4444); }
-
-.dev-modal-body {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.dev-field {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-.dev-field input {
-    background: var(--bg-primary, #111827);
-    border: 1px solid var(--border, #374151);
-    color: var(--text-primary, #f3f4f6);
-    border-radius: 4px;
-    padding: 8px 10px;
-    font-size: 14px;
-    font-family: var(--font-mono, monospace);
-    transition: var(--transition);
-}
-.dev-field input:focus {
-    outline: none;
-    border-color: var(--accent, #6366f1);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-}
-
-.dev-info-row {
-    display: flex;
-    justify-content: space-between;
-    background: var(--bg-primary);
-    padding: 8px 12px;
-    border-radius: 4px;
-    font-size: 13px;
-}
-.dev-status-active {
-    background: rgba(220, 38, 38, 0.18);
-    color: #fbbf24;
-    padding: 10px 12px;
-    border-radius: 4px;
-    border: 1px solid rgba(251, 191, 36, 0.4);
-    font-weight: 600;
-    font-size: 13px;
-    text-align: center;
-}
-.dev-warn {
-    color: var(--text-muted, #9ca3af);
-    font-size: 11px;
-    margin: 4px 0 0;
-    font-style: italic;
-}
-
-/* === Hash generator section === */
-.dev-section-divider {
-    height: 1px;
-    background: var(--border);
-    margin: 8px 0;
-}
-.dev-section-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--accent-light, #818cf8);
-    margin: 0 0 4px 0;
-}
-.dev-hash-output {
-    background: rgba(99, 102, 241, 0.08);
-    border: 1px solid rgba(99, 102, 241, 0.25);
-    border-radius: 6px;
-    padding: 10px;
-    margin-top: 6px;
-    animation: hashFadeIn 0.25s ease-out;
-}
-@keyframes hashFadeIn {
-    from { opacity: 0; transform: translateY(-4px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-.dev-hash-output input[readonly] {
-    cursor: text;
-    user-select: all;
-    -webkit-user-select: all;
-}
-
-.dev-modal .modal-footer {
-    background: var(--bg-primary);
-    padding: 10px 16px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-}
 .modal-btn {
     padding: 7px 14px;
     border: 1px solid var(--border);
@@ -616,18 +403,6 @@ body.exam-mode .action-btn.exam-enter-btn { display: none; }
 }
 .modal-btn:hover { background: var(--surface-hover); }
 .modal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.modal-btn-primary {
-    background: var(--accent, #6366f1);
-    border-color: var(--accent);
-    color: white;
-}
-.modal-btn-primary:hover { background: var(--accent-light, #818cf8); }
-.modal-btn-danger {
-    background: var(--danger, #ef4444);
-    border-color: var(--danger);
-    color: white;
-}
-.modal-btn-danger:hover { background: #dc2626; }
 
 /* === SIDEBAR === */
 #sidebar {
@@ -766,17 +541,61 @@ body.exam-mode .action-btn.exam-enter-btn { display: none; }
     display: none;
 }
 
+/* أي SVG داخل .comp-icon يأخذ ملء المساحة ولا يلتقط النقر */
+.comp-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+}
+
 .comp-icon {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     font-family: var(--font-mono);
     font-weight: 600;
     font-size: 13px;
     flex-shrink: 0;
+    overflow: hidden;
+    /* الطبقات الثلاث تخلق إيهام العمق ثلاثي الأبعاد:
+       1. ظل خارجي للقاعدة (يبدو الزر مرفوعاً عن السطح)
+       2. لمعة داخلية علوية (يحاكي إضاءة من الأعلى)
+       3. ظل داخلي سفلي (يحاكي عمق الزر) */
+    box-shadow:
+        0 3px 0 rgba(0, 0, 0, 0.35),
+        0 4px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.25);
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 0.15s ease;
+    /* مهم: الـ icon لا تلتقط النقر؛ النقرة تمر إلى الزر الأم */
+    pointer-events: none;
+}
+
+/* عند المرور: الزر يرتفع قليلاً ويلمع */
+.comp-btn:hover .comp-icon {
+    transform: translateY(-2px);
+    box-shadow:
+        0 5px 0 rgba(0, 0, 0, 0.35),
+        0 8px 12px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.25);
+    filter: brightness(1.12);
+}
+
+/* عند الضغط: الزر يُكبس للداخل (تأثير push-button) */
+.comp-btn:active .comp-icon {
+    transform: translateY(2px);
+    box-shadow:
+        0 0 0 rgba(0, 0, 0, 0),
+        0 1px 3px rgba(0, 0, 0, 0.3),
+        inset 0 2px 6px rgba(0, 0, 0, 0.4);
+    filter: brightness(0.9);
 }
 
 .ic-icon {
@@ -896,6 +715,11 @@ body.exam-mode .action-btn.exam-enter-btn { display: none; }
    بدون halation أو إجهاد للعيون. */
 #build-area-boundary {
     position: absolute;
+    /* أبعاد افتراضية كاحتياط لو JS لم يحدّثها (يحدث في حالات نادرة من cache) */
+    left: 100px;
+    top: 50px;
+    width: 2400px;
+    height: 1500px;
     background: var(--workspace-bg);
     background-image:
         linear-gradient(var(--workspace-grid-major) 1px, transparent 1px),
@@ -1283,6 +1107,18 @@ COMPONENT STYLES ON WORKSPACE
     box-shadow: 0 0 4px var(--high-glow);
 }
 
+/* تحذير: مدخل floating — موصول لكن بدون قائد (غير محدّد القيمة) */
+.pin-dot.floating {
+    background: #ff8800;
+    box-shadow: 0 0 6px rgba(255, 136, 0, 0.7);
+    animation: floatingPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes floatingPulse {
+    0%, 100% { box-shadow: 0 0 6px rgba(255, 136, 0, 0.5); }
+    50%      { box-shadow: 0 0 14px rgba(255, 136, 0, 1.0); }
+}
+
 .pin-num {
     font-family: var(--font-mono);
     font-size: 8px;
@@ -1313,18 +1149,12 @@ COMPONENT STYLES ON WORKSPACE
 }
 
 .ic-body-el {
-    background: var(--ic-body);
-    border: 2px solid var(--ic-body-border);
-    border-radius: 4px;
+    /* قواعد flex فقط — الشكل البصري يأتي من قاعدة SOIC العامة أدناه */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 74px;
     position: relative;
-    box-shadow:
-        inset 0 2px 4px rgba(255, 255, 255, 0.03),
-        0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .ic-notch {
@@ -1349,14 +1179,8 @@ COMPONENT STYLES ON WORKSPACE
     letter-spacing: 1px;
 }
 
-/* === IC555 Timer Label Color === */
-.ic-component .ic-chip-label {
-    color: var(--text-primary);
-}
-
-.ic-component[data-type="IC555"] .ic-chip-label {
-    color: var(--warning);
-}
+/* قواعد الـ chip-label الأساسية تأتي من قاعدة SOIC العامة أدناه
+   (لا داعي لـ overrides لونية هنا — النحت الغائر موحَّد لكل ICs) */
 
 .ic-chip-sublabel {
     font-family: var(--font-mono);
@@ -1364,6 +1188,197 @@ COMPONENT STYLES ON WORKSPACE
     color: var(--text-muted);
     margin-top: 2px;
 }
+
+/* ============================================================
+   جميع ICs — مظهر واقعي يحاكي شرائح SOIC حقيقية
+   (نفس أسلوب IC 7408، مطبَّق عبر سلكتور عام)
+   ============================================================ */
+.ic-component .ic-body-el {
+    /* بلاستيك أسود غامق ولامع، تدرّج يحاكي صبّ البلاستيك */
+    background:
+        radial-gradient(ellipse at 30% 25%, rgba(80, 80, 80, 0.4) 0%, transparent 55%),
+        linear-gradient(180deg, #2a2a2a 0%, #050505 55%, #1a1a1a 100%);
+    border: 1px solid #000;
+    border-radius: 3px;
+    /* inset shadows فقط (داخلية للعمق) — لا outer shadows هنا */
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.45);
+    /* drop-shadow filter يخلق ظلاً يطابق شكل العنصر بدقّة (مستطيل بـ border-radius 3px) */
+    filter:
+        drop-shadow(0 2px 2px rgba(0, 0, 0, 0.45))
+        drop-shadow(0 5px 8px rgba(0, 0, 0, 0.25));
+    position: relative;
+    overflow: visible;
+    min-width: 105px;
+}
+
+/* نقطة pin 1 المنحوتة في الزاوية العلوية اليسرى */
+.ic-component .ic-body-el::before {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #000 0%, #0a0a0a 100%);
+    box-shadow:
+        inset 0 1px 2px rgba(0, 0, 0, 0.9),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+        0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* إخفاء الـ notch القديم — نقطة pin 1 بديلة عنه */
+.ic-component .ic-notch {
+    display: none;
+}
+
+/* التسمية الرئيسية مطبوعة كنقش غائر (engraved) على البلاستيك */
+.ic-component .ic-chip-label {
+    color: #b8b8b8;
+    text-shadow:
+        0 -1px 0 rgba(0, 0, 0, 0.95),                 /* خطّ عميق علوي */
+        0 1px 0 rgba(255, 255, 255, 0.1);             /* لمعة سفلية */
+    font-weight: 800;
+    letter-spacing: 2px;
+    -webkit-text-stroke: 0.2px rgba(120, 120, 120, 0.3);
+}
+
+.ic-component .ic-chip-sublabel {
+    color: #888;
+    text-shadow:
+        0 -1px 0 rgba(0, 0, 0, 0.9),
+        0 1px 0 rgba(255, 255, 255, 0.08);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* الأطراف المربّعة المعدنية (gull-wing leads) بدلاً من الدوائر */
+.ic-component .pin-dot {
+    width: 14px;
+    height: 8px;
+    border-radius: 1.5px;
+    /* معدن لامع: فضّي على البارد مع لمعة علوية */
+    background: linear-gradient(180deg,
+        #f1f5f9 0%,
+        #cbd5e1 30%,
+        #94a3b8 60%,
+        #64748b 100%);
+    border: 1px solid #1a1a1a;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),     /* لمعة قمّة */
+        inset 0 -1px 1px rgba(0, 0, 0, 0.35),         /* عمق سفلي */
+        0 1px 2px rgba(0, 0, 0, 0.5),                 /* ظل أرضي */
+        0 0 0 0.5px rgba(0, 0, 0, 0.6);
+}
+
+.ic-component .pin-dot:hover {
+    background: linear-gradient(180deg,
+        #fef3c7 0%,
+        #fbbf24 30%,
+        #f59e0b 60%,
+        #b45309 100%);
+    transform: scale(1.15);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.3),
+        0 2px 4px rgba(245, 158, 11, 0.5),
+        0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+.ic-component .pin-dot.high {
+    background: linear-gradient(180deg,
+        #86efac 0%,
+        #4ade80 30%,
+        #16a34a 60%,
+        #14532d 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.35),
+        0 1px 2px rgba(0, 0, 0, 0.5),
+        0 0 6px rgba(34, 197, 94, 0.5);
+}
+
+.ic-component .pin-dot.floating {
+    background: linear-gradient(180deg,
+        #fed7aa 0%,
+        #fb923c 30%,
+        #ea580c 60%,
+        #9a3412 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.3),
+        0 0 8px rgba(251, 146, 60, 0.7);
+}
+
+/* ============================================================
+   إلصاق الأطراف بالجسم + نحت أسماء الأطراف على الـ IC (جميع ICs)
+   ============================================================ */
+
+/* عكس اتجاه العمود الأيسر: الـ dot يصبح الأقرب للجسم */
+.ic-component .ic-pins-left .ic-pin {
+    flex-direction: row-reverse;
+    gap: 0;
+}
+.ic-component .ic-pins-right .ic-pin {
+    gap: 0;
+}
+
+/* تقليص الفجوة بين العمود والجسم — الأطراف ملاصقة */
+.ic-component .ic-pins-col {
+    padding: 4px 0;
+}
+
+/* === نحت الأسماء داخل الجسم === */
+.ic-component .pin-name {
+    /* الموقع المطلق يخرجها من تدفّق الـ flex
+       حتى يبقى الـ dot ملاصقاً للجسم */
+    position: absolute;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: #b8b8b8;
+    /* تأثير النقش الغائر — مطابق لتسمية الـ chip-label الرئيسية */
+    text-shadow:
+        0 -1px 0 rgba(0, 0, 0, 0.95),
+        0 1px 0 rgba(255, 255, 255, 0.08);
+    z-index: 5;
+    white-space: nowrap;
+    pointer-events: none;
+    background: none;
+    padding: 0;
+}
+
+/* أسماء العمود الأيسر تظهر داخل الجسم بحذاء حافته اليسرى */
+.ic-component .ic-pins-left .pin-name {
+    left: 100%;
+    margin-left: 4px;
+    text-align: left;
+}
+
+/* أسماء العمود الأيمن تظهر داخل الجسم بحذاء حافته اليمنى */
+.ic-component .ic-pins-right .pin-name {
+    right: 100%;
+    margin-right: 4px;
+    text-align: right;
+}
+
+/* أسماء active-LOW (الشرطة فوقية) — نقش بنفسجي ناعم */
+.ic-component .pin-name.pin-active-low {
+    text-decoration: overline;
+    text-decoration-thickness: 1px;
+    color: #c4b5fd;
+}
+
+/* ============================================================
+   عرض الجسم لكل IC — يستوعب أطول اسم طرف بدون انكماش
+   ============================================================ */
+.ic-component[data-type="IC7408"]  .ic-body-el { min-width: 105px; }
+.ic-component[data-type="IC7485"]  .ic-body-el { min-width: 120px; }
+.ic-component[data-type="IC7447"]  .ic-body-el { min-width: 130px; }
+.ic-component[data-type="IC74193"] .ic-body-el { min-width: 120px; }
+.ic-component[data-type="IC555"]   .ic-body-el { min-width: 115px; }
 
 /* === SWITCH === */
 .switch-component {
@@ -1377,31 +1392,47 @@ COMPONENT STYLES ON WORKSPACE
     width: 48px;
     height: 28px;
     border-radius: 14px;
-    background: var(--low);
-    border: 2px solid rgba(255, 255, 255, 0.08);
+    /* مسار المفتاح بتدرّج عمودي (داكن في الأعلى، أفتح في الأسفل) */
+    background: linear-gradient(180deg, #1a252f 0%, var(--low) 50%, #2c3e50 100%);
+    border: 1px solid rgba(0, 0, 0, 0.5);
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+    /* ظل داخلي قوي للمسار + ظل خارجي للارتفاع */
+    box-shadow:
+        inset 0 2px 4px rgba(0, 0, 0, 0.6),
+        inset 0 -1px 1px rgba(255, 255, 255, 0.05),
+        0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .switch-body.on {
-    background: var(--high);
+    background: linear-gradient(180deg, #0e6f33 0%, var(--high) 50%, #16a34a 100%);
     box-shadow:
-        inset 0 2px 6px rgba(0, 0, 0, 0.2),
-        0 0 16px var(--high-glow);
+        inset 0 2px 4px rgba(0, 0, 0, 0.35),
+        inset 0 -1px 1px rgba(255, 255, 255, 0.15),
+        0 0 14px var(--high-glow),
+        0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .switch-knob {
     position: absolute;
     top: 3px;
     left: 3px;
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
-    background: white;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    /* كرة معدنية بتدرّج شعاعي (تشبه bearing ball) */
+    background: radial-gradient(circle at 35% 30%,
+        #ffffff 0%,
+        #e2e8f0 35%,
+        #94a3b8 75%,
+        #64748b 100%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.2),
+        inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 .switch-body.on .switch-knob {
@@ -1419,6 +1450,22 @@ COMPONENT STYLES ON WORKSPACE
     align-items: center;
     justify-content: center;
     cursor: crosshair;
+}
+
+/* === مفتاح فيزيائي — لون مختلف للتمييز عن المنطقي === */
+.switch-component.switch-physical .switch-body {
+    background: #4a4a52;
+    border-color: rgba(150, 150, 170, 0.25);
+}
+.switch-component.switch-physical .switch-body.on {
+    background: #5d8a3c;
+    box-shadow:
+        inset 0 2px 6px rgba(0, 0, 0, 0.2),
+        0 0 12px rgba(120, 200, 80, 0.4);
+}
+.push-button-component.push-button-physical .push-button-body {
+    background: #4a4a52;
+    border-color: rgba(150, 150, 170, 0.25);
 }
 
 /* === DIP SWITCH === */
@@ -1450,14 +1497,18 @@ COMPONENT STYLES ON WORKSPACE
 }
 
 .dip-switch-body-container {
-    background: #b91c1c;
-    border-radius: 2px;
+    /* حزمة DIP حمراء بتدرّج 3D */
+    background: linear-gradient(180deg, #dc2626 0%, #b91c1c 50%, #7f1d1d 100%);
+    border-radius: 3px;
     padding: 4px 6px;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
-    border: 1px solid #991b1b;
+    box-shadow:
+        0 3px 5px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+    border: 1px solid #5a1414;
 }
 
 .dip-bit-row {
@@ -1515,39 +1566,64 @@ COMPONENT STYLES ON WORKSPACE
 }
 
 .push-button-body {
-    width: 32px;
-    height: 32px;
-    background: #374151;
-    border-radius: 4px;
+    width: 34px;
+    height: 34px;
+    /* قاعدة معدنية مربّعة بزوايا مستديرة + تدرّج شعاعي */
+    background: radial-gradient(circle at 35% 30%, #475569 0%, #334155 60%, #1e293b 100%);
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid #4b5563;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    transition: all 0.1s;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow:
+        0 3px 5px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.12),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+    transition: all 0.08s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
 }
 
 .push-button-cap {
-    width: 20px;
-    height: 20px;
-    background: #ef4444;
+    width: 22px;
+    height: 22px;
+    /* قبّة الزر بتدرّج شعاعي يحاكي زر بلاستيكي حقيقي */
+    background: radial-gradient(circle at 35% 25%, #fca5a5 0%, #ef4444 45%, #991b1b 100%);
     border-radius: 50%;
     box-shadow:
-        inset 0 2px 4px rgba(255, 255, 255, 0.3),
-        0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: all 0.1s;
+        inset 0 2px 2px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 2px rgba(0, 0, 0, 0.3),
+        0 2px 3px rgba(0, 0, 0, 0.4);
+    transition: all 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+/* لمعة على القبّة */
+.push-button-cap::before {
+    content: '';
+    position: absolute;
+    top: 18%;
+    left: 22%;
+    width: 32%;
+    height: 22%;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    filter: blur(1px);
+    pointer-events: none;
 }
 
 .push-button-body.pressed {
-    transform: translateY(2px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(3px);
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .push-button-body.pressed .push-button-cap {
-    background: #dc2626;
-    transform: scale(0.95);
-    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+    background: radial-gradient(circle at 35% 25%, #f87171 0%, #dc2626 45%, #7f1d1d 100%);
+    transform: scale(0.93);
+    box-shadow:
+        inset 0 3px 5px rgba(0, 0, 0, 0.5),
+        inset 0 -1px 1px rgba(255, 255, 255, 0.1);
 }
 
 /* === LED === */
@@ -1559,21 +1635,52 @@ COMPONENT STYLES ON WORKSPACE
 }
 
 .led-body {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: var(--led-off);
-    border: 2px solid rgba(255, 255, 255, 0.08);
+    /* قبّة LED بتدرّج شعاعي يحاكي إضاءة من فوق-يسار */
+    background: radial-gradient(circle at 32% 28%,
+        rgba(255, 255, 255, 0.3) 0%,
+        var(--led-off) 55%,
+        rgba(0, 0, 0, 0.4) 100%);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.3),
+        inset 0 1px 2px rgba(255, 255, 255, 0.12);
     transition: all 0.3s ease;
+    position: relative;
+}
+
+/* بقعة لمعان فوق-يسار (specular highlight) */
+.led-body::before {
+    content: '';
+    position: absolute;
+    top: 18%;
+    left: 22%;
+    width: 30%;
+    height: 22%;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    filter: blur(1px);
+    pointer-events: none;
 }
 
 .led-body.on {
-    background: var(--led-on);
+    background: radial-gradient(circle at 32% 28%,
+        rgba(255, 255, 255, 0.5) 0%,
+        var(--led-on) 50%,
+        rgba(0, 0, 0, 0.25) 100%);
     box-shadow:
-        0 0 15px var(--led-on-glow),
+        0 0 16px var(--led-on-glow),
         0 0 40px var(--led-on-glow),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.1);
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.15),
+        inset 0 1px 2px rgba(255, 255, 255, 0.25);
     opacity: 1 !important;
+}
+.led-body.on::before {
+    background: rgba(255, 255, 255, 0.7);
 }
 
 .led-body.burned {
@@ -1678,16 +1785,22 @@ COMPONENT STYLES ON WORKSPACE
 }
 
 .resistor-body {
-    width: 52px;
-    height: 18px;
-    background: linear-gradient(90deg, #D2B48C, #C4A06A, #D2B48C);
-    border: 1px solid #99774D;
-    border-radius: 3px;
+    width: 56px;
+    height: 22px;
+    /* تدرّج عمودي يحاكي أسطوانة المقاومة (فاتح فوق، داكن أسفل) */
+    background: linear-gradient(180deg, #e8c89c 0%, #D2B48C 30%, #b8956a 70%, #8a6a44 100%);
+    border: 1px solid #5a3a1a;
+    border-radius: 11px;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    /* طبقات تخلق إيهام أسطوانة + ظل خارجي */
+    box-shadow:
+        inset 0 2px 2px rgba(255, 255, 255, 0.4),
+        inset 0 -3px 4px rgba(0, 0, 0, 0.35),
+        0 3px 5px rgba(0, 0, 0, 0.45),
+        0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .resistor-bands {
@@ -1786,10 +1899,15 @@ COMPONENT STYLES ON WORKSPACE
 }
 
 .cap-plate {
-    width: 3px;
-    height: 22px;
-    background: #3498db;
+    width: 4px;
+    height: 24px;
+    /* لوح معدني بتدرّج عمودي يحاكي العمق */
+    background: linear-gradient(180deg, #60a5fa 0%, #3498db 40%, #1e6091 100%);
     border-radius: 1px;
+    box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.5),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+        1px 0 2px rgba(0, 0, 0, 0.4);
 }
 
 .cap-gap {
@@ -1944,24 +2062,35 @@ COMPONENT STYLES ON WORKSPACE
     stroke: #40e0c0;
 }
 
-/* === WIRE STYLES === */
+/* === WIRE STYLES — أسلاك ثلاثية الأبعاد === */
 .wire {
     stroke: var(--wire-inactive);
-    stroke-width: 2;
+    stroke-width: 3.5;            /* أعرض ليبدو كسلك معزول حقيقي */
     fill: none;
     stroke-linecap: round;
     stroke-linejoin: round;
-    transition: stroke-width 0.15s, opacity 0.15s;
+    /* طبقتا ظل: ظل قريب داكن (يحاكي ارتفاع السلك) + ظل بعيد ناعم */
+    filter:
+        drop-shadow(0 1.5px 0 rgba(0, 0, 0, 0.5))
+        drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+    transition: stroke-width 0.15s, opacity 0.15s, filter 0.15s;
 }
 
 .wire.active {
-    stroke-width: 2.5;
+    stroke-width: 4;
+    /* ظل أقوى + توهّج خفيف بلون السلك (يبدو يحمل تياراً) */
+    filter:
+        drop-shadow(0 1.5px 0 rgba(0, 0, 0, 0.55))
+        drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 .wire:hover {
-    stroke-width: 4;
+    stroke-width: 5;
     opacity: 1 !important;
-    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.25));
+    filter:
+        drop-shadow(0 2px 0 rgba(0, 0, 0, 0.6))
+        drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5))
+        brightness(1.15);
 }
 
 /* عند تحديد سلك معيّن، يصبح غيره باهتاً قليلاً للمساعدة في التتبع */
@@ -2029,298 +2158,12 @@ COMPONENT STYLES ON WORKSPACE
     letter-spacing: 0.5px;
 }
 
-/* === CONTEXT MENU === */
-.context-menu {
-    position: fixed;
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 4px;
-    z-index: 1000;
-    min-width: 140px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+/* IC احترق بسبب فولتية تجاوزت absolute max */
+.component.ic-burned {
+    filter: grayscale(0.9) brightness(0.5);
 }
 
-.context-menu-item {
-    padding: 6px 12px;
-    font-size: 12px;
-    color: var(--text-secondary);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.context-menu-item:hover {
-    background: var(--surface-hover);
-    color: var(--text-primary);
-}
-
-.context-menu-item.danger:hover {
-    background: rgba(239, 68, 68, 0.15);
-    color: var(--danger);
-}
-
-.color-picker-row {
-    display: flex;
-    gap: 6px;
-    padding: 2px 0 4px 0;
-}
-
-.color-swatch {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.color-swatch:hover {
-    transform: scale(1.2);
-    border-color: white;
-}
-
-.color-swatch.active {
-    border: 2px solid white;
-    box-shadow: 0 0 6px white;
-    transform: scale(1.1);
-}
-
-.rotate-options {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-}
-
-.rotate-opt {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 28px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-secondary);
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.rotate-opt:hover {
-    background: rgba(99, 102, 241, 0.3);
-    color: var(--text-primary);
-    border-color: rgba(99, 102, 241, 0.4);
-}
-
-.rotate-opt.active {
-    background: rgba(99, 102, 241, 0.5);
-    color: #fff;
-    border-color: rgba(99, 102, 241, 0.6);
-    box-shadow: 0 0 6px rgba(99, 102, 241, 0.3);
-}
-
-/* === MODAL === */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(2px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-}
-
-.modal.show {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.modal-content {
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    transform: translateY(-20px);
-    transition: transform 0.2s ease;
-}
-
-.modal.show .modal-content {
-    transform: translateY(0);
-}
-
-.modal-header {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.modal-header h3 {
-    margin: 0;
-    font-size: 14px;
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.close-modal {
-    color: var(--text-muted);
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    line-height: 1;
-}
-
-.close-modal:hover {
-    color: var(--text-primary);
-}
-
-.modal-body {
-    padding: 16px;
-    overflow-y: auto;
-    font-family: var(--font-ui);
-}
-
-.shortcuts-section {
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 10px;
-}
-
-.shortcuts-section:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-
-.shortcuts-section h4 {
-    font-size: 13px;
-    color: var(--accent-light);
-    margin-bottom: 10px;
-    font-weight: 700;
-}
-
-.shortcuts-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.shortcut-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 10px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 6px;
-    font-size: 12px;
-}
-
-.shortcut-key {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--high-bright);
-    min-width: 24px;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.shortcut-desc {
-    color: var(--text-secondary);
-}
-
-.modal-footer {
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.02);
-    display: flex;
-    justify-content: flex-end;
-    /* Align button to left in RTL */
-}
-
-/* RTL Specific Override for footer button alignment */
-[dir="rtl"] .modal-footer {
-    justify-content: flex-end;
-    /* In RTL flex-end is left */
-}
-
-.modal-btn {
-    padding: 6px 16px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: var(--font-ui);
-    font-size: 13px;
-    transition: var(--transition);
-}
-
-.modal-btn:hover {
-    background: var(--accent-light);
-}
-
-
-.tool-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: transparent;
-}
-
-/* === RESPONSIVE === */
-@media (max-width: 900px) {
-    #sidebar {
-        width: 60px;
-    }
-
-    .comp-info {
-        display: none;
-    }
-
-    .comp-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 11px;
-    }
-
-    #info-panel {
-        width: 200px;
-    }
-}
-
-@media (max-width: 700px) {
-    #info-panel {
-        display: none;
-    }
-
-    .header-right {
-        display: none;
-    }
-
-    .subtitle {
-        display: none;
-    }
+.component.ic-burned .ic-body-el {
+    background: linear-gradient(135deg, #2a1a1a 0%, #1a0e0e 100%) !important;
+    border-color: #5a2020 !important;
 }

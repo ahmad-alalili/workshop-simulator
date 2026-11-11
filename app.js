@@ -13,7 +13,7 @@ IC Circuit Simulator — Main Application
 //   1. APP_VERSION هنا (في app.js)
 //   2. ?v=... في <link rel="stylesheet"> داخل index.html
 //   3. ?v=... في <script src="app.js"> داخل index.html
-const APP_VERSION = '20261111-47';
+const APP_VERSION = '20261111-48';
 
 // — تحقّق إذا كانت النسخة الحالية مختلفة عن المحفوظة، أعد التحميل —
 (function checkVersionAndReloadIfStale() {
@@ -116,7 +116,11 @@ const TRANSLATIONS = {
         'header.examExit':      'Exit Exam',
         'header.exam.tooltip':  'Exam mode: hides the examples and pin names',
         'exam.badge':           '📝 Exam mode — pin names and examples are hidden',
-        'exam.confirmExit':     'Exit exam mode? Pin names and examples will be shown again.',
+        'exam.confirmExit':     'Exit exam mode? Pin names and examples will be shown again after a 2-minute wait.',
+        'header.examExiting':   'Cancel exit ({time})',
+        'exam.badgeExiting':    '⏳ Exam mode ends in {time}',
+        'toast.examExitStarted':   '⏳ Exam mode will end in 2 minutes',
+        'toast.examExitCancelled': '📝 Exit cancelled — exam mode stays ON',
         'toast.examOn':         '📝 Exam mode ON',
         'toast.examOff':        'Exam mode OFF',
         'refresh.refreshing':   'Refreshing from server…',
@@ -267,7 +271,11 @@ const TRANSLATIONS = {
         'header.examExit':      'إنهاء الاختبار',
         'header.exam.tooltip':  'وضع الاختبار: يخفي الأمثلة ومسميات الأطراف',
         'exam.badge':           '📝 وضع الاختبار — مسميات الأطراف والأمثلة مخفية',
-        'exam.confirmExit':     'هل تريد إنهاء وضع الاختبار؟ ستظهر مسميات الأطراف والأمثلة من جديد.',
+        'exam.confirmExit':     'هل تريد إنهاء وضع الاختبار؟ ستظهر مسميات الأطراف والأمثلة بعد انتظار دقيقتين.',
+        'header.examExiting':   'إلغاء الإنهاء ({time})',
+        'exam.badgeExiting':    '⏳ ينتهي وضع الاختبار بعد {time}',
+        'toast.examExitStarted':   '⏳ سينتهي وضع الاختبار بعد دقيقتين',
+        'toast.examExitCancelled': '📝 أُلغي الإنهاء — وضع الاختبار مستمر',
         'toast.examOn':         '📝 تم تفعيل وضع الاختبار',
         'toast.examOff':        'تم إنهاء وضع الاختبار',
         'refresh.refreshing':   'جاري التحديث من الخادم...',
@@ -5489,10 +5497,18 @@ function updateExamUI() {
         btn.classList.toggle('active', examMode);
         btn.style.display = EXAM_LOCKED ? 'none' : '';
         const label = btn.querySelector('.exam-btn-label');
-        if (label) label.textContent = t(examMode ? 'header.examExit' : 'header.exam');
+        if (label) {
+            label.textContent = (examMode && examExitAt)
+                ? t('header.examExiting').replace('{time}', examExitRemainingText())
+                : t(examMode ? 'header.examExit' : 'header.exam');
+        }
     }
     const badge = document.getElementById('exam-badge');
-    if (badge) badge.textContent = t('exam.badge');
+    if (badge) {
+        badge.textContent = (examMode && examExitAt)
+            ? t('exam.badgeExiting').replace('{time}', examExitRemainingText())
+            : t('exam.badge');
+    }
     // أغلق قائمة الأمثلة إن كانت مفتوحة
     if (examMode) {
         const dd = document.getElementById('dropdown-examples');
@@ -5503,16 +5519,71 @@ function updateExamUI() {
 function setExamMode(on) {
     if (EXAM_LOCKED && !on) return;
     examMode = !!on;
+    clearExamExitCountdown();
     try { localStorage.setItem('icsim-exam', examMode ? '1' : '0'); } catch (e) {}
     updateExamUI();
     showToast(t(examMode ? 'toast.examOn' : 'toast.examOff'), examMode ? 'warning' : 'success');
 }
 
+// — مهلة الخروج: إطفاء وضع الاختبار لا يتم فوراً، بل بعد دقيقتين —
+// خلال المهلة يبقى الوضع فعّالاً (المسميات والأمثلة مخفية) ويظهر عدّ تنازلي.
+// وقت الانتهاء يُحفظ في localStorage، فإعادة تحميل الصفحة لا تتجاوز المهلة.
+const EXAM_EXIT_DELAY_MS = 2 * 60 * 1000;
+let examExitAt = 0;            // الطابع الزمني لانتهاء المهلة (0 = لا خروج معلّق)
+let examExitTimer = null;
+
+function examExitRemainingText() {
+    const sec = Math.max(0, Math.ceil((examExitAt - Date.now()) / 1000));
+    return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+}
+
+function clearExamExitCountdown() {
+    examExitAt = 0;
+    if (examExitTimer) { clearInterval(examExitTimer); examExitTimer = null; }
+    try { localStorage.removeItem('icsim-exam-exit-at'); } catch (e) {}
+}
+
+function examExitTick() {
+    if (!examExitAt) return;
+    if (Date.now() >= examExitAt) setExamMode(false);   // انتهت المهلة → خروج فعلي
+    else updateExamUI();
+}
+
+function startExamExitCountdown(endAt) {
+    if (EXAM_LOCKED) return;
+    examExitAt = endAt || (Date.now() + EXAM_EXIT_DELAY_MS);
+    try { localStorage.setItem('icsim-exam-exit-at', String(examExitAt)); } catch (e) {}
+    if (examExitTimer) clearInterval(examExitTimer);
+    examExitTimer = setInterval(examExitTick, 500);
+    updateExamUI();
+}
+
+// استئناف مهلة بدأت قبل إعادة تحميل الصفحة
+if (examMode && !EXAM_LOCKED) {
+    let storedExitAt = 0;
+    try { storedExitAt = parseInt(localStorage.getItem('icsim-exam-exit-at'), 10) || 0; } catch (e) {}
+    if (storedExitAt) {
+        // لا نقبل وقتاً أبعد من المهلة الكاملة (تغيير ساعة الجهاز)
+        startExamExitCountdown(Math.min(storedExitAt, Date.now() + EXAM_EXIT_DELAY_MS));
+        examExitTick();
+    }
+}
+
 const btnExamMode = document.getElementById('btn-exam-mode');
 if (btnExamMode) {
     btnExamMode.addEventListener('click', () => {
-        if (examMode && !window.confirm(t('exam.confirmExit'))) return;
-        setExamMode(!examMode);
+        if (!examMode) { setExamMode(true); return; }
+        if (EXAM_LOCKED) return;   // الرابط المقفل: لا خروج إطلاقاً
+        if (examExitAt) {
+            // نقرة ثانية أثناء العدّ التنازلي = إلغاء الخروج والبقاء في الاختبار
+            clearExamExitCountdown();
+            updateExamUI();
+            showToast(t('toast.examExitCancelled'), 'warning');
+            return;
+        }
+        if (!window.confirm(t('exam.confirmExit'))) return;
+        startExamExitCountdown();
+        showToast(t('toast.examExitStarted'), 'warning');
     });
 }
 

@@ -24,7 +24,7 @@
     <!-- Cache busting: غيّر الرقم بعد ?v= مع كل تحديث على GitHub -->
     <!-- مثال: v=20250428-1  → v=20250428-2 → v=20250429-1 ...  -->
     <!-- ====================================================== -->
-    <link rel="stylesheet" href="style.css?v=20260512-46">
+    <link rel="stylesheet" href="style.css?v=20261111-47">
 </head>
 
 <body>
@@ -76,6 +76,7 @@
                     <span id="lang-display">العربية</span>
                 </button>
                 <button class="action-btn refresh-btn" id="btn-hard-refresh" data-i18n-title="header.refresh.tooltip" title="Force refresh (clears cache)">🔄</button>
+                <button class="action-btn exam-btn" id="btn-exam-mode" data-i18n-title="header.exam.tooltip" title="Exam mode: hides the examples and pin names">📝 <span class="exam-btn-label">Exam Mode</span></button>
                 <button class="action-btn" id="btn-help">❓ <span data-i18n="header.help">Help</span></button>
                 <button class="action-btn" id="btn-save-project" data-i18n-title="header.save.tooltip" title="Save circuit as JSON">💾 <span data-i18n="header.save">Save</span></button>
                 <button class="action-btn" id="btn-load-project" data-i18n-title="header.load.tooltip" title="Load circuit from JSON">📂 <span data-i18n="header.load">Load</span></button>
@@ -338,6 +339,7 @@
         <footer id="status-bar">
             <span id="status-tool">🔧 <span data-i18n="status.tool">Tool</span>: <span data-i18n="tool.select">Select</span></span>
             <span id="status-hint" data-i18n="status.hint.default">Click a component from the sidebar then click on workspace to place it</span>
+            <span id="exam-badge">📝 Exam mode</span>
             <span id="status-coords">X: 0 Y: 0</span>
             <span class="designer-credit">Design: Eng. Ahmed Saeed Al-Alili Al-Maliki</span>
         </footer>
@@ -383,7 +385,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260512-46"></script>
+    <script src="app.js?v=20261111-47"></script>
 </body>
 
 </html>

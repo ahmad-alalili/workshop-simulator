@@ -2304,3 +2304,45 @@ COMPONENT STYLES ON WORKSPACE
         0 1px 2px rgba(0, 0, 0, 0.5),
         0 0 5px rgba(217, 119, 6, 0.55);
 }
+
+/* ============================================================
+   EXAM MODE — وضع الاختبار
+   يخفي الأمثلة ومسميات الأطراف ويُبقي أرقام الأطراف فقط
+   ============================================================ */
+body.exam-mode #dropdown-examples,
+body.exam-mode .pin-name,
+body.exam-mode .exam-hide {
+    display: none !important;
+}
+
+.action-btn.exam-btn {
+    border-color: #f59e0b;
+    color: #f59e0b;
+    font-weight: 700;
+}
+.action-btn.exam-btn:hover {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: #fbbf24;
+    color: #fbbf24;
+}
+.action-btn.exam-btn.active {
+    background: #f59e0b;
+    border-color: #f59e0b;
+    color: #1a1d2e;
+}
+
+#exam-badge {
+    display: none;
+    color: #fbbf24;
+    font-weight: 700;
+}
+body.exam-mode #exam-badge {
+    display: inline;
+}
+body.exam-mode #header {
+    box-shadow: inset 0 -2px 0 #f59e0b;
+}
+#exam-badge {
+    margin-inline: 12px;
+    white-space: nowrap;
+}

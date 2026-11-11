@@ -13,7 +13,7 @@ IC Circuit Simulator — Main Application
 //   1. APP_VERSION هنا (في app.js)
 //   2. ?v=... في <link rel="stylesheet"> داخل index.html
 //   3. ?v=... في <script src="app.js"> داخل index.html
-const APP_VERSION = '20260512-46';
+const APP_VERSION = '20261111-47';
 
 // — تحقّق إذا كانت النسخة الحالية مختلفة عن المحفوظة، أعد التحميل —
 (function checkVersionAndReloadIfStale() {
@@ -112,6 +112,13 @@ const TRANSLATIONS = {
         'header.langToggle.tooltip': 'Switch language',
         'header.langToggle.label': 'العربية',     // النص داخل الزر يعرض اللغة المقابلة
         'header.refresh.tooltip': 'Force refresh from server (bypass cache)',
+        'header.exam':          'Exam Mode',
+        'header.examExit':      'Exit Exam',
+        'header.exam.tooltip':  'Exam mode: hides the examples and pin names',
+        'exam.badge':           '📝 Exam mode — pin names and examples are hidden',
+        'exam.confirmExit':     'Exit exam mode? Pin names and examples will be shown again.',
+        'toast.examOn':         '📝 Exam mode ON',
+        'toast.examOff':        'Exam mode OFF',
         'refresh.refreshing':   'Refreshing from server…',
 
         // === Sidebar ===
@@ -256,6 +263,13 @@ const TRANSLATIONS = {
         'header.langToggle.tooltip': 'تبديل اللغة',
         'header.langToggle.label': 'English',
         'header.refresh.tooltip': 'تحديث قسري من الخادم (تجاوز الكاش)',
+        'header.exam':          'وضع الاختبار',
+        'header.examExit':      'إنهاء الاختبار',
+        'header.exam.tooltip':  'وضع الاختبار: يخفي الأمثلة ومسميات الأطراف',
+        'exam.badge':           '📝 وضع الاختبار — مسميات الأطراف والأمثلة مخفية',
+        'exam.confirmExit':     'هل تريد إنهاء وضع الاختبار؟ ستظهر مسميات الأطراف والأمثلة من جديد.',
+        'toast.examOn':         '📝 تم تفعيل وضع الاختبار',
+        'toast.examOff':        'تم إنهاء وضع الاختبار',
         'refresh.refreshing':   'جاري التحديث من الخادم...',
 
         // === Sidebar ===
@@ -421,6 +435,8 @@ function refreshDynamicI18n() {
     if (typeof updateToolStatus === 'function' && typeof currentTool !== 'undefined') {
         updateToolStatus(currentTool);
     }
+    // تحديث نصوص وضع الاختبار (الزر والشارة)
+    updateExamUI();
 }
 
 // ==========================================
@@ -733,10 +749,12 @@ A=LSB, D=MSB | (\\) = Active-LOW`,
             }
 
             const v = comp.counterValue;
-            // TCU = LOW عند العد إلى 15 و CPU=1
-            // TCD = LOW عند العد إلى 0  و CPD=1
-            const TCU = (v === 15 && CPU === 1) ? 0 : 1;
-            const TCD = (v === 0 && CPD === 1) ? 0 : 1;
+            // حسب الـ datasheet (TCU̅ = NOT(Q0·Q1·Q2·Q3·CPU̅)):
+            // TCU = LOW عند العد 15 و CPU=LOW، ويعود HIGH مع الحافة الصاعدة
+            //       التالية لـ CPU (لحظة الرجوع إلى 0) ← هذه الحافة تُعدّ المرحلة التالية
+            // TCD = LOW عند العد 0  و CPD=LOW
+            const TCU = (v === 15 && CPU === 0) ? 0 : 1;
+            const TCD = (v === 0 && CPD === 0) ? 0 : 1;
 
             return {
                 3: (v >> 0) & 1,   // Q0
@@ -765,8 +783,8 @@ P0=LSB, P3=MSB | (\\) = Active-LOW`,
                 ['PL = 0', 'Load → Qn = Pn (asynchronous)'],
                 ['CPU rising edge', 'Count Up: Q ← Q + 1'],
                 ['CPD rising edge', 'Count Down: Q ← Q − 1'],
-                ['Q = 1111, CPU = 1', 'TCU = 0 (Carry)'],
-                ['Q = 0000, CPD = 1', 'TCD = 0 (Borrow)']
+                ['Q = 1111, CPU = 0', 'TCU = 0 (Carry)'],
+                ['Q = 0000, CPD = 0', 'TCD = 0 (Borrow)']
             ]
         }
     },
@@ -3298,7 +3316,7 @@ function showComponentInfo(comp) {
             const val = comp.pinStates[p.num] || 0;
             segStatesHTML += `
                 <li class="pin-state-item">
-                    <span class="pin-state-name">Pin ${p.num} (${escapeHTML(p.name)})</span>
+                    <span class="pin-state-name">Pin ${p.num}<span class="exam-hide"> (${escapeHTML(p.name)})</span></span>
                     <span class="pin-state-val ${val ? 'high' : 'low'}">${val}</span>
                 </li>
             `;
@@ -3333,7 +3351,7 @@ function showComponentInfo(comp) {
                 <div class="info-section-title">Pin states</div>
                 <ul class="pin-states">${segStatesHTML}</ul>
             </div>
-            <div class="info-section">
+            <div class="info-section exam-hide">
                 <div class="info-section-title">Pinout (DIP)</div>
                 <div class="pinout-diagram">      ┌──────┐
 e   │ 1 10│ g
@@ -3420,7 +3438,7 @@ function showICInfo(comp) {
             : escapeHTML(p.name);
         pinStatesHTML += `
             <li class="pin-state-item">
-                <span class="pin-state-name">Pin ${p.num} (${nameDisplay})</span>
+                <span class="pin-state-name">Pin ${p.num}<span class="exam-hide"> (${nameDisplay})</span></span>
                 <span class="pin-state-val ${val ? 'high' : 'low'}">${val ? 'HIGH' : 'LOW'}</span>
             </li>
         `;
@@ -3434,11 +3452,11 @@ function showICInfo(comp) {
     infoDetails.innerHTML = `
         <div class="info-title">${def.fullName}</div>
         <div class="info-subtitle">${t(def.descKey, def.descAr)}</div>
-        <div class="info-section">
+        <div class="info-section exam-hide">
             <div class="info-section-title">${t('info.section.pinout')}</div>
             <div class="pinout-diagram">${escapeHTML(def.pinout)}</div>
         </div>
-        <div class="info-section">
+        <div class="info-section exam-hide">
             <div class="info-section-title">${t('info.section.truth')}</div>
             <table class="truth-table">
                 <thead>
@@ -3456,7 +3474,7 @@ function showICInfo(comp) {
     // Add 555 Timer frequency info
     if (comp.type === 'IC555') {
         const extraInfo = document.createElement('div');
-        extraInfo.className = 'info-section';
+        extraInfo.className = 'info-section exam-hide';
         extraInfo.innerHTML = `
             <div class="info-section-title">${t('info.section.555mode')}</div>
             <p style="font-size:11px; color:var(--text-secondary); line-height:1.6;">
@@ -3483,7 +3501,7 @@ function updatePinStatesDisplay(comp) {
             : escapeHTML(p.name);
         html += `
             <li class="pin-state-item">
-                <span class="pin-state-name">Pin ${p.num} (${nameDisplay})</span>
+                <span class="pin-state-name">Pin ${p.num}<span class="exam-hide"> (${nameDisplay})</span></span>
                 <span class="pin-state-val ${val ? 'high' : 'low'}">${val ? 'HIGH' : 'LOW'}</span>
             </li>
         `;
@@ -5367,6 +5385,9 @@ function loadProjectFromData(data) {
         const allCompIds = Array.from(components.keys());
         const allWireIds = Array.from(wires.keys());
         allWireIds.forEach(id => deleteWire(id, true));
+        // حذف المكونات القديمة أيضاً — بدونها تختلط الدائرة المحمّلة بالدائرة الحالية
+        allCompIds.forEach(id => deleteComponent(id, true));
+        showInfoPlaceholder();
 
         // استرجاع المكونات
         data.components.forEach(c => restoreComponent(c));
@@ -5381,7 +5402,8 @@ function loadProjectFromData(data) {
         }
         // استرجاع العرض
         if (data.viewport) {
-            wsPanX = data.viewport.panX || 100;
+            wsPanX = Number.isFinite(data.viewport.panX) ? data.viewport.panX : 100;
+            wsPanY = Number.isFinite(data.viewport.panY) ? data.viewport.panY : 50;
             wsZoom = data.viewport.zoom || 1;
             applyTransform();
         }
@@ -5445,6 +5467,62 @@ function setupBuildAreaVisual() {
     }
 }
 setupBuildAreaVisual();
+
+// ==========================================
+// EXAM MODE — وضع الاختبار
+// ==========================================
+// يخفي قائمة الأمثلة ومسميات الأطراف (على الرقاقات وفي لوحة المعلومات)
+// ويُبقي أرقام الأطراف فقط، كما في الرقاقة الحقيقية.
+// الإخفاء كله عبر CSS (class "exam-mode" على <body>) فلا حاجة لإعادة الرسم.
+//   • الزر في الـ header يبدّل الوضع (الخروج يتطلب تأكيداً).
+//   • فتح الموقع بـ ?exam=1 يفعّل الوضع ويقفله (يختفي زر الخروج).
+const EXAM_LOCKED = new URLSearchParams(window.location.search).get('exam') === '1';
+let examMode = EXAM_LOCKED;
+if (!examMode) {
+    try { examMode = localStorage.getItem('icsim-exam') === '1'; } catch (e) {}
+}
+
+function updateExamUI() {
+    document.body.classList.toggle('exam-mode', examMode);
+    const btn = document.getElementById('btn-exam-mode');
+    if (btn) {
+        btn.classList.toggle('active', examMode);
+        btn.style.display = EXAM_LOCKED ? 'none' : '';
+        const label = btn.querySelector('.exam-btn-label');
+        if (label) label.textContent = t(examMode ? 'header.examExit' : 'header.exam');
+    }
+    const badge = document.getElementById('exam-badge');
+    if (badge) badge.textContent = t('exam.badge');
+    // أغلق قائمة الأمثلة إن كانت مفتوحة
+    if (examMode) {
+        const dd = document.getElementById('dropdown-examples');
+        if (dd) dd.classList.remove('open');
+    }
+}
+
+function setExamMode(on) {
+    if (EXAM_LOCKED && !on) return;
+    examMode = !!on;
+    try { localStorage.setItem('icsim-exam', examMode ? '1' : '0'); } catch (e) {}
+    updateExamUI();
+    showToast(t(examMode ? 'toast.examOn' : 'toast.examOff'), examMode ? 'warning' : 'success');
+}
+
+const btnExamMode = document.getElementById('btn-exam-mode');
+if (btnExamMode) {
+    btnExamMode.addEventListener('click', () => {
+        if (examMode && !window.confirm(t('exam.confirmExit'))) return;
+        setExamMode(!examMode);
+    });
+}
+
+// حماية إضافية: حتى لو استُدعي زر مثال برمجياً، لا يُحمَّل في وضع الاختبار
+const examplesMenuEl = document.getElementById('examples-menu');
+if (examplesMenuEl) {
+    examplesMenuEl.addEventListener('click', (e) => {
+        if (examMode) { e.stopImmediatePropagation(); e.preventDefault(); }
+    }, true);
+}
 
 const btnToggleLang = document.getElementById('btn-toggle-lang');
 if (btnToggleLang) {
